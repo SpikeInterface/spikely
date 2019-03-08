@@ -1,8 +1,9 @@
-"""Spikely - an application to create and run spike data processing pipelines
+"""Spikely - an application built on top of SpikeInterface to create and run
+extracellular data processing pipelines
 
-The application is designed around building a pipeline from recording data
-through optional filters terminating in a sorter that that performs spike
-sort then saves the sorted data to a file.
+The application is designed to allow users to load an extracellular recording,
+run preprocessing on the recording, run an installed spike sorter, and then perform
+postprocessing on the results. All results are saved into a folder.
 """
 
 import tkinter as tk
