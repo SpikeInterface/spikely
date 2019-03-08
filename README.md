@@ -2,7 +2,7 @@ Alpha Development
 Version 0.1.0
 
 # spikely
-An application built on top of [SpikeInterface](https://github.com/SpikeInterface) to create and run extracellular data processing pipelines
+An application built on top of [SpikeInterface](https://github.com/SpikeInterface) to create and run extracellular data processing pipelines.
 
 ## Authors
 [Roger Hurwitz](https://www.linkedin.com/in/rogerhurwitz/) - Senior Director at Intel Corporation
