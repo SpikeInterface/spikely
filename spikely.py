@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import (QApplication, QPushButton, QWidget,
     QVBoxLayout)
 from PyQt5.QtGui import QStandardItemModel, QIcon
 
-SPIKELY_VERSION = "0.2"
+SPIKELY_VERSION = "0.2.5"
 
 class Spikely(QWidget):
 
