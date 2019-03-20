@@ -49,7 +49,6 @@ class Spikely(QWidget):
         item.setText(0, "Sample Recording Extractor #2")
         rec_ext.addChild(item)
 
-
         # Buttons at the bottom
         hbox = QHBoxLayout()
         hbox.addWidget(self.run_btn)
