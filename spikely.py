@@ -10,8 +10,10 @@ Author: Roger Hurwitz
 """
 
 import sys
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+from PyQt5.QtWidgets import (QApplication, QPushButton, QWidget, 
+    QTreeWidget, QTreeWidgetItem, QHBoxLayout, QGroupBox,
+    QVBoxLayout)
+from PyQt5.QtGui import QStandardItemModel, QIcon
 
 SPIKELY_VERSION = "0.2"
 
@@ -22,56 +24,35 @@ class Spikely(QWidget):
         self.initUI()
 
     def initUI(self):
-        run_btn, queue_btn, clear_btn = (QPushButton("Run"),
+        # Actions that will apply to the processing pipeline
+        self.run_btn, self.queue_btn, self.clear_btn = (QPushButton("Run"),
             QPushButton("Queue"), QPushButton("Clear"))
-        # buttons = [QPushButton(button) for button in "Run Queue
-        # Clear".split()]
 
-        # Pipeline
-        list = QListView();
-        list.setMinimumSize(200, 200)
-
-        model = QStandardItemModel(list)
-
-        elements = [
-            "Recording Extractor",
-            "Pre-Sort Filter",
-            "Sorter",
-            "Post-Sort Filter",
-            "Sort Extractor"
-            "Recording Extractor",
-            "Pre-Sort Filter",
-            "Sorter",
-            "Post-Sort Filter",
-            "Sort Extractor"
-        ]
-
-        for element in elements:
-            item = QStandardItem(element)
-            model.appendRow(item)
-        
-        list.setModel(model)
+        # Create the processing pipeline model and view
+        self.pipe_tree = QTreeWidget(self)
+        self.pipe_tree.setColumnCount(1)
+        self.pipe_tree.setHeaderLabels(["Processing Elements"])
+        self.pipe_tree.header().hide()
+        rec_ext = QTreeWidgetItem(self.pipe_tree)
+        rec_ext.setText(0, "Stage 1: Recording Extractors")
+        item = QTreeWidgetItem(rec_ext)
+        item.setText(0, "Sample Recording Extractor #1")
 
 
         # Buttons at the bottom
         hbox = QHBoxLayout()
+        hbox.addWidget(self.run_btn)
+        hbox.addWidget(self.queue_btn)
+        hbox.addWidget(self.clear_btn)
         hbox.addStretch(1)
-        hbox.addWidget(run_btn)
-        hbox.addWidget(queue_btn)
-        hbox.addWidget(clear_btn)
 
         gbox = QGroupBox("Operations")
         gbox.setLayout(hbox)
 
-        # for button in buttons:
-        #    hbox.addWidget(button)
-
-        # Overall vertical label
         vbox = QVBoxLayout()
         vbox.addStretch(1)
-        vbox.addWidget(list)
+        vbox.addWidget(self.pipe_tree)
         vbox.addWidget(gbox)
-
         self.setLayout(vbox)
 
         self.setGeometry(300, 300, 300, 220)
