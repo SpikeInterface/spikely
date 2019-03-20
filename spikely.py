@@ -23,6 +23,11 @@ class Spikely(QWidget):
         super().__init__()
         self.initUI()
 
+
+    def clicked(self, item, column):
+        print("Clicked")
+
+
     def initUI(self):
         # Actions that will apply to the processing pipeline
         self.run_btn, self.queue_btn, self.clear_btn = (QPushButton("Run"),
@@ -33,10 +38,16 @@ class Spikely(QWidget):
         self.pipe_tree.setColumnCount(1)
         self.pipe_tree.setHeaderLabels(["Processing Elements"])
         self.pipe_tree.header().hide()
+        self.pipe_tree.itemClicked.connect(self.clicked)
+
         rec_ext = QTreeWidgetItem(self.pipe_tree)
         rec_ext.setText(0, "Stage 1: Recording Extractors")
-        item = QTreeWidgetItem(rec_ext)
+        item = QTreeWidgetItem()
         item.setText(0, "Sample Recording Extractor #1")
+        rec_ext.addChild(item)
+        item = QTreeWidgetItem()
+        item.setText(0, "Sample Recording Extractor #2")
+        rec_ext.addChild(item)
 
 
         # Buttons at the bottom
@@ -55,14 +66,17 @@ class Spikely(QWidget):
         vbox.addWidget(gbox)
         self.setLayout(vbox)
 
-        self.setGeometry(300, 300, 300, 220)
-        self.setWindowTitle("Spikely " + SPIKELY_VERSION)
-        self.setWindowIcon(QIcon("spikely.png"))
+    
 
-        self.show()
 
 if __name__ == '__main__':
   
     app = QApplication(sys.argv)
+    
     w = Spikely()
+    w.setGeometry(300, 300, 300, 220)
+    w.setWindowTitle("Spikely " + SPIKELY_VERSION)
+    # w.setWindowIcon(QIcon("spikely.png"))
+    w.show()
+
     sys.exit(app.exec_())
