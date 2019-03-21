@@ -39,9 +39,9 @@ class Spikely(QWidget):
 
         stagelist = [
             "Stage 1: Recording Extractors", 
-            "Stage 2: Pre-Processing Filters",
+            "Stage 2: Pre-Processing",
             "Stage 3: Sorters", 
-            "Stage 4: Post-Processing Filters"
+            "Stage 4: Post-Processing"
         ]
         
         for stage in stagelist:
@@ -67,9 +67,9 @@ class Spikely(QWidget):
         # Add pipeline elements
         stage_cbx = QComboBox()
         stage_cbx.addItem("Recording")
-        stage_cbx.addItem("Pre-Procs")
+        stage_cbx.addItem("Pre-Process")
         stage_cbx.addItem("Sorters")
-        stage_cbx.addItem("Post-Procs")
+        stage_cbx.addItem("Post-Process")
 
         ele_cbx = QComboBox()
         ele_cbx.addItem("Element #1")
@@ -107,8 +107,8 @@ class Spikely(QWidget):
         prop_tbl.setRowCount(10)
         prop_tbl.setColumnCount(2)
         prop_tbl.setHorizontalHeaderLabels(("Property", "Value"))
-        prop_tbl.setColumnWidth(0, 150)
-        prop_tbl.setColumnWidth(1, 150)
+        prop_tbl.setColumnWidth(0, 200)
+        prop_tbl.setColumnWidth(1, 100)
         prop_tbl.verticalHeader().hide()
         prop_tbl.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
 
