@@ -1,143 +1,148 @@
-"""Spikely - an application built on top of SpikeInterface to create and run
+"""
+Spikely - an application built on top of SpikeInterface to create and run
 extracellular data processing pipelines
 
 The application is designed to allow users to load an extracellular recording,
 run preprocessing on the recording, run an installed spike sorter, and then perform
 postprocessing on the results. All results are saved into a folder.
+
+Author: Roger Hurwitz
 """
 
-import tkinter as tk
-import tkinter.ttk as ttk
-import tkinter.filedialog as tk_filedialog
+import sys
+from PyQt5.QtWidgets import (QApplication, QPushButton, QWidget, 
+    QTreeWidget, QTreeWidgetItem, QHBoxLayout, QGroupBox, QFrame,
+    QVBoxLayout, QComboBox, QTableWidget, QTableWidgetItem, QHeaderView)
+from PyQt5.QtGui import QStandardItemModel, QIcon
 
-# Initialize Tk
-root = tk.Tk()
+SPIKELY_VERSION = "0.2.5"
 
-# Tk magic globals to dynamically get/set widget text
-recording_selection = tk.StringVar()
-filter_selections = [tk.StringVar()]
-sorter_selection = tk.StringVar()
+class Spikely(QWidget):
 
-# First UI rows for recording, filter, and sorter segments
-RECORDING_ROW = 0
-FILTER_ROW = 1
-SORTER_ROW = 19  # Leaves room for multiple filters
+    def __init__(self):
+        super().__init__()
+        self.initUI()
 
 
-# UI Construction Routines
-
-def insert_segment_ui(row, prompt, select_cb, selection, settings_cb,
-                      append_cb):
-    """ Place a segment (recording, filter, sorter) row in the main window of
-    the application
-    """
-
-    # Segments have the option to append subsegments - enables multiple filters
-    if append_cb is not None:
-        w = ttk.Button(mainframe, text="+", command=append_cb,
-                       width=1)
-        w.grid(column=0, row=row, padx=5, pady=5)
-
-    w = ttk.Label(mainframe, text=prompt, foreground="green")
-    w.grid(column=1, row=row, sticky=tk.E, padx=5, pady=5)
-
-    w = ttk.Button(mainframe, text="Select", command=select_cb)
-    w.grid(column=2, row=row, sticky=tk.W, padx=5, pady=5)
-
-    w = ttk.Label(mainframe, textvariable=selection)
-    w.grid(column=3, row=row, sticky=tk.W, padx=5, pady=5)
-
-    w = ttk.Button(mainframe, text="Settings", command=settings_cb)
-    w.grid(column=4, row=row, sticky=tk.W, padx=5, pady=5)
+    def clicked(self, item, column):
+        print("Clicked")
 
 
-# Recording specific callbacks for Select and Settings
-def recording_select():
-    # Open dialog to select source file for sort transformation
-    recording_selection.set(tk_filedialog.askopenfilename())
+    def initUI(self):
+        
+        # Processing pipeline model and view
+        self.pipe_tree = QTreeWidget(self)
+        self.pipe_tree.setColumnCount(1)
+        self.pipe_tree.header().hide()
+        # self.pipe_tree.itemClicked.connect(self.clicked)
+        # self.pipe_tree.setItemsExpandable(False)
+
+        stagelist = [
+            "Stage 1: Recording Extractors", 
+            "Stage 2: Pre-Processing Filters",
+            "Stage 3: Sorters", 
+            "Stage 4: Post-Processing Filters"
+        ]
+        
+        for stage in stagelist:
+            an_item = QTreeWidgetItem(self.pipe_tree)
+            an_item.setText(0, stage)
+            # an_item.setChildIndicatorPolicy(QTreeWidgetItem.DontShowIndicator)
+            an_item.setExpanded(True)
+            child = QTreeWidgetItem()
+            child.setText(0, "Sample Element")
+            an_item.addChild(child)
+          
+
+        # Pipeline element commands
+        self.up_btn, self.delete_btn, self.down_btn = (QPushButton("Move Up"),
+            QPushButton("Delete"), QPushButton("Move Down"))
+        pec_box = QFrame()
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.up_btn)
+        hbox.addWidget(self.delete_btn)
+        hbox.addWidget(self.down_btn)
+        pec_box.setLayout(hbox)
+
+        # Add pipeline elements
+        stage_cbx = QComboBox()
+        stage_cbx.addItem("Recording")
+        stage_cbx.addItem("Pre-Procs")
+        stage_cbx.addItem("Sorters")
+        stage_cbx.addItem("Post-Procs")
+
+        ele_cbx = QComboBox()
+        ele_cbx.addItem("Element #1")
+        ele_cbx.addItem("Element #2")
+        ele_cbx.addItem("Element #3")
+
+        ele_box = QFrame()
+        hbox = QHBoxLayout()
+        hbox.addWidget(stage_cbx)
+        hbox.addWidget(ele_cbx)
+        hbox.addWidget(QPushButton("Add Element"))
+        ele_box.setLayout(hbox)
+
+        # Combine pipeline tree and element commands
+        pipe_box = QGroupBox("Pipeline Elements")
+        vbox = QVBoxLayout()
+        vbox.addWidget(ele_box)
+        vbox.addWidget(self.pipe_tree)
+        vbox.addWidget(pec_box)
+        pipe_box.setLayout(vbox)
+
+        # Pipeline operation commands
+        self.run_btn, self.queue_btn, self.clear_btn = (QPushButton("Run"),
+            QPushButton("Queue"), QPushButton("Clear"))
+        poc_box = QGroupBox("Pipeline Operations")
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.run_btn)
+        hbox.addWidget(self.queue_btn)
+        hbox.addWidget(self.clear_btn)
+        # hbox.addStretch(1)
+        poc_box.setLayout(hbox)
+
+        # Element Properties
+        prop_tbl = QTableWidget()
+        prop_tbl.setRowCount(10)
+        prop_tbl.setColumnCount(2)
+        prop_tbl.setHorizontalHeaderLabels(("Property", "Value"))
+        prop_tbl.setColumnWidth(0, 150)
+        prop_tbl.setColumnWidth(1, 150)
+        prop_tbl.verticalHeader().hide()
+        prop_tbl.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+
+        prop_box = QGroupBox("Element Properties") 
+        hbox = QHBoxLayout()
+        hbox.addWidget(prop_tbl)
+        prop_box.setLayout(hbox)
+
+        ele_frame = QFrame()
+        hbox = QHBoxLayout()
+        hbox.addWidget(pipe_box)
+        hbox.addWidget(prop_box)
+        ele_frame.setLayout(hbox)
 
 
-def recording_settings():
-    pass
+        # Layout of main window
+        main_box = QVBoxLayout()
+        main_box.addStretch(1)
+        main_box.addWidget(ele_frame)
+        main_box.addWidget(poc_box)
+        self.setLayout(main_box)
+
+    
 
 
-# Filter specific callbacks for Select and Settings, and Append
-def filter_select():
-    pass
+if __name__ == '__main__':
+  
+    app = QApplication(sys.argv)
+    
+    w = Spikely()
+    # w.setGeometry(400, 400, 300, 220)
+    w.resize(800, 400)
+    w.setWindowTitle("Spikely " + SPIKELY_VERSION)
+    # w.setWindowIcon(QIcon("spikely.png"))
+    w.show()
 
-
-def filter_settings():
-    pass
-
-
-def filter_append():
-    next_FILTER_ROW = FILTER_ROW + len(filter_selections)
-    filter_selections.append(tk.StringVar())
-    filter_selections[-1].set("<No Filter selected>")
-    insert_segment_ui(row=next_FILTER_ROW, prompt="",
-                      select_cb=filter_select,
-                      selection=filter_selections[-1],
-                      settings_cb=filter_settings, append_cb=None)
-
-
-# Sorter specific callbacks for Select and Settings, and Append
-def sorter_select():
-    pass
-
-
-def sorter_settings():
-    pass
-
-
-root.title("Spikely 1.0")
-mainframe = ttk.Frame(root, padding="3 3 12 12")
-mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
-# root.columnconfigure(0, weight=1)
-# root.rowconfigure(0, weight=1)
-
-recording_selection.set("<No Recording File Selected>")
-insert_segment_ui(row=RECORDING_ROW, prompt="Recording",
-                  select_cb=recording_select, selection=recording_selection,
-                  settings_cb=recording_settings, append_cb=None)
-
-filter_selections[0].set("<No Filter selected>")
-insert_segment_ui(row=FILTER_ROW, prompt="Filter(s)",
-                  select_cb=filter_select, selection=filter_selections[0],
-                  settings_cb=filter_settings, append_cb=filter_append)
-
-sorter_selection.set("<No Sorter selected>")
-insert_segment_ui(row=SORTER_ROW, prompt="Sorter", select_cb=sorter_select,
-                  selection=sorter_selection, settings_cb=sorter_settings,
-                  append_cb=None)
-
-w = ttk.Separator(mainframe)
-w.grid(column=0, columnspan=5, row=SORTER_ROW+1, sticky=(tk.N, tk.W, tk.E),
-       padx=5, pady=5)
-
-w = ttk.Button(mainframe, text="Run", command=None)
-w.grid(column=2, columnspan=2, row=21, sticky=(tk.N, tk.W, tk.E, tk.S),
-       padx=5, pady=5)
-
-w = ttk.Button(mainframe, text="Clear", command=None)
-w.grid(column=4, row=SORTER_ROW+2, sticky=(tk.N, tk.W, tk.E, tk.S),
-       padx=5, pady=5)
-
-# for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
-
-# Create a menu bar and associate it with main window
-mbar = tk.Menu(root)
-root.config(menu=mbar)
-root.resizable(False, False)
-
-# Create a menu and associate it with menu bar
-filemenu = tk.Menu(mbar, tearoff=0)
-mbar.add_cascade(label="File", menu=filemenu)
-
-# create entries in the menu for commands
-filemenu.add_command(label="Save Pipeline", command=None)
-filemenu.add_command(label="Load Pipeline", command=None)
-filemenu.add_separator()
-filemenu.add_command(label="Exit", command=root.quit)
-
-# Enter the event loop of the application
-root.mainloop()
+    sys.exit(app.exec_())
