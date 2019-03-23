@@ -5,31 +5,36 @@ extracellular data processing pipelines
 The application is designed to allow users to load an extracellular recording,
 run preprocessing on the recording, run an installed spike sorter, and then perform
 postprocessing on the results. All results are saved into a folder.
-
-Author: Roger Hurwitz
 """
 
+__author__ = "Roger Hurwitz"
+__credits__ = ["Cole Hurwitz"]
+__license__ = "GPL"
+__version__ = "0.1.5"
+__maintainer__ = "Roger Hurwitz"
+__email__ = "rogerhurwitz@gmail.com"
+__status__ = "Development"
+
 import sys
-from PyQt5.QtWidgets import (QApplication, QPushButton, QWidget, 
+from PyQt5.QtWidgets import (QMainWindow, QApplication, QPushButton, QWidget,
     QTreeWidget, QTreeWidgetItem, QHBoxLayout, QGroupBox, QFrame,
     QVBoxLayout, QComboBox, QTableWidget, QTableWidgetItem, QHeaderView)
 from PyQt5.QtGui import QStandardItemModel, QIcon
 
-SPIKELY_VERSION = "0.2.5"
-
-class Spikely(QWidget):
+class Spikely(QMainWindow):
 
     def __init__(self):
         super().__init__()
         self.initUI()
 
 
-    def clicked(self, item, column):
-        print("Clicked")
-
-
     def initUI(self):
-        
+
+        # Set attributes of applicaiton window
+        self.setWindowTitle("Spikely " + __version__)
+        self.setGeometry(100, 100, 800, 400)
+        self.setWindowIcon(QIcon("spikely.png"))
+
         # Processing pipeline model and view
         self.pipe_tree = QTreeWidget(self)
         self.pipe_tree.setColumnCount(1)
@@ -129,20 +134,15 @@ class Spikely(QWidget):
         main_box.addStretch(1)
         main_box.addWidget(ele_frame)
         main_box.addWidget(poc_box)
-        self.setLayout(main_box)
 
-    
+        f = QFrame()
+        f.setLayout(main_box)
+        self.setCentralWidget(f)
 
 
 if __name__ == '__main__':
   
     app = QApplication(sys.argv)
-    
-    w = Spikely()
-    # w.setGeometry(400, 400, 300, 220)
-    w.resize(800, 400)
-    w.setWindowTitle("Spikely " + SPIKELY_VERSION)
-    # w.setWindowIcon(QIcon("spikely.png"))
-    w.show()
-
+    app_win = Spikely()
+    app_win.show()
     sys.exit(app.exec_())
