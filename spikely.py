@@ -4,6 +4,19 @@ processing pipelines.
 The application allows users to load an extracellular recording, run 
 preprocessing on the recording, run an installed spike sorter, and 
 then run postprocessing on the results. All results are saved into a folder.
+
+Loosely based on a hierarchical MVC design pattern, the application is
+divided into modules corresponding to the functional screen regions
+(the views) and the major data structures (the models)
+
+Modules:
+    spikely.py - Main application module
+    op_view.py - Operate Pipeline UI region
+    cp_view.py - Construct Pipeline UI region 
+    pe_view.py - Configure Element UI region 
+    pi_model.py - Pipeline Model: multi-stage element execution list
+    el_model.py - Element Model: SpikeInterface component wrappers
+    qu_model.py - Queue Model: pipeline execution list
 """
 
 import sys
@@ -12,6 +25,7 @@ import PyQt5.QtWidgets as qtw
 import PyQt5.QtGui as qtg
 
 from op_view import OperatePipelineView
+
 
 __version__ = "0.1.5"
 
