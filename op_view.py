@@ -21,10 +21,22 @@ class OperatePipelineView(qtw.QGroupBox):
         self._init_ui()
 
 
+    def btn_clicked(self):
+        print(self.sender().objectName())
+
     def _init_ui(self):   
         # Pipeline operation commands
         run_btn, queue_btn, clear_btn = (qtw.QPushButton("Run"),
             qtw.QPushButton("Queue"), qtw.QPushButton("Clear"))
+
+
+        run_btn.setObjectName("Run")
+        run_btn.clicked.connect(lambda : print(self.sender().objectName()))
+
+        # print("Button name: " + run_btn.objectName())
+        # run_btn.clicked.connect(self.btn_clicked)
+
+
         hbox = qtw.QHBoxLayout()
         hbox.addWidget(run_btn)
         hbox.addWidget(queue_btn)
