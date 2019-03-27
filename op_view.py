@@ -7,38 +7,34 @@ extracellular data processing.
 
 import sys
 
-import PyQt5.QtWidgets as qtw
+import PyQt5.QtWidgets as qw
 
-class OperatePipelineView(qtw.QGroupBox):
+class OperatePipelineView(qw.QGroupBox):
     """ Main window of application.
 
     No public methods other than constructor.
     """
 
-    def __init__(self):
+    def __init__(self, spike_pipe):
         super().__init__("Operate Pipeline")
-
+        self.spike_pipe = spike_pipe
         self._init_ui()
 
 
-    def btn_clicked(self):
-        print(self.sender().objectName())
-
     def _init_ui(self):   
-        # Pipeline operation commands
-        run_btn, queue_btn, clear_btn = (qtw.QPushButton("Run"),
-            qtw.QPushButton("Queue"), qtw.QPushButton("Clear"))
-
-
-        run_btn.setObjectName("Run")
-        run_btn.clicked.connect(lambda : print(self.sender().objectName()))
-
-        # print("Button name: " + run_btn.objectName())
-        # run_btn.clicked.connect(self.btn_clicked)
-
-
-        hbox = qtw.QHBoxLayout()
-        hbox.addWidget(run_btn)
-        hbox.addWidget(queue_btn)
-        hbox.addWidget(clear_btn)
+        
+        hbox = qw.QHBoxLayout()
         self.setLayout(hbox)
+
+        # Pipeline operation commands
+        run_btn = qw.QPushButton("Run")
+        run_btn.clicked.connect(self.spike_pipe.run)
+        hbox.addWidget(run_btn)
+
+        clear_btn = qw.QPushButton("Clear")
+        clear_btn.clicked.connect(self.spike_pipe.clear)
+        hbox.addWidget(clear_btn)
+
+        queue_btn = qw.QPushButton("Queue")
+        queue_btn.clicked.connect(lambda : print("Queue not implemented."))
+        hbox.addWidget(queue_btn)
