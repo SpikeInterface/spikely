@@ -6,11 +6,11 @@ extracellular data processing.
 """
 
 import sys
-
 import PyQt5.QtWidgets as qw
+from pi_model import SpikePipeline
 
 class OperatePipelineView(qw.QGroupBox):
-    """ Main window of application.
+    """Collection of widgets tied to Operate Pipeline commands.
 
     No public methods other than constructor.
     """
@@ -18,6 +18,9 @@ class OperatePipelineView(qw.QGroupBox):
     def __init__(self, spike_pipe):
         super().__init__("Operate Pipeline")
         self.spike_pipe = spike_pipe
+
+        new_pipe = SpikePipeline()
+
         self._init_ui()
 
 

@@ -27,7 +27,6 @@ import PyQt5.QtGui as qg
 from op_view import OperatePipelineView
 from pi_model import SpikePipeline
 
-
 __version__ = "0.1.5"
 
 class SpikelyMainWindow(qw.QMainWindow):
@@ -54,8 +53,6 @@ class SpikelyMainWindow(qw.QMainWindow):
         self.pipe_tree = qw.QTreeWidget(self)
         self.pipe_tree.setColumnCount(1)
         self.pipe_tree.header().hide()
-        # self.pipe_tree.itemClicked.connect(self.clicked)
-        # self.pipe_tree.setItemsExpandable(False)
 
         stagelist = [
             "Stage 1: Extraction", 
@@ -68,15 +65,12 @@ class SpikelyMainWindow(qw.QMainWindow):
             an_item = qw.QTreeWidgetItem(self.pipe_tree)
             an_item.setText(0, stage)
             an_item.setForeground(0,qg.QBrush(qg.QColor("gray")))
-            an_item.setExpanded(True)
-            child = qw.QTreeWidgetItem()
-            child.setText(0, "Sample Element")
-            an_item.addChild(child)
+            # an_item.setExpanded(True)
           
 
         # Pipeline element commands
         self.up_btn, self.delete_btn, self.down_btn = (qw.QPushButton("Move Up"),
-            qw.QPushButton("Delete"), qw.QPushButton("Move Down"))
+            qw.QPushButton("Remove"), qw.QPushButton("Move Down"))
         pec_box = qw.QFrame()
         hbox = qw.QHBoxLayout()
         hbox.addWidget(self.up_btn)
@@ -84,14 +78,15 @@ class SpikelyMainWindow(qw.QMainWindow):
         hbox.addWidget(self.down_btn)
         pec_box.setLayout(hbox)
 
+        ele_cbx = qw.QComboBox()
         # Add pipeline elements
         stage_cbx = qw.QComboBox()
-        stage_cbx.addItem("Recording")
-        stage_cbx.addItem("Pre-Process")
+        stage_cbx.currentIndexChanged.connect(ele_cbx.clear)
+        stage_cbx.addItem("Extractors")
+        stage_cbx.addItem("Pre-Processors")
         stage_cbx.addItem("Sorters")
-        stage_cbx.addItem("Post-Process")
+        stage_cbx.addItem("Post-Processors")
 
-        ele_cbx = qw.QComboBox()
         ele_cbx.addItem("Element #1")
         ele_cbx.addItem("Element #2")
         ele_cbx.addItem("Element #3")
@@ -110,7 +105,6 @@ class SpikelyMainWindow(qw.QMainWindow):
         vbox.addWidget(self.pipe_tree)
         vbox.addWidget(pec_box)
         pipe_box.setLayout(vbox)
-
 
         # Element Properties
         prop_tbl = qw.QTableWidget()
