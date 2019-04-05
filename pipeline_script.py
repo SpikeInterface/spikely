@@ -17,8 +17,8 @@ print("Filter Recording Extractor: " + str(filter_recording) + '\n')
 ################################### Sorting ###################################
 
 #We have a string name for each sorter (we use that to get the class)
-sorter_name = 'mountainsort4'
-output_folder='tmp_MS4'
+sorter_name = 'klusta'
+output_folder='tmp_klusta'
 
 #Fetch the sorter class corresponding to the sorter_name
 SorterClass = st.sorters.sorter_dict[sorter_name]
@@ -35,7 +35,7 @@ sorter.set_params(**params)
 print("Default Params: "+ str(sorter.params) + '\n')
 
 #Can update params by passing in the user entries
-sorter.set_params(detect_sign=-1, adjacency_radius=-1)
+sorter.set_params(threshold_strong_std_factor=6, threshold_weak_std_factor=1)
 
 #Run the sorter and save to the output file
 sorter.run()
@@ -47,7 +47,7 @@ print("Sorting Extractor for ms4: " + str(sorting_ms4) + '\n')
 ################################ Postprocessing ###############################
 
 # This is function call from the postprocessing module, doesn't return anything (we support this)
-st.postprocessing.exportToPhy(recording, sorting_ms4, output_folder='phy')
+st.postprocessing.export_to_phy(recording, sorting_ms4, output_folder='phy')
 print("")
 
 #Returns a sorting extractor object which has some curated results inside
@@ -55,5 +55,5 @@ curated_sorting = st.postprocessing.ThresholdMinNumSpike(sorting_ms4, min_num_sp
 print("Curated Sorting Extractor: " + str(curated_sorting) + '\n')
 
 #The curation gets rid of all units with less than 50 spikes
-print("Original Units: " + str(sorting_ms4.getUnitIds()))
-print("Curated Units: " + str(curated_sorting.getUnitIds()))
+print("Original Units: " + str(sorting_ms4.get_unit_ids()))
+print("Curated Units: " + str(curated_sorting.get_unit_ids()))
