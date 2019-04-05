@@ -19,10 +19,15 @@ class ConstructPipelineView(qw.QGroupBox):
     of object are triggered by user interaction with sub widgets.
     """
 
+    pipe_stages = ["Extraction", "Pre-Processing", "Sorting", "Post-Processing"]
+
     def __init__(self, spike_pipe):
         super().__init__("Construct Pipeline")
         self.spike_pipe = spike_pipe
         self._init_ui()
+
+    def cbx_handler(self, index):
+        print(self.pipe_stages[index])
 
     def _init_ui(self):
         """ Builds composite UI consisting of Controllers for adding 
@@ -40,7 +45,8 @@ class ConstructPipelineView(qw.QGroupBox):
         sel_frame.setLayout(sel_layout)
 
         stage_cbx = qw.QComboBox()
-        for stage in ["Extraction", "Pre-Processing", "Sorting", "Post-Processing"] :
+        stage_cbx.currentIndexChanged.connect(self.cbx_handler)
+        for stage in self.pipe_stages:
             stage_cbx.addItem(stage)
         sel_layout.addWidget(stage_cbx)
         
@@ -59,10 +65,9 @@ class ConstructPipelineView(qw.QGroupBox):
         # self.pipe_view.itemClicked.connect(self.clicked)
         # self.pipe_view.setItemsExpandable(False)
 
-        for stage in ["Stage 1: Extraction", "Stage 2: Pre-Processing", 
-            "Stage 3: Sorting", "Stage 4: Post-Processing"]:
+        for stage in self.pipe_stages:
             an_item = qw.QTreeWidgetItem(self.pipe_view)
-            an_item.setText(0, stage)
+            an_item.setText(0, stage + " Stage")
             an_item.setForeground(0,qg.QBrush(qg.QColor("gray")))
             an_item.setExpanded(True)
             # child = qw.QTreeWidgetItem()
@@ -71,15 +76,14 @@ class ConstructPipelineView(qw.QGroupBox):
 
         cp_layout.addWidget(self.pipe_view)
 
-        # Manipulate: Controls to reorder/delete elements in pipeline
+        # Manipulation: Control buttons ordered lef to right
+        man_layout = qw.QHBoxLayout()
+        man_frame = qw.QFrame()
+        man_frame.setEnabled(False)
+        man_frame.setLayout(man_layout)
 
-        self.up_btn, self.delete_btn, self.down_btn = (qw.QPushButton("Move Up"),
-            qw.QPushButton("Delete"), qw.QPushButton("Move Down"))
-        pec_box = qw.QFrame()
-        hbox = qw.QHBoxLayout()
-        hbox.addWidget(self.up_btn)
-        hbox.addWidget(self.delete_btn)
-        hbox.addWidget(self.down_btn)
-        pec_box.setLayout(hbox)
-
-        cp_layout.addWidget(pec_box)
+        for lbl in ["Move Up", "Delete", "Move Down"] :
+            btn = qw.QPushButton(lbl)
+            man_layout.addWidget(btn)
+        
+        cp_layout.addWidget(man_frame)

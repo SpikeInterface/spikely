@@ -27,6 +27,7 @@ import PyQt5.QtGui as qg
 from op_view import OperatePipelineView
 from pi_model import SpikePipeline
 from cp_view import ConstructPipelineView
+from ce_view import ConfigureElementView
 
 __version__ = "0.1.5"
 
@@ -47,26 +48,11 @@ class SpikelyMainWindow(qw.QMainWindow):
 
         # Application window setup
         self.setWindowTitle("Spikely")
-        self.setGeometry(100, 100, 800, 400)
+        self.setGeometry(100, 100, 900, 400)
         self.setWindowIcon(qg.QIcon("spikely.png"))
         self.statusBar().addPermanentWidget(
             qw.QLabel("Version " + __version__))
-
-        # Element Properties
-        prop_tbl = qw.QTableWidget()
-        prop_tbl.setRowCount(10)
-        prop_tbl.setColumnCount(2)
-        prop_tbl.setHorizontalHeaderLabels(("Property", "Value"))
-        prop_tbl.setColumnWidth(0, 200)
-        prop_tbl.setColumnWidth(1, 100)
-        prop_tbl.verticalHeader().hide()
-        prop_tbl.horizontalHeader().setSectionResizeMode(1, qw.QHeaderView.Stretch)
-
-        prop_box = qw.QGroupBox("Configure Elements") 
-        hbox = qw.QHBoxLayout()
-        hbox.addWidget(prop_tbl)
-        prop_box.setLayout(hbox)
-
+        
         # Lay out application views in main window from top to bottom
         main_layout = qw.QVBoxLayout()  
         main_layout.addStretch(1)
@@ -77,7 +63,7 @@ class SpikelyMainWindow(qw.QMainWindow):
         cp_ce_frame = qw.QFrame()
         cp_ce_layout = qw.QHBoxLayout()
         cp_ce_layout.addWidget(ConstructPipelineView(self.spike_pipe))
-        cp_ce_layout.addWidget(prop_box) # legacy
+        cp_ce_layout.addWidget(ConfigureElementView(self.spike_pipe))
         cp_ce_frame.setLayout(cp_ce_layout)
         main_layout.addWidget(cp_ce_frame)
 
