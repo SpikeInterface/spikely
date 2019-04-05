@@ -1,26 +1,25 @@
-""" Instantiates the Operate Pipeline application view.
+""" Creates an MVC view-control for operations on the active pipeline model.
 
-The Operate Pipeline application view consists of widgets responsible for
+The Operate Pipeline view/control consists of widgets responsible for
 user control over the SpikeInterface pipeline of elements used for
-extracellular data processing.
+extracellular data processing.  Those operations include running, clearing,
+and queueing the active pipeline.
 """
 
 import sys
 import PyQt5.QtWidgets as qw
-from pi_model import SpikePipeline
+from pi_model import SpikePipeline  # The model for this controller
 
 class OperatePipelineView(qw.QGroupBox):
-    """Collection of widgets tied to Operate Pipeline commands.
+    """GroupBox of widgets capable of controlling active pipeline.
 
-    No public methods other than constructor.
+    No public methods other than constructor.  All other activites
+    of object are triggered by user interaction with sub widgets.
     """
 
     def __init__(self, spike_pipe):
-        super().__init__("Operate Pipeline")
+        super().__init__("Operate Pipeline") # Labels group box parent
         self.spike_pipe = spike_pipe
-
-        new_pipe = SpikePipeline()
-
         self._init_ui()
 
 
