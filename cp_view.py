@@ -1,4 +1,4 @@
-""" Creates an MVC view-control for constructing the active pipeline model.
+"""Creates an MVC view-control for constructing the active pipeline model.
 
 The Construct Pipeline view/control consists of widgets responsible for
 constructing the active pipeline by inserting, deleting, or moving elements
@@ -22,11 +22,13 @@ class ConstructPipelineView(qw.QGroupBox):
     pipe_stages = ["Extraction", "Pre-Processing", "Sorting", "Post-Processing"]
 
     def __init__(self, spike_pipe):
+        """Initialize parent and member variables, construct UI."""
         super().__init__("Construct Pipeline")
         self.spike_pipe = spike_pipe
         self._init_ui()
 
-    def cbx_handler(self, index):
+    def cbx_activated(self, index):
+        """Responds to state changes in stage combo box.""""
         print(self.pipe_stages[index])
 
     def _init_ui(self):
@@ -45,8 +47,8 @@ class ConstructPipelineView(qw.QGroupBox):
         sel_frame.setLayout(sel_layout)
 
         stage_cbx = qw.QComboBox()
-        stage_cbx.currentIndexChanged.connect(self.cbx_handler)
-        for stage in self.pipe_stages:
+        stage_cbx.currentIndexChanged.connect(self.cbx_activated)
+        for stage in self.pipe_stages:Responds to state changes in stage combo box.""""
             stage_cbx.addItem(stage)
         sel_layout.addWidget(stage_cbx)
         

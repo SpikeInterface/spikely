@@ -1,5 +1,4 @@
-""" UI for SpikeInterface to create and run extracellular data 
-processing pipelines.
+"""UI for SpikeInterface extracellular data processing pipelines.
 
 The application allows users to load an extracellular recording, run 
 preprocessing on the recording, run an installed spike sorter, and 
@@ -32,15 +31,19 @@ from ce_view import ConfigureElementView
 __version__ = "0.1.5"
 
 class SpikelyMainWindow(qw.QMainWindow):
-    """ Main window of application.
+    """Main window of application.
 
     No public methods other than constructor.
     """
 
     def __init__(self):
+        """Initialize parent, instantiate object members, build UI."""
         super().__init__()
-        sys.stdout.flush()
-        self.spike_pipe = SpikePipeline()
+
+        # Underlying data structure managed by UI
+        self.active_pipe = SpikePipeline()
+
+        sys.stdout.flush() # forces print() out for debugging
         self._init_ui()
 
 
@@ -55,20 +58,21 @@ class SpikelyMainWindow(qw.QMainWindow):
         
         # Lay out application views in main window from top to bottom
         main_layout = qw.QVBoxLayout()  
-        main_layout.addStretch(1)
+        main_layout.addStretch(1) # Pushes app window widgents down
 
         """ Lay out Construction Pipeline (ce) and Configure Element (ce)
         views in a frame at top of main window from left to right
         """
         cp_ce_frame = qw.QFrame()
         cp_ce_layout = qw.QHBoxLayout()
-        cp_ce_layout.addWidget(ConstructPipelineView(self.spike_pipe))
-        cp_ce_layout.addWidget(ConfigureElementView(self.spike_pipe))
         cp_ce_frame.setLayout(cp_ce_layout)
+        # Actual widget construction done in View classes
+        cp_ce_layout.addWidget(ConstructPipelineView(self.active_pipe))
+        cp_ce_layout.addWidget(ConfigureElementView(self.active_pipe))
         main_layout.addWidget(cp_ce_frame)
 
         # Lay out Operation view at bottom of main window
-        main_layout.addWidget(OperatePipelineView(self.spike_pipe))
+        main_layout.addWidget(OperatePipelineView(self.active_pipe))
 
         main_frame = qw.QFrame()
         main_frame.setLayout(main_layout)

@@ -1,4 +1,4 @@
-""" Creates an MVC view-control for configuring piepline element properties.
+"""Creates an MVC view-control for configuring piepline element properties.
 
 The Configure Element view/control consists of widgets responsible for
 viewing and editing the properties of elements (extractors, sorters, etc.).
@@ -26,17 +26,13 @@ class ConfigureElementView(qw.QGroupBox):
     """
 
     def __init__(self, spike_pipe):
+        """Initialize parent, set object members, build UI region."""
         super().__init__("Configure Elements")
         self.spike_pipe = spike_pipe
         self._init_ui()
 
     def _init_ui(self):
-        """ Builds composite UI consisting of Controllers for adding 
-        and maninpulating active pipeline elements and a View of the 
-        in-construction active pipeline.
-        """
-
-        # Lay out controllers and view from top to bottom of group box
+        """Build composite UI for element property configuration."""
         ce_layout = qw.QHBoxLayout()
         self.setLayout(ce_layout)
 

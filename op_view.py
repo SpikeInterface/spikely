@@ -1,4 +1,4 @@
-""" Creates an MVC view-control for operations on the active pipeline model.
+"""Creates an MVC view-control for operations on the active pipeline model.
 
 The Operate Pipeline view/control consists of widgets responsible for
 user control over the SpikeInterface pipeline of elements used for
@@ -18,6 +18,7 @@ class OperatePipelineView(qw.QGroupBox):
     """
 
     def __init__(self, spike_pipe):
+        """Initialize parent, set object members, construct UI."""
         super().__init__("Operate Pipeline") # Labels group box parent
         self.spike_pipe = spike_pipe
         self._init_ui()
