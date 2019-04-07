@@ -9,7 +9,7 @@ import sys
 import PyQt5.QtWidgets as qw
 import PyQt5.QtGui as qg
 
-from pi_model import SpikePipeline  # The model for this controller
+from pi_model import SpikePipeline
 # from el_factory.py import ElementFactory 
 
 class ConstructPipelineView(qw.QGroupBox):
@@ -21,22 +21,21 @@ class ConstructPipelineView(qw.QGroupBox):
 
     pipe_stages = ["Extraction", "Pre-Processing", "Sorting", "Post-Processing"]
 
-    def __init__(self, spike_pipe):
+    def __init__(self, active_pipe):
         """Initialize parent and member variables, construct UI."""
         super().__init__("Construct Pipeline")
-        self.spike_pipe = spike_pipe
+        self._active_pipe = active_pipe
         self._init_ui()
 
     def cbx_activated(self, index):
-        """Responds to state changes in stage combo box.""""
+        """Responds to state changes in stage combo box."""
         print(self.pipe_stages[index])
 
     def _init_ui(self):
-        """ Builds composite UI consisting of Controllers for adding 
-        and maninpulating active pipeline elements and a View of the 
-        in-construction active pipeline.
+        """Build composite UI for region.
+        
+        consisting of Controllers for adding and maninpulating active pipeline elements and a View of the in-construction active pipeline.
         """
-
         # Lay out controllers and view from top to bottom of group box
         cp_layout = qw.QVBoxLayout()
         self.setLayout(cp_layout)
@@ -48,7 +47,7 @@ class ConstructPipelineView(qw.QGroupBox):
 
         stage_cbx = qw.QComboBox()
         stage_cbx.currentIndexChanged.connect(self.cbx_activated)
-        for stage in self.pipe_stages:Responds to state changes in stage combo box.""""
+        for stage in self.pipe_stages:
             stage_cbx.addItem(stage)
         sel_layout.addWidget(stage_cbx)
         

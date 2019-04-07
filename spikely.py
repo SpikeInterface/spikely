@@ -41,7 +41,7 @@ class SpikelyMainWindow(qw.QMainWindow):
         super().__init__()
 
         # Underlying data structure managed by UI
-        self.active_pipe = SpikePipeline()
+        self._active_pipe = SpikePipeline()
 
         sys.stdout.flush() # forces print() out for debugging
         self._init_ui()
@@ -67,17 +67,16 @@ class SpikelyMainWindow(qw.QMainWindow):
         cp_ce_layout = qw.QHBoxLayout()
         cp_ce_frame.setLayout(cp_ce_layout)
         # Actual widget construction done in View classes
-        cp_ce_layout.addWidget(ConstructPipelineView(self.active_pipe))
-        cp_ce_layout.addWidget(ConfigureElementView(self.active_pipe))
+        cp_ce_layout.addWidget(ConstructPipelineView(self._active_pipe))
+        cp_ce_layout.addWidget(ConfigureElementView(self._active_pipe))
         main_layout.addWidget(cp_ce_frame)
 
         # Lay out Operation view at bottom of main window
-        main_layout.addWidget(OperatePipelineView(self.active_pipe))
+        main_layout.addWidget(OperatePipelineView(self._active_pipe))
 
         main_frame = qw.QFrame()
         main_frame.setLayout(main_layout)
         self.setCentralWidget(main_frame)
-
 
 if __name__ == '__main__':
     app = qw.QApplication(sys.argv)
