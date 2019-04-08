@@ -10,7 +10,7 @@ import PyQt5.QtWidgets as qw
 import PyQt5.QtGui as qg
 
 from pi_model import SpikePipeline
-# from el_factory.py import ElementFactory 
+from el_model import SpikeElement
 
 class ConstructPipelineView(qw.QGroupBox):
     """GroupBox of widgets capable of constructing active pipeline.
@@ -19,17 +19,22 @@ class ConstructPipelineView(qw.QGroupBox):
     of object are triggered by user interaction with sub widgets.
     """
 
-    pipe_stages = ["Extraction", "Pre-Processing", "Sorting", "Post-Processing"]
-
     def __init__(self, active_pipe):
         """Initialize parent and member variables, construct UI."""
         super().__init__("Construct Pipeline")
         self._active_pipe = active_pipe
+        self.ele_cbx = qw.QComboBox()
+        self.ele_cbx.setEditable(False)
         self._init_ui()
 
-    def cbx_activated(self, index):
+    def cbx_index_changed(self, index):
         """Responds to state changes in stage combo box."""
-        print(self.pipe_stages[index])
+        print(SpikePipeline.STAGE_NAMES[index])
+        l = SpikePipeline.get_elements("Extraction")
+        self.ele_cbx.clear()
+        for i in l:
+            self.ele_cbx.addItem(i.get_name(), i)
+
 
     def _init_ui(self):
         """Build composite UI for region.
@@ -46,13 +51,13 @@ class ConstructPipelineView(qw.QGroupBox):
         sel_frame.setLayout(sel_layout)
 
         stage_cbx = qw.QComboBox()
-        stage_cbx.currentIndexChanged.connect(self.cbx_activated)
-        for stage in self.pipe_stages:
+        stage_cbx.currentIndexChanged.connect(self.cbx_index_changed)
+        for stage in SpikePipeline.STAGE_NAMES:
             stage_cbx.addItem(stage)
         sel_layout.addWidget(stage_cbx)
         
-        ele_cbx = qw.QComboBox()
-        sel_layout.addWidget(ele_cbx)
+        # self.ele_cbx = qw.QComboBox()
+        sel_layout.addWidget(self.ele_cbx)
         
         sel_layout.addWidget(qw.QPushButton("Add Element"))
         cp_layout.addWidget(sel_frame)
@@ -66,7 +71,7 @@ class ConstructPipelineView(qw.QGroupBox):
         # self.pipe_view.itemClicked.connect(self.clicked)
         # self.pipe_view.setItemsExpandable(False)
 
-        for stage in self.pipe_stages:
+        for stage in SpikePipeline.STAGE_NAMES:
             an_item = qw.QTreeWidgetItem(self.pipe_view)
             an_item.setText(0, stage + " Stage")
             an_item.setForeground(0,qg.QBrush(qg.QColor("gray")))
