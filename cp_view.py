@@ -23,17 +23,20 @@ class ConstructPipelineView(qw.QGroupBox):
         """Initialize parent and member variables, construct UI."""
         super().__init__("Construct Pipeline")
         self._active_pipe = active_pipe
-        self.ele_cbx = qw.QComboBox()
-        self.ele_cbx.setEditable(False)
+        self._ele_cbx = qw.QComboBox()
+        self._ele_cbx.setEditable(False)
         self._init_ui()
 
-    def cbx_index_changed(self, index):
-        """Responds to state changes in stage combo box."""
-        print(SpikePipeline.STAGE_NAMES[index])
-        l = SpikePipeline.get_elements("Extraction")
-        self.ele_cbx.clear()
-        for i in l:
-            self.ele_cbx.addItem(i.get_name(), i)
+    def _stage_changed(self, index):
+        """Slot for currentIndexChanged signal from stage cbox."""
+        elements = SpikePipeline.get_elements("Extraction")
+        self._ele_cbx.clear()
+        for element in elements:
+            self._ele_cbx.addItem(element.get_name(), element)
+
+    def _add_element(self):
+        """Slot for add button clicked signal"""
+        print(self._ele_cbx.currentData().get_name())
 
 
     def _init_ui(self):
@@ -51,15 +54,18 @@ class ConstructPipelineView(qw.QGroupBox):
         sel_frame.setLayout(sel_layout)
 
         stage_cbx = qw.QComboBox()
-        stage_cbx.currentIndexChanged.connect(self.cbx_index_changed)
+        stage_cbx.currentIndexChanged.connect(self._stage_changed)
         for stage in SpikePipeline.STAGE_NAMES:
             stage_cbx.addItem(stage)
         sel_layout.addWidget(stage_cbx)
         
-        # self.ele_cbx = qw.QComboBox()
-        sel_layout.addWidget(self.ele_cbx)
+        # self._ele_cbx = qw.QComboBox()
+        sel_layout.addWidget(self._ele_cbx)
         
-        sel_layout.addWidget(qw.QPushButton("Add Element"))
+        add_button = qw.QPushButton("Add Element")
+        add_button.setToolTip("Push to add element to pipeline.")
+        add_button.clicked.connect(self._add_element)
+        sel_layout.addWidget(add_button)
         cp_layout.addWidget(sel_frame)
 
         # Display: Hierarchical (Tree) view of in-construction pipeline
@@ -73,7 +79,7 @@ class ConstructPipelineView(qw.QGroupBox):
 
         for stage in SpikePipeline.STAGE_NAMES:
             an_item = qw.QTreeWidgetItem(self.pipe_view)
-            an_item.setText(0, stage + " Stage")
+            an_item.setText(0, stage)
             an_item.setForeground(0,qg.QBrush(qg.QColor("gray")))
             an_item.setExpanded(True)
             # child = qw.QTreeWidgetItem()
