@@ -35,7 +35,7 @@ class ConstructPipelineView(qw.QGroupBox):
             self._ele_cbx.addItem(element.get_name(), element)
 
     def _add_element(self):
-        """Slot for add button clicked signal"""
+        """Slot for add button clicked signal."""
         print(self._ele_cbx.currentData().get_name())
 
 

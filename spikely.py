@@ -1,7 +1,7 @@
 """UI for SpikeInterface extracellular data processing pipelines.
 
-The application allows users to load an extracellular recording, run 
-preprocessing on the recording, run an installed spike sorter, and 
+The application allows users to load an extracellular recording, run
+preprocessing on the recording, run an installed spike sorter, and
 then run postprocessing on the results. All results are saved into a folder.
 
 Loosely based on a hierarchical MVC design pattern, the application is
@@ -11,8 +11,8 @@ divided into modules corresponding to the functional screen regions
 Modules:
     spikely.py - Main application module
     op_view.py - Operate Pipeline UI region
-    cp_view.py - Construct Pipeline UI region 
-    ce_view.py - Configure Element UI region 
+    cp_view.py - Construct Pipeline UI region
+    ce_view.py - Configure Element UI region
     pi_model.py - Pipeline Model: multi-stage element execution list
     el_model.py - Element Model: SpikeInterface component wrappers
     qu_model.py - Queue Model: pipeline execution list
@@ -30,6 +30,7 @@ from ce_view import ConfigureElementView
 
 __version__ = "0.1.5"
 
+
 class SpikelyMainWindow(qw.QMainWindow):
     """Main window of application.
 
@@ -43,9 +44,8 @@ class SpikelyMainWindow(qw.QMainWindow):
         # Underlying data structure managed by UI
         self._active_pipe = SpikePipeline()
 
-        sys.stdout.flush() # forces print() out for debugging
+        sys.stdout.flush()  # forces print() out for debugging
         self._init_ui()
-
 
     def _init_ui(self):
 
@@ -55,10 +55,10 @@ class SpikelyMainWindow(qw.QMainWindow):
         self.setWindowIcon(qg.QIcon("spikely.png"))
         self.statusBar().addPermanentWidget(
             qw.QLabel("Version " + __version__))
-        
+
         # Lay out application views in main window from top to bottom
-        main_layout = qw.QVBoxLayout()  
-        main_layout.addStretch(1) # Pushes app window widgents down
+        main_layout = qw.QVBoxLayout()
+        main_layout.addStretch(1)  # Pushes app window widgents down
 
         """ Lay out Construction Pipeline (ce) and Configure Element (ce)
         views in a frame at top of main window from left to right
