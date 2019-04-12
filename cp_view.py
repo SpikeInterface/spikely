@@ -12,6 +12,7 @@ import PyQt5.QtCore as qc
 
 from pi_model import SpikePipeline
 from el_model import SpikeElement
+import spikely_constants as sc
 
 
 class ConstructPipelineView(qw.QGroupBox):
@@ -31,14 +32,14 @@ class ConstructPipelineView(qw.QGroupBox):
 
     def _stage_changed(self, index):
         """Slot for currentIndexChanged signal from stage cbox."""
-        elements = SpikePipeline.get_elements("Extraction")
+        # elements = SpikeElement.avail_elements(index)
         self._ele_cbx.clear()
-        for element in elements:
-            self._ele_cbx.addItem(element.get_name(), element)
+        for element in SpikeElement.avail_elements(index):
+            self._ele_cbx.addItem(element.name(), element)
 
     def _add_element(self):
         """Slot for add button clicked signal."""
-        print(self._ele_cbx.currentData().get_name())
+        print(self._ele_cbx.currentData().name())
 
     def _init_ui(self):
         """Build composite UI for region.
@@ -57,7 +58,7 @@ class ConstructPipelineView(qw.QGroupBox):
 
         stage_cbx = qw.QComboBox()
         stage_cbx.currentIndexChanged.connect(self._stage_changed)
-        for stage in SpikePipeline.STAGE_NAMES:
+        for stage in sc.STAGE_NAMES:
             stage_cbx.addItem(stage)
         sel_layout.addWidget(stage_cbx)
 
@@ -82,16 +83,16 @@ class ConstructPipelineView(qw.QGroupBox):
 
         parent_item = model.invisibleRootItem()
 
-        item = qg.QStandardItem("Extraction")
+        item = qg.QStandardItem(sc.STAGE_NAMES[sc.EXTR])
         parent_item.appendRow(item)
 
-        item = qg.QStandardItem("Pre-Processing")
+        item = qg.QStandardItem(sc.STAGE_NAMES[sc.PREP])
         parent_item.appendRow(item)
 
-        item = qg.QStandardItem("Sorting")
+        item = qg.QStandardItem(sc.STAGE_NAMES[sc.SORT])
         parent_item.appendRow(item)
 
-        item = qg.QStandardItem("Post-Processing")
+        item = qg.QStandardItem(sc.STAGE_NAMES[sc.POST])
         parent_item.appendRow(item)
 
         self.pipe_view.setModel(model)

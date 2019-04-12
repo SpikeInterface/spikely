@@ -10,6 +10,7 @@ import sys
 import PyQt5.QtWidgets as qw
 from pi_model import SpikePipeline  # The model for this controller
 
+
 class OperatePipelineView(qw.QGroupBox):
     """GroupBox of widgets capable of controlling active pipeline.
 
@@ -19,13 +20,11 @@ class OperatePipelineView(qw.QGroupBox):
 
     def __init__(self, spike_pipe):
         """Initialize parent, set object members, construct UI."""
-        super().__init__("Operate Pipeline") # Labels group box parent
+        super().__init__("Operate Pipeline")  # Labels group box parent
         self.spike_pipe = spike_pipe
         self._init_ui()
 
-
-    def _init_ui(self):   
-        
+    def _init_ui(self):
         hbox = qw.QHBoxLayout()
         self.setLayout(hbox)
 
@@ -39,5 +38,5 @@ class OperatePipelineView(qw.QGroupBox):
         hbox.addWidget(clear_btn)
 
         queue_btn = qw.QPushButton("Queue")
-        queue_btn.clicked.connect(lambda : print("Queue not implemented."))
+        queue_btn.clicked.connect(lambda: print("Queue not implemented."))
         hbox.addWidget(queue_btn)

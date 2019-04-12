@@ -9,7 +9,8 @@ import PyQt5.QtWidgets as qw
 import PyQt5.QtGui as qg
 
 from pi_model import SpikePipeline  # The model for this controller
-# from el_factory.py import ElementFactory 
+# from el_factory.py import ElementFactory
+
 
 class ConfigureElementView(qw.QGroupBox):
     """GroupBox of widgets capable of constructing active pipeline.
@@ -43,6 +44,7 @@ class ConfigureElementView(qw.QGroupBox):
         cfg_table.setColumnWidth(0, 200)
         cfg_table.setColumnWidth(1, 200)
         cfg_table.verticalHeader().hide()
-        cfg_table.horizontalHeader().setSectionResizeMode(1, qw.QHeaderView.Stretch)
+        cfg_table.horizontalHeader().setSectionResizeMode(
+            1, qw.QHeaderView.Stretch)
 
         ce_layout.addWidget(cfg_table)
