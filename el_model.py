@@ -1,9 +1,11 @@
 """Class definition of SpikeElement.
 
-Implements the SpikeInterface elements responsible extracellular data processing.
+Implements the SpikeInterface elements responsible extracellular data
+processing.
 """
 
 # from pi_model import SpikePipeline
+
 
 class SpikeElement:
     """TBD."""
@@ -12,7 +14,7 @@ class SpikeElement:
         """TBD."""
         self.stage = None
         self.name = None
-    
+
     def __init__(self, stage, name):
         """TBD."""
         self.stage = stage
@@ -25,7 +27,7 @@ class SpikeElement:
     def get_name(self):
         """TBD."""
         return self.name
-    
+
     def set_stage(self, stage):
         """TBD."""
         self.stage = stage

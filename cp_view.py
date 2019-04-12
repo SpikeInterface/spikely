@@ -8,9 +8,11 @@ within the active pipeline.
 import sys
 import PyQt5.QtWidgets as qw
 import PyQt5.QtGui as qg
+import PyQt5.QtCore as qc
 
 from pi_model import SpikePipeline
 from el_model import SpikeElement
+
 
 class ConstructPipelineView(qw.QGroupBox):
     """GroupBox of widgets capable of constructing active pipeline.
@@ -38,11 +40,11 @@ class ConstructPipelineView(qw.QGroupBox):
         """Slot for add button clicked signal."""
         print(self._ele_cbx.currentData().get_name())
 
-
     def _init_ui(self):
         """Build composite UI for region.
-        
-        consisting of Controllers for adding and maninpulating active pipeline elements and a View of the in-construction active pipeline.
+
+        Region consists of Controllers for adding and maninpulating active
+        pipeline elements and a View of the in-construction active pipeline.
         """
         # Lay out controllers and view from top to bottom of group box
         cp_layout = qw.QVBoxLayout()
@@ -58,10 +60,10 @@ class ConstructPipelineView(qw.QGroupBox):
         for stage in SpikePipeline.STAGE_NAMES:
             stage_cbx.addItem(stage)
         sel_layout.addWidget(stage_cbx)
-        
+
         # self._ele_cbx = qw.QComboBox()
         sel_layout.addWidget(self._ele_cbx)
-        
+
         add_button = qw.QPushButton("Add Element")
         add_button.setToolTip("Push to add element to pipeline.")
         add_button.clicked.connect(self._add_element)
@@ -70,10 +72,42 @@ class ConstructPipelineView(qw.QGroupBox):
 
         # Display: Hierarchical (Tree) view of in-construction pipeline
 
+        self.pipe_view = qw.QTreeView(self)
+        # self.pipe_view.header().hide()
+        self.pipe_view.setHeaderHidden(True)
+
+        model = qg.QStandardItemModel()
+        # model = qg.QStandardItemModel(0, 1)
+        # model.setHeaderData(0, qc.Qt.Horizontal, "Pipeline Contents")
+
+        parent_item = model.invisibleRootItem()
+
+        item = qg.QStandardItem("Extraction")
+        parent_item.appendRow(item)
+
+        item = qg.QStandardItem("Pre-Processing")
+        parent_item.appendRow(item)
+
+        item = qg.QStandardItem("Sorting")
+        parent_item.appendRow(item)
+
+        item = qg.QStandardItem("Post-Processing")
+        parent_item.appendRow(item)
+
+        self.pipe_view.setModel(model)
+
+        cp_layout.addWidget(self.pipe_view)
+
+        """This funky bit of code is an example of how a class method
+        with a specific signature can be bound to an instance of that class
+        using a type index, in this case QModelIndex"""
+        # treeView.clicked[QModelIndex].connect(self.clicked)
+
+        """
         self.pipe_view = qw.QTreeWidget(self)
         self.pipe_view.setColumnCount(1)
         self.pipe_view.header().hide()
-        
+
         # self.pipe_view.itemClicked.connect(self.clicked)
         # self.pipe_view.setItemsExpandable(False)
 
@@ -87,6 +121,7 @@ class ConstructPipelineView(qw.QGroupBox):
             # an_item.addChild(child)
 
         cp_layout.addWidget(self.pipe_view)
+        """
 
         # Manipulation: Control buttons ordered lef to right
         man_layout = qw.QHBoxLayout()
@@ -94,8 +129,8 @@ class ConstructPipelineView(qw.QGroupBox):
         man_frame.setEnabled(False)
         man_frame.setLayout(man_layout)
 
-        for lbl in ["Move Up", "Delete", "Move Down"] :
+        for lbl in ["Move Up", "Delete", "Move Down"]:
             btn = qw.QPushButton(lbl)
             man_layout.addWidget(btn)
-        
+
         cp_layout.addWidget(man_frame)

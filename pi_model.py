@@ -5,11 +5,12 @@ extracellular data processing.
 """
 
 import PyQt5.QtCore as qc
+import PyQt5.QtGui as qg
 
 from el_model import SpikeElement
 
 
-class SpikePipeline(qc.QAbstractItemModel):
+class SpikePipeline():
     """TBD."""
 
     STAGE_NAMES = ["Extraction", "Pre-Processing", "Sorting",
@@ -22,38 +23,18 @@ class SpikePipeline(qc.QAbstractItemModel):
         if len(cls.element_dict) == 0:
             cls._fill_element_dict()
         return cls.element_dict[stage_name]
-        
+
     @classmethod
     def _fill_element_dict(cls):
         """TBD."""
         cls.element_dict[cls.STAGE_NAMES[0]] = [SpikeElement(
-            stage=cls.STAGE_NAMES[0], name="Sample Extractor"), 
+            stage=cls.STAGE_NAMES[0], name="Sample Extractor"),
             SpikeElement("Extraction", "Cole Extractor")]
-        
+
     def __init__(self):
         """TBD."""
         super().__init__()
-
-    def index(row, col, parent):
-        """TBD."""
-        pass
-
-    def parent(child):
-        """TBD."""
-        pass
-    
-    def rowCount():
-        """TBD."""
-        pass
-
-    def columnCount():
-        """TBD."""
-        pass
-
-    def data():
-        """TBD."""
-        pass
-
+        self.model = qg.QStandardItemModel()
 
     def run(self):
         """TBD."""
@@ -64,3 +45,6 @@ class SpikePipeline(qc.QAbstractItemModel):
         """TBD."""
         print("Pipeline Cleared")
         pass
+
+    def get_model():
+        return self.model
