@@ -68,3 +68,9 @@ class SpikeElement:
     def stage_id(self):
         """TBD."""
         return self._stage_id
+
+    def __repr__(self):
+        return self._name
+
+    def __str__(self):
+        return self._name

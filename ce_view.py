@@ -38,6 +38,7 @@ class ConfigureElementView(qw.QGroupBox):
         self.setLayout(ce_layout)
 
         cfg_table = qw.QTableWidget()
+        # cfg_table.setSelectionBehavior(qw.QAbstractItemView.SelectRows)
         cfg_table.setRowCount(10)
         cfg_table.setColumnCount(2)
         cfg_table.setHorizontalHeaderLabels(("Property", "Value"))

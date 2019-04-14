@@ -39,7 +39,8 @@ class ConstructPipelineView(qw.QGroupBox):
 
     def _add_element(self):
         """Slot for add button clicked signal."""
-        print(self._ele_cbx.currentData().name())
+        # print(self._ele_cbx.currentData().name())
+        self._active_pipe.add_element(self._ele_cbx.currentData())
 
     def _init_ui(self):
         """Build composite UI for region.
@@ -73,30 +74,8 @@ class ConstructPipelineView(qw.QGroupBox):
 
         # Display: Hierarchical (Tree) view of in-construction pipeline
 
-        self.pipe_view = qw.QTreeView(self)
-        # self.pipe_view.header().hide()
-        self.pipe_view.setHeaderHidden(True)
-
-        model = qg.QStandardItemModel()
-        # model = qg.QStandardItemModel(0, 1)
-        # model.setHeaderData(0, qc.Qt.Horizontal, "Pipeline Contents")
-
-        parent_item = model.invisibleRootItem()
-
-        item = qg.QStandardItem(sc.STAGE_NAMES[sc.EXTR])
-        parent_item.appendRow(item)
-
-        item = qg.QStandardItem(sc.STAGE_NAMES[sc.PREP])
-        parent_item.appendRow(item)
-
-        item = qg.QStandardItem(sc.STAGE_NAMES[sc.SORT])
-        parent_item.appendRow(item)
-
-        item = qg.QStandardItem(sc.STAGE_NAMES[sc.POST])
-        parent_item.appendRow(item)
-
-        self.pipe_view.setModel(model)
-
+        self.pipe_view = qw.QListView(self)
+        self.pipe_view.setModel(self._active_pipe)
         cp_layout.addWidget(self.pipe_view)
 
         """This funky bit of code is an example of how a class method
@@ -104,30 +83,10 @@ class ConstructPipelineView(qw.QGroupBox):
         using a type index, in this case QModelIndex"""
         # treeView.clicked[QModelIndex].connect(self.clicked)
 
-        """
-        self.pipe_view = qw.QTreeWidget(self)
-        self.pipe_view.setColumnCount(1)
-        self.pipe_view.header().hide()
-
-        # self.pipe_view.itemClicked.connect(self.clicked)
-        # self.pipe_view.setItemsExpandable(False)
-
-        for stage in SpikePipeline.STAGE_NAMES:
-            an_item = qw.QTreeWidgetItem(self.pipe_view)
-            an_item.setText(0, stage)
-            an_item.setForeground(0,qg.QBrush(qg.QColor("gray")))
-            an_item.setExpanded(True)
-            # child = qw.QTreeWidgetItem()
-            # child.setText(0, "Sample Element")
-            # an_item.addChild(child)
-
-        cp_layout.addWidget(self.pipe_view)
-        """
-
         # Manipulation: Control buttons ordered lef to right
         man_layout = qw.QHBoxLayout()
         man_frame = qw.QFrame()
-        man_frame.setEnabled(False)
+        # man_frame.setEnabled(False)
         man_frame.setLayout(man_layout)
 
         for lbl in ["Move Up", "Delete", "Move Down"]:
