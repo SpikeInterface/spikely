@@ -48,8 +48,16 @@ class SpikePipeline(qc.QAbstractListModel):
 
     def clear(self):
         """TBD."""
+        self.beginResetModel()
         self._ele_list.clear()
-        self.dataChanged.emit(qc.QModelIndex(), qc.QModelIndex())
+        # self.dataChanged.emit(qc.QModelIndex(), qc.QModelIndex())
+        # self.modelReset.emit()
+        self.endResetModel()
+
+    def delete(self, index):
+        self.beginResetModel()
+        self._ele_list.pop(index)
+        self.endResetModel()
 
     def add_element(self, new_ele):
         i = 0

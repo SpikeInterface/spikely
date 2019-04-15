@@ -1,4 +1,4 @@
-"""Creates an MVC view-control for constructing the active pipeline model.
+"""The view-control widget for constructing the active pipeline.
 
 The Construct Pipeline view/control consists of widgets responsible for
 constructing the active pipeline by inserting, deleting, or moving elements
@@ -16,7 +16,7 @@ import spikely_constants as sc
 
 
 class ConstructPipelineView(qw.QGroupBox):
-    """GroupBox of widgets capable of constructing active pipeline.
+    """A QGroupBox of widgets capable of constructing active pipeline.
 
     No public methods other than constructor.  All other activites
     of object are triggered by user interaction with sub widgets.
@@ -25,22 +25,39 @@ class ConstructPipelineView(qw.QGroupBox):
     def __init__(self, active_pipe):
         """Initialize parent and member variables, construct UI."""
         super().__init__("Construct Pipeline")
+
+        # Like the cheese, the active pipeline stands alone
         self._active_pipe = active_pipe
-        self._ele_cbx = qw.QComboBox()
-        self._ele_cbx.setEditable(False)
+
+        # Need this reference to retrieve elements from combo box
+        self._ele_cbx = qw.QComboBox(self)
+
+        self._pipe_view = qw.QListView(self)
+
         self._init_ui()
 
-    def _stage_changed(self, index):
+    def _stage_cbx_changed(self, stage_id):
         """Slot for currentIndexChanged signal from stage cbox."""
-        # elements = SpikeElement.avail_elements(index)
         self._ele_cbx.clear()
-        for element in SpikeElement.avail_elements(index):
+        for element in SpikeElement.avail_elements(stage_id):
             self._ele_cbx.addItem(element.name(), element)
 
-    def _add_element(self):
+    def _add_element_clicked(self):
         """Slot for add button clicked signal."""
-        # print(self._ele_cbx.currentData().name())
         self._active_pipe.add_element(self._ele_cbx.currentData())
+
+    def _delete_clicked(self):
+        sel_mdl = self._pipe_view.selectionModel()
+        if not sel_mdl.hasSelection():
+            msg_box = qw.QMessageBox(self.parent())
+            msg_box.setIcon(qw.QMessageBox.Information)
+            msg_box.setText("Nothing to delete.")
+            # msg_box.setInformativeText("")
+            msg_box.setStandardButtons(qw.QMessageBox.Ok)
+            msg_box.exec()
+        else:
+            index = sel_mdl.selectedIndexes()[0].row()
+            self._active_pipe.delete(index)
 
     def _init_ui(self):
         """Build composite UI for region.
@@ -48,7 +65,7 @@ class ConstructPipelineView(qw.QGroupBox):
         Region consists of Controllers for adding and maninpulating active
         pipeline elements and a View of the in-construction active pipeline.
         """
-        # Lay out controllers and view from top to bottom of group box
+        # Lay out view from top to bottom of group box
         cp_layout = qw.QVBoxLayout()
         self.setLayout(cp_layout)
 
@@ -58,7 +75,7 @@ class ConstructPipelineView(qw.QGroupBox):
         sel_frame.setLayout(sel_layout)
 
         stage_cbx = qw.QComboBox()
-        stage_cbx.currentIndexChanged.connect(self._stage_changed)
+        stage_cbx.currentIndexChanged.connect(self._stage_cbx_changed)
         for stage in sc.STAGE_NAMES:
             stage_cbx.addItem(stage)
         sel_layout.addWidget(stage_cbx)
@@ -68,29 +85,37 @@ class ConstructPipelineView(qw.QGroupBox):
 
         add_button = qw.QPushButton("Add Element")
         add_button.setToolTip("Push to add element to pipeline.")
-        add_button.clicked.connect(self._add_element)
+        add_button.clicked.connect(self._add_element_clicked)
         sel_layout.addWidget(add_button)
         cp_layout.addWidget(sel_frame)
 
-        # Display: Hierarchical (Tree) view of in-construction pipeline
-
-        self.pipe_view = qw.QListView(self)
-        self.pipe_view.setModel(self._active_pipe)
-        cp_layout.addWidget(self.pipe_view)
+        # View for pipeline construction - interacts w/ pipeline model
+        # self.pipe_view = qw.QListView(self)
+        self._pipe_view.setModel(self._active_pipe)  # There be dragons here
+        cp_layout.addWidget(self._pipe_view)
 
         """This funky bit of code is an example of how a class method
         with a specific signature can be bound to an instance of that class
         using a type index, in this case QModelIndex"""
         # treeView.clicked[QModelIndex].connect(self.clicked)
 
-        # Manipulation: Control buttons ordered lef to right
+        # Manipulation: Control buttons ordered left to right
         man_layout = qw.QHBoxLayout()
         man_frame = qw.QFrame()
         # man_frame.setEnabled(False)
+
         man_frame.setLayout(man_layout)
 
-        for lbl in ["Move Up", "Delete", "Move Down"]:
-            btn = qw.QPushButton(lbl)
-            man_layout.addWidget(btn)
+        mu_btn = qw.QPushButton("Move Up")
+        # mu_btn.clicked.connect(self._delete_clicked)
+        man_layout.addWidget(mu_btn)
+
+        de_btn = qw.QPushButton("Delete")
+        de_btn.clicked.connect(self._delete_clicked)
+        man_layout.addWidget(de_btn)
+
+        md_btn = qw.QPushButton("Move Down")
+        # md_btn.clicked.connect(self._delete_clicked)
+        man_layout.addWidget(md_btn)
 
         cp_layout.addWidget(man_frame)
