@@ -16,7 +16,7 @@ import spikely_constants as sc
 
 
 class ConstructPipelineView(qw.QGroupBox):
-    """A QGroupBox of widgets capable of constructing active pipeline.
+    """A QGroupBox of widgets enabling user to assemble the pipeline.
 
     No public methods other than constructor.  All other activites
     of object are triggered by user interaction with sub widgets.
@@ -37,13 +37,13 @@ class ConstructPipelineView(qw.QGroupBox):
         self._init_ui()
 
     def _stage_cbx_changed(self, stage_id):
-        """Slot for currentIndexChanged signal from stage cbox."""
+        """Receiver for currentIndexChanged signal from stage cbox."""
         self._ele_cbx.clear()
         for element in SpikeElement.avail_elements(stage_id):
             self._ele_cbx.addItem(element.name(), element)
 
     def _add_element_clicked(self):
-        """Slot for add button clicked signal."""
+        """Receiver for Add Element button clicked signal."""
         self._active_pipe.add_element(self._ele_cbx.currentData())
 
     def _delete_clicked(self):
@@ -52,12 +52,26 @@ class ConstructPipelineView(qw.QGroupBox):
             msg_box = qw.QMessageBox(self.parent())
             msg_box.setIcon(qw.QMessageBox.Information)
             msg_box.setText("Nothing to delete.")
-            # msg_box.setInformativeText("")
+            msg_box.setInformativeText("But, you already knew that, right?")
             msg_box.setStandardButtons(qw.QMessageBox.Ok)
             msg_box.exec()
         else:
             index = sel_mdl.selectedIndexes()[0].row()
             self._active_pipe.delete(index)
+
+    def _move_up_clicked(self):
+        sel_mdl = self._pipe_view.selectionModel()
+        if not sel_mdl.hasSelection():
+            msg_box = qw.QMessageBox(self.parent())
+            msg_box.setIcon(qw.QMessageBox.Information)
+            msg_box.setText("Nothing to move.")
+            msg_box.setInformativeText("Wouldn't your time be better"
+                                       " spent doing something else?")
+            msg_box.setStandardButtons(qw.QMessageBox.Ok)
+            msg_box.exec()
+        else:
+            index = sel_mdl.selectedIndexes()[0].row()
+            self._active_pipe.move_up(index)
 
     def _init_ui(self):
         """Build composite UI for region.
@@ -107,7 +121,7 @@ class ConstructPipelineView(qw.QGroupBox):
         man_frame.setLayout(man_layout)
 
         mu_btn = qw.QPushButton("Move Up")
-        # mu_btn.clicked.connect(self._delete_clicked)
+        mu_btn.clicked.connect(self._move_up_clicked)
         man_layout.addWidget(mu_btn)
 
         de_btn = qw.QPushButton("Delete")

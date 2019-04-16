@@ -47,7 +47,7 @@ class SpikelyMainWindow(qw.QMainWindow):
         self._init_ui()
 
     def _init_ui(self):
-        """Responsible for constructing the UI from delegated views"""
+        """Responsible for constructing the UI from delegated views."""
 
         # Application main window setup
         self.setWindowTitle("Spikely")
