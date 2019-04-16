@@ -26,6 +26,8 @@ from pi_model import SpikePipeline
 from cp_view import ConstructPipelineView
 from ce_view import ConfigureElementView
 
+import spikely_constants as sc
+
 __version__ = "0.2.0"
 
 
@@ -81,6 +83,6 @@ class SpikelyMainWindow(qw.QMainWindow):
 
 if __name__ == '__main__':
     app = qw.QApplication(sys.argv)
-    app_win = SpikelyMainWindow()
-    app_win.show()
+    win = SpikelyMainWindow()
+    win.show()
     sys.exit(app.exec_())

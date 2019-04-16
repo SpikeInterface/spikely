@@ -20,10 +20,10 @@ class SpikePipeline(qc.QAbstractListModel):
         super().__init__()
         self._ele_list = []
         self._decorations = [
-            qg.QIcon("bin/EXTR.png"),
-            qg.QIcon("bin/PREP.png"),
-            qg.QIcon("bin/SORT.png"),
-            qg.QIcon("bin/POST.png")
+            qg.QIcon("EXTR.png"),
+            qg.QIcon("PREP.png"),
+            qg.QIcon("SORT.png"),
+            qg.QIcon("POST.png")
         ]
 
     def rowCount(self, parent):
@@ -64,19 +64,9 @@ class SpikePipeline(qc.QAbstractListModel):
         while (i < len(self._ele_list) and
                 new_ele.stage_id() >= self._ele_list[i].stage_id()):
             i += 1
+
         self._ele_list.insert(i, new_ele)
         self.dataChanged.emit(qc.QModelIndex(), qc.QModelIndex())
 
-    def move_up(self, i):
-        l = self._ele_list
-        if i > 0 and l[i].stage_id() == l[i-1].stage_id():
-            self.beginResetModel()
-            l[i-1], l[i] = l[i], l[i-1]
-            self.endResetModel()
-
-    def move_down(self, i):
-            l = self._ele_list
-            if i < (len(l) - 1) and l[i].stage_id() == l[i+1].stage_id():
-                self.beginResetModel()
-                l[i+1], l[i] = l[i], l[i+1]
-                self.endResetModel()
+    def move_up(self, index):
+        pass

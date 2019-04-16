@@ -115,12 +115,8 @@ class ConstructPipelineView(qw.QGroupBox):
     def _delete_clicked(self):
         sel_mdl = self._pipe_view.selectionModel()
         if not sel_mdl.hasSelection():
-            msg_box = qw.QMessageBox(self.parent())
-            msg_box.setIcon(qw.QMessageBox.Information)
-            msg_box.setText("Nothing to delete.")
-            msg_box.setInformativeText("But, you already knew that, right?")
-            msg_box.setStandardButtons(qw.QMessageBox.Ok)
-            msg_box.exec()
+            sc.spikely_msg_box(self.parent(), "Nothing to delete.",
+                               "But, you already knew that, right?")
         else:
             index = sel_mdl.selectedIndexes()[0].row()
             self._active_pipe.delete(index)
@@ -128,27 +124,17 @@ class ConstructPipelineView(qw.QGroupBox):
     def _move_up_clicked(self):
         sel_mdl = self._pipe_view.selectionModel()
         if not sel_mdl.hasSelection():
-            msg_box = qw.QMessageBox(self.parent())
-            msg_box.setIcon(qw.QMessageBox.Information)
-            msg_box.setText("Nothing to move.")
-            msg_box.setInformativeText("Wouldn't your time be better"
-                                       " spent doing something else?")
-            msg_box.setStandardButtons(qw.QMessageBox.Ok)
-            msg_box.exec()
+            sc.spikely_msg_box(self.parent(), "Nothing to move up.",
+                               "But, you already knew that, right?")
         else:
             index = sel_mdl.selectedIndexes()[0].row()
             self._active_pipe.move_up(index)
 
     def _move_down_clicked(self):
-            sel_mdl = self._pipe_view.selectionModel()
-            if not sel_mdl.hasSelection():
-                msg_box = qw.QMessageBox(self.parent())
-                msg_box.setIcon(qw.QMessageBox.Information)
-                msg_box.setText("Nothing to move.")
-                msg_box.setInformativeText("Wouldn't your time be better"
-                                           " spent doing something else?")
-                msg_box.setStandardButtons(qw.QMessageBox.Ok)
-                msg_box.exec()
-            else:
-                index = sel_mdl.selectedIndexes()[0].row()
-                self._active_pipe.move_down(index)
+        sel_mdl = self._pipe_view.selectionModel()
+        if not sel_mdl.hasSelection():
+            sc.spikely_msg_box(self.parent(), "Nothing to move down.",
+                               "But, you already knew that, right?")
+        else:
+            index = sel_mdl.selectedIndexes()[0].row()
+            self._active_pipe.move_down(index)
