@@ -52,7 +52,7 @@ class SpikelyMainWindow(qw.QMainWindow):
         # Application main window setup
         self.setWindowTitle("Spikely")
         self.setGeometry(100, 100, 900, 400)
-        self.setWindowIcon(qg.QIcon("spikely.png"))
+        self.setWindowIcon(qg.QIcon("bin/spikely.png"))
         self.statusBar().addPermanentWidget(
             qw.QLabel("Version " + __version__))
 
