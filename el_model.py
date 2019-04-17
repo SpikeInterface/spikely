@@ -23,25 +23,25 @@ class SpikeElement:
     def _fill_avail_elements(cls):
         """TBD."""
         cls._avail_elements.append([
-            SpikeElement(sc.EXTR, "Extractor A"),
-            SpikeElement(sc.EXTR, "Extractor B"),
-            SpikeElement(sc.EXTR, "Extractor C"),
-            SpikeElement(sc.EXTR, "Extractor D")])
+            SpikeElement(sc.EXTRACT, "Extractor A"),
+            SpikeElement(sc.EXTRACT, "Extractor B"),
+            SpikeElement(sc.EXTRACT, "Extractor C"),
+            SpikeElement(sc.EXTRACT, "Extractor D")])
         cls._avail_elements.append([
-            SpikeElement(sc.PREP, "Pre-Processor A"),
-            SpikeElement(sc.PREP, "Pre-Processor B"),
-            SpikeElement(sc.PREP, "Pre-Processor C"),
-            SpikeElement(sc.PREP, "Pre-Processor D")])
+            SpikeElement(sc.PREPROC, "Pre-Processor A"),
+            SpikeElement(sc.PREPROC, "Pre-Processor B"),
+            SpikeElement(sc.PREPROC, "Pre-Processor C"),
+            SpikeElement(sc.PREPROC, "Pre-Processor D")])
         cls._avail_elements.append([
-            SpikeElement(sc.SORT, "Sorter A"),
-            SpikeElement(sc.SORT, "Sorter B"),
-            SpikeElement(sc.SORT, "Sorter C"),
-            SpikeElement(sc.SORT, "Sorter D")])
+            SpikeElement(sc.SORTING, "Sorter A"),
+            SpikeElement(sc.SORTING, "Sorter B"),
+            SpikeElement(sc.SORTING, "Sorter C"),
+            SpikeElement(sc.SORTING, "Sorter D")])
         cls._avail_elements.append([
-            SpikeElement(sc.POST, "Post-Processor A"),
-            SpikeElement(sc.POST, "Post-Processor B"),
-            SpikeElement(sc.POST, "Post-Processor C"),
-            SpikeElement(sc.POST, "Post-Processor D")])
+            SpikeElement(sc.POSTPROC, "Post-Processor A"),
+            SpikeElement(sc.POSTPROC, "Post-Processor B"),
+            SpikeElement(sc.POSTPROC, "Post-Processor C"),
+            SpikeElement(sc.POSTPROC, "Post-Processor D")])
 
     def __init__(self):
         """TBD."""

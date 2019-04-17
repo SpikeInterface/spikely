@@ -1,4 +1,4 @@
-"""Initializes constants for use within Spikely
+"""Constants and utilities used by other spikely modules.
 """
 
 import PyQt5.QtWidgets as qw
@@ -6,24 +6,20 @@ import PyQt5.QtWidgets as qw
 
 _main_window = None
 
-# Stage ID constants
-EXTR, PREP, SORT, POST = range(4)
+# Numeric constants representing pipeline stages
+EXTRACT, PREPROC, SORTING, POSTPROC = range(4)
 
-# Stage name constants
-STAGE_NAMES = [
-    "Extraction",
-    "Pre-Processing",
-    "Sorting",
-    "Post-Processing"
-]
+# User friendly names for pipeline stages
+STAGE_NAMES = ["Extraction", "Pre-Processing", "Sorting",
+               "Post-Processing"]
 
 
-def spikely_msg_box(win, pri_text="The nicest thing about the rain is "
-                    "that it always stops.", sec_text="Eventually."):
+def spikely_msg_box(win, text="The nicest thing about the rain is "
+                    "that it always stops.", informative_text="Eventually."):
     msg_box = qw.QMessageBox(win)
-    msg_box.setIcon(qw.QMessageBox.Warning)
-    msg_box.setWindowTitle("Spikely")
-    msg_box.setText(pri_text)
-    msg_box.setInformativeText(sec_text)
+    msg_box.setIcon(qw.QMessageBox.Information)
+    msg_box.setWindowTitle("Spikely Message")
+    msg_box.setText(text)
+    msg_box.setInformativeText(informative_text)
     msg_box.setStandardButtons(qw.QMessageBox.Ok)
     msg_box.exec()
