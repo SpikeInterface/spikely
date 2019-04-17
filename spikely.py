@@ -26,7 +26,7 @@ from pi_model import SpikePipeline
 from cp_view import ConstructPipelineView
 from ce_view import ConfigureElementView
 
-import spikely_constants as sc
+import spikely_core as sc
 
 __version__ = "0.2.0"
 

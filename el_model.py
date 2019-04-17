@@ -4,7 +4,7 @@ Implements the SpikeInterface elements responsible extracellular data
 processing.
 """
 
-import spikely_constants as sc
+import spikely_core as sc
 
 
 class SpikeElement:

@@ -12,7 +12,7 @@ import PyQt5.QtCore as qc
 
 from pi_model import SpikePipeline
 from el_model import SpikeElement
-import spikely_constants as sc
+import spikely_core as sc
 
 
 class ConstructPipelineView(qw.QGroupBox):

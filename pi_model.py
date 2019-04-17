@@ -8,7 +8,7 @@ import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
 
-import spikely_constants as sc
+import spikely_core as sc
 from el_model import SpikeElement
 
 
@@ -20,10 +20,10 @@ class SpikePipeline(qc.QAbstractListModel):
         super().__init__()
         self._ele_list = []
         self._decorations = [
-            qg.QIcon("EXTR.png"),
-            qg.QIcon("PREP.png"),
-            qg.QIcon("SORT.png"),
-            qg.QIcon("POST.png")
+            qg.QIcon("bin/EXTR.png"),
+            qg.QIcon("bin/PREP.png"),
+            qg.QIcon("bin/SORT.png"),
+            qg.QIcon("bin/POST.png")
         ]
 
     def rowCount(self, parent):
