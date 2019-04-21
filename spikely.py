@@ -22,11 +22,10 @@ import PyQt5.QtWidgets as qw
 import PyQt5.QtGui as qg
 
 from op_view import OperatePipelineView
-from pi_model import SpikePipeline
 from cp_view import ConstructPipelineView
 from ce_view import ConfigureElementView
 
-import spikely_core as sc
+from pi_model import SpikePipeline
 
 __version__ = "0.2.0"
 
@@ -53,7 +52,7 @@ class SpikelyMainWindow(qw.QMainWindow):
 
         # Application main window setup
         self.setWindowTitle("Spikely")
-        self.setGeometry(100, 100, 900, 400)
+        self.setGeometry(100, 100, 1024, 384)
         self.setWindowIcon(qg.QIcon("bin/spikely.png"))
         self.statusBar().addPermanentWidget(
             qw.QLabel("Version " + __version__))
@@ -65,14 +64,14 @@ class SpikelyMainWindow(qw.QMainWindow):
         """ Lay out Construction Pipeline (cp) and Configure Element (ce)
         views in a frame at top of main window from left to right
         """
-        cp_ce_frame = qw.QFrame()
-        cp_ce_layout = qw.QHBoxLayout()
-        cp_ce_frame.setLayout(cp_ce_layout)
+        cp_ce_splitter = qw.QSplitter()
+        cp_ce_splitter.setChildrenCollapsible(False)
 
         # Actual widget construction done in View classes
-        cp_ce_layout.addWidget(ConstructPipelineView(self._active_pipe))
-        cp_ce_layout.addWidget(ConfigureElementView(self._active_pipe))
-        main_layout.addWidget(cp_ce_frame)
+        cp_ce_splitter.addWidget(ConstructPipelineView(self._active_pipe))
+        cp_ce_splitter.addWidget(ConfigureElementView(self._active_pipe))
+        cp_ce_splitter.setSizes([256, 768])
+        main_layout.addWidget(cp_ce_splitter)
 
         # Lay out Operate Pipeline (op)view at bottom of main window
         main_layout.addWidget(OperatePipelineView(self._active_pipe))
@@ -80,6 +79,7 @@ class SpikelyMainWindow(qw.QMainWindow):
         main_frame = qw.QFrame()
         main_frame.setLayout(main_layout)
         self.setCentralWidget(main_frame)
+
 
 if __name__ == '__main__':
     app = qw.QApplication(sys.argv)

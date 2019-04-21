@@ -10,8 +10,10 @@ _main_window = None
 EXTRACT, PREPROC, SORTING, POSTPROC = range(4)
 
 # User friendly names for pipeline stages
-STAGE_NAMES = ["Extraction", "Pre-Processing", "Sorting",
-               "Post-Processing"]
+STAGE_NAMES = ["Extractors", "Pre-Processors", "Sorters",
+               "Post-Processors"]
+
+ELEMENT_ROLE = 0x100
 
 
 def spikely_msg_box(win, text="The nicest thing about the rain is "

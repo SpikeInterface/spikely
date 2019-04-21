@@ -6,11 +6,7 @@ extracellular data processing.  Those operations include running, clearing,
 and queueing the active pipeline.
 """
 
-import sys
 import PyQt5.QtWidgets as qw
-import PyQt5.QtGui as qg
-
-from pi_model import SpikePipeline  # The model for this controller
 import spikely_core as sc
 
 

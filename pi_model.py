@@ -6,10 +6,8 @@ extracellular data processing.
 
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
-import PyQt5.QtWidgets as qw
 
 import spikely_core as sc
-from el_model import SpikeElement
 
 
 class SpikePipeline(qc.QAbstractListModel):
@@ -19,6 +17,7 @@ class SpikePipeline(qc.QAbstractListModel):
         """TBD."""
         super().__init__()
         self._ele_list = []
+        self._ele_model = None
         self._decorations = [
             qg.QIcon("bin/EXTR.png"),
             qg.QIcon("bin/PREP.png"),
@@ -29,17 +28,27 @@ class SpikePipeline(qc.QAbstractListModel):
     def rowCount(self, parent):
         return len(self._ele_list)
 
-    def data(self, index, role=qc.Qt.DisplayRole):
+    def data(self, mod_index, role=qc.Qt.DisplayRole):
         ret_val = None
 
-        if index.isValid() and index.row() < len(self._ele_list):
+        if mod_index.isValid() and mod_index.row() < len(self._ele_list):
             if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
-                ret_val = self._ele_list[index.row()].name()
+                ret_val = self._ele_list[mod_index.row()].name
             elif role == qc.Qt.DecorationRole:
                 ret_val = self._decorations[
-                    self._ele_list[index.row()].stage_id()]
+                    self._ele_list[mod_index.row()].stage_id]
+            elif role == sc.ELEMENT_ROLE:
+                ret_val = self._ele_list[mod_index.row()]
 
         return ret_val
+
+    @property
+    def ele_model(self):
+        return self._ele_model
+
+    @ele_model.setter
+    def ele_model(self, ele_model):
+        self._ele_model = ele_model
 
     def run(self):
         """TBD."""
@@ -50,23 +59,36 @@ class SpikePipeline(qc.QAbstractListModel):
         """TBD."""
         self.beginResetModel()
         self._ele_list.clear()
-        # self.dataChanged.emit(qc.QModelIndex(), qc.QModelIndex())
-        # self.modelReset.emit()
+        self.ele_model.set_element(None)
         self.endResetModel()
 
     def delete(self, index):
         self.beginResetModel()
         self._ele_list.pop(index)
+        self.ele_model.set_element(None)
         self.endResetModel()
 
     def add_element(self, new_ele):
         i = 0
         while (i < len(self._ele_list) and
-                new_ele.stage_id() >= self._ele_list[i].stage_id()):
+                new_ele.stage_id >= self._ele_list[i].stage_id):
             i += 1
-
         self._ele_list.insert(i, new_ele)
         self.dataChanged.emit(qc.QModelIndex(), qc.QModelIndex())
 
-    def move_up(self, index):
-        pass
+    def move_up(self, i):
+        ele_list = self._ele_list
+        if i > 0 and ele_list[i].stage_id == ele_list[i-1].stage_id:
+            self.beginResetModel()
+            ele_list[i-1], ele_list[i] = ele_list[i], ele_list[i-1]
+            self.ele_model.set_element(None)
+            self.endResetModel()
+
+    def move_down(self, i):
+        ele_list = self._ele_list
+        if (i < (len(ele_list) - 1) and
+                ele_list[i].stage_id == ele_list[i+1].stage_id):
+            self.beginResetModel()
+            ele_list[i+1], ele_list[i] = ele_list[i], ele_list[i+1]
+            self.ele_model.set_element(None)
+            self.endResetModel()

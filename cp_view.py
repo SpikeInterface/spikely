@@ -5,12 +5,8 @@ constructing the active pipeline by inserting, deleting, or moving elements
 within the active pipeline.
 """
 
-import sys
 import PyQt5.QtWidgets as qw
-import PyQt5.QtGui as qg
-import PyQt5.QtCore as qc
 
-from pi_model import SpikePipeline
 from el_model import SpikeElement
 import spikely_core as sc
 
@@ -99,14 +95,26 @@ class ConstructPipelineView(qw.QGroupBox):
 
         cp_layout.addWidget(man_frame)
 
-    def _ele_selection_changed(selected, deselected):
-        print("Selection changed.")
+    def _ele_selection_changed(self, selected, deselected):
+        sel_indexes = selected.indexes()
+        element = self._active_pipe.data(sel_indexes[0], sc.ELEMENT_ROLE)
+        self._active_pipe.ele_model.set_element(element)
 
     def _stage_cbx_changed(self, stage_id):
-        """Receiver for currentIndexChanged signal from stage cbox."""
+        """Called by stage combo box to match element combo box with stage.
+
+        A bit of a hack since stage_id is really the row in the stage combo box
+        that was picked by the user. Gets available elements list, filters for
+        selected stage, and populates element combo box with matching elements.
+        """
         self._ele_cbx.clear()
-        for element in SpikeElement.avail_elements(stage_id):
-            self._ele_cbx.addItem(element.name(), element)
+        stage_elements = list(filter(
+            lambda element: element.stage_id == stage_id,
+            SpikeElement.avail_elements()
+        ))
+
+        for element in stage_elements:
+            self._ele_cbx.addItem(element.name, element)
 
     def _add_element_clicked(self):
         """Receiver for Add Element button clicked signal."""
