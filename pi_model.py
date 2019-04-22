@@ -4,6 +4,8 @@ Implements the pipeline of SpikeInterface elements responsible
 extracellular data processing.
 """
 
+from contextlib import contextmanager
+
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
 
@@ -24,6 +26,13 @@ class SpikePipeline(qc.QAbstractListModel):
             qg.QIcon("bin/SORT.png"),
             qg.QIcon("bin/POST.png")
         ]
+
+    @contextmanager
+    def doResetModel(self):
+        """Ensures PyQt begin/end reset model calls are made"""
+        self.beginResetModel()
+        yield
+        self.endResetModel()
 
     def rowCount(self, parent):
         return len(self._ele_list)
@@ -57,16 +66,14 @@ class SpikePipeline(qc.QAbstractListModel):
 
     def clear(self):
         """TBD."""
-        self.beginResetModel()
-        self._ele_list.clear()
-        self.ele_model.set_element(None)
-        self.endResetModel()
+        with self.doResetModel():
+            self._ele_list.clear()
+            self.ele_model.set_element(None)
 
     def delete(self, index):
-        self.beginResetModel()
-        self._ele_list.pop(index)
-        self.ele_model.set_element(None)
-        self.endResetModel()
+        with self.doResetModel():
+            self._ele_list.pop(index)
+            self.ele_model.set_element(None)
 
     def add_element(self, new_ele):
         i = 0
@@ -79,16 +86,14 @@ class SpikePipeline(qc.QAbstractListModel):
     def move_up(self, i):
         ele_list = self._ele_list
         if i > 0 and ele_list[i].stage_id == ele_list[i-1].stage_id:
-            self.beginResetModel()
-            ele_list[i-1], ele_list[i] = ele_list[i], ele_list[i-1]
-            self.ele_model.set_element(None)
-            self.endResetModel()
+            with self.doResetModel():
+                ele_list[i-1], ele_list[i] = ele_list[i], ele_list[i-1]
+                self.ele_model.set_element(None)
 
     def move_down(self, i):
         ele_list = self._ele_list
         if (i < (len(ele_list) - 1) and
                 ele_list[i].stage_id == ele_list[i+1].stage_id):
-            self.beginResetModel()
-            ele_list[i+1], ele_list[i] = ele_list[i], ele_list[i+1]
-            self.ele_model.set_element(None)
-            self.endResetModel()
+            with self.doResetModel():
+                ele_list[i+1], ele_list[i] = ele_list[i], ele_list[i+1]
+                self.ele_model.set_element(None)

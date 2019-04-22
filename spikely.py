@@ -8,9 +8,9 @@ configuration operate the pipeline.
 
 Modules:
     spikely.py - Main application module
-    spikely_constants.py - common application constant values.
-    op_view.py - Operate Pipeline UI region
+    spikely_core.py - Constants and utilities
     cp_view.py - Construct Pipeline UI region
+    op_view.py - Operate Pipeline UI region
     ce_view.py - Configure Element UI region
     pi_model.py - Pipeline Model: multi-stage element execution list
     el_model.py - Element Model: SpikeInterface component wrappers
@@ -31,24 +31,22 @@ __version__ = "0.2.0"
 
 
 class SpikelyMainWindow(qw.QMainWindow):
-    """Main window of application.
-
-    No public methods other than constructor.
-    """
+    """Instantiates the overall UI for the application"""
 
     def __init__(self):
-        """Initialize parent, instantiate object members, build UI."""
+
         super().__init__()
 
-        """Primary role of app the is the construction, configuration, and
-        operation of the active pipeline."""
+        # The primary role of the UI is to manage the active pipeline
         self._active_pipe = SpikePipeline()
 
-        sys.stdout.flush()  # forces print() out for debugging
+        # Enhances print() use for debug
+        sys.stdout.flush()
+
         self._init_ui()
 
     def _init_ui(self):
-        """Responsible for constructing the UI from delegated views."""
+        """Assembles the main UI from delegated sub-views."""
 
         # Application main window setup
         self.setWindowTitle("Spikely")
@@ -76,6 +74,7 @@ class SpikelyMainWindow(qw.QMainWindow):
         # Lay out Operate Pipeline (op)view at bottom of main window
         main_layout.addWidget(OperatePipelineView(self._active_pipe))
 
+        # Core application UI in main_frame as CentralWidget of QMainWindow
         main_frame = qw.QFrame()
         main_frame.setLayout(main_layout)
         self.setCentralWidget(main_frame)
