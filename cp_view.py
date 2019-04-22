@@ -84,7 +84,6 @@ class ConstructPipelineView(qw.QGroupBox):
         sel_frame.setLayout(qw.QHBoxLayout())
 
         stage_cbx = qw.QComboBox()
-        stage_cbx.addItems(sc.STAGE_NAMES)
         sel_frame.layout().addWidget(stage_cbx)
 
         # Change list of available elements based on user selected stage
@@ -94,6 +93,7 @@ class ConstructPipelineView(qw.QGroupBox):
                 if element.stage_id == cbx_index:
                     self._ele_cbx.addItem(element.name, element)
         stage_cbx.currentIndexChanged.connect(_stage_cbx_changed)
+        stage_cbx.addItems(sc.STAGE_NAMES)
 
         # self._ele_cbx = qw.QComboBox()
         sel_frame.layout().addWidget(self._ele_cbx)
