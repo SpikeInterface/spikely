@@ -16,7 +16,12 @@ class SpikeElementModel(qc.QAbstractTableModel):
         self._element = None
         super().__init__()
 
-    def set_element(self, element):
+    @property
+    def element(self):
+        return self._element
+
+    @element.setter
+    def element(self, element):
         self.beginResetModel()
         self._element = element
         self.endResetModel()

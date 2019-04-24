@@ -16,12 +16,10 @@ STAGE_NAMES = ["Extractors", "Pre-Processors", "Sorters",
 ELEMENT_ROLE = 0x100
 
 
-def spikely_msg_box(win, text="The nicest thing about the rain is "
-                    "that it always stops.", informative_text="Eventually."):
+def spikely_msg_box(win, text):
     msg_box = qw.QMessageBox(win)
     msg_box.setIcon(qw.QMessageBox.Information)
     msg_box.setWindowTitle("Spikely Message")
     msg_box.setText(text)
-    msg_box.setInformativeText(informative_text)
     msg_box.setStandardButtons(qw.QMessageBox.Ok)
     msg_box.exec()

@@ -18,16 +18,12 @@ class ConstructPipelineView(qw.QGroupBox):
     of object are triggered by user interaction with sub widgets.
     """
 
-    def __init__(self, active_pipe):
+    def __init__(self, pipeline_model, element_model):
         super().__init__("Construct Pipeline")
 
         # Underlying MVC model for this view set
-        self._active_pipe = active_pipe
-
-        # Need this reference to retrieve elements from combo box
-        self._ele_cbx = qw.QComboBox(self)
-
-        self._pipe_view = qw.QListView(self)
+        self._pipeline_model = pipeline_model
+        self._element_model = element_model
 
         self._init_ui()
 
@@ -42,44 +38,20 @@ class ConstructPipelineView(qw.QGroupBox):
         cpv_layout = qw.QVBoxLayout()
         self.setLayout(cpv_layout)
 
-        cpv_layout.addWidget(self._selection_frame())
-
-        # View for pipeline construction - interacts w/ pipeline model
-        # self.pipe_view = qw.QListView(self)
-        self._pipe_view.setModel(self._active_pipe)  # There be dragons here
-        self._pipe_view.selectionModel().selectionChanged.connect(
-            self._ele_selection_changed)
-
-        cpv_layout.addWidget(self._pipe_view)
+        cpv_layout.addWidget(self._selection_widget())
+        cpv_layout.addWidget(self._pipeline_widget())
+        cpv_layout.addWidget(self._pipe_ops_widget())
 
         """This funky bit of code is an example of how a class method
         with a specific signature can be bound to an instance of that class
         using a type index, in this case QModelIndex"""
         # treeView.clicked[QModelIndex].connect(self.clicked)
 
-        # Manipulation: Control buttons ordered left to right
-        man_layout = qw.QHBoxLayout()
-        man_frame = qw.QFrame()
-        # man_frame.setEnabled(False)
-
-        man_frame.setLayout(man_layout)
-
-        mu_btn = qw.QPushButton("Move Up")
-        mu_btn.clicked.connect(self._move_up_clicked)
-        man_layout.addWidget(mu_btn)
-
-        de_btn = qw.QPushButton("Delete")
-        de_btn.clicked.connect(self._delete_clicked)
-        man_layout.addWidget(de_btn)
-
-        md_btn = qw.QPushButton("Move Down")
-        md_btn.clicked.connect(self._move_down_clicked)
-        man_layout.addWidget(md_btn)
-
-        cpv_layout.addWidget(man_frame)
-
-    def _selection_frame(self):
+    def _selection_widget(self):
         """Construct the QFrame holding the element selection widgets"""
+
+        ele_cbx = qw.QComboBox(self)
+
         sel_frame = qw.QFrame()
         sel_frame.setLayout(qw.QHBoxLayout())
 
@@ -87,49 +59,88 @@ class ConstructPipelineView(qw.QGroupBox):
         sel_frame.layout().addWidget(stage_cbx)
 
         # Change list of available elements based on user selected stage
-        def _stage_cbx_changed(cbx_index):
-            self._ele_cbx.clear()
+        def stage_cbx_changed(cbx_index):
+            ele_cbx.clear()
             for element in SpikeElement.avail_elements():
                 if element.stage_id == cbx_index:
-                    self._ele_cbx.addItem(element.name, element)
-        stage_cbx.currentIndexChanged.connect(_stage_cbx_changed)
+                    ele_cbx.addItem(element.name, element)
+        stage_cbx.currentIndexChanged.connect(stage_cbx_changed)
         stage_cbx.addItems(sc.STAGE_NAMES)
 
         # self._ele_cbx = qw.QComboBox()
-        sel_frame.layout().addWidget(self._ele_cbx)
+        sel_frame.layout().addWidget(ele_cbx)
 
         add_button = qw.QPushButton("Add Element")
-        sel_frame.layout().addWidget(add_button)
 
         def _add_element_clicked():
-            self._active_pipe.add_element(self._ele_cbx.currentData())
+            self._pipeline_model.add_element(ele_cbx.currentData())
         add_button.clicked.connect(_add_element_clicked)
+
+        sel_frame.layout().addWidget(add_button)
 
         return sel_frame
 
-    def _ele_selection_changed(self, selected, deselected):
-        # sel_indexes = selected.indexes()
-        element = self._active_pipe.data(
-            selected.indexes()[0], sc.ELEMENT_ROLE)
-        self._active_pipe.ele_model.set_element(element)
+    def _pipeline_widget(self):
+        self.pipe_view = qw.QListView(self)
+        self.pipe_view.setModel(self._pipeline_model)
+        self.pipe_view.setSelectionMode(
+            qw.QAbstractItemView.SingleSelection)
+
+        def ele_selection_changed(selected, deselected):
+            if len(selected.indexes()) > 0:
+                element = (self._pipeline_model.data(
+                    selected.indexes()[0], sc.ELEMENT_ROLE))
+                self._element_model.element = element
+            else:
+                self._element_model.element = None
+
+        self.pipe_view.selectionModel().selectionChanged.connect(
+            ele_selection_changed)
+
+        return self.pipe_view
+
+    def _pipe_ops_widget(self):
+        man_frame = qw.QFrame()
+        man_frame.setLayout(qw.QHBoxLayout())
+
+        mu_btn = qw.QPushButton("Move Up")
+        man_frame.layout().addWidget(mu_btn)
+
+        def move_up_clicked():
+            if self._element_model.element is None:
+                sc.spikely_msg_box(self.parent(), "Nothing to move up.")
+            else:
+                self._pipeline_model.move_up(
+                    self._element_model.element)
+                index = self.pipe_view.currentIndex()
+                index = self.pipe_view.model().index(index.row() - 1, 0)
+                self.pipe_view.setCurrentIndex(index)
+                # self.pipe_view.clearSelection()
+        mu_btn.clicked.connect(move_up_clicked)
+
+        return man_frame
+
+
+"""
+
+        de_btn = qw.QPushButton("Delete")
+        de_btn.setProperty("pipe_view_sm", self._pipe_view.selectionModel())
+        man_frame.layout().addWidget(de_btn)
+        de_btn.clicked.connect(self._delete_clicked)
+
+        md_btn = qw.QPushButton("Move Down")
+        man_frame.layout().addWidget(md_btn)
+        md_btn.clicked.connect(self._move_down_clicked)
 
     def _delete_clicked(self):
-        sel_mdl = self._pipe_view.selectionModel()
+        # sel_mdl = self._pipe_view.selectionModel()
+        sel_mdl = self.sender().property("pipe_view_sm")
         if not sel_mdl.hasSelection():
             sc.spikely_msg_box(self.parent(), "Nothing to delete.",
                                "But, you already knew that, right?")
         else:
             index = sel_mdl.selectedIndexes()[0].row()
-            self._active_pipe.delete(index)
-
-    def _move_up_clicked(self):
-        sel_mdl = self._pipe_view.selectionModel()
-        if not sel_mdl.hasSelection():
-            sc.spikely_msg_box(self.parent(), "Nothing to move up.",
-                               "But, you already knew that, right?")
-        else:
-            index = sel_mdl.selectedIndexes()[0].row()
-            self._active_pipe.move_up(index)
+            self._active_pipeline.delete(index)
 
     def _move_down_clicked(self):
         sel_mdl = self._pipe_view.selectionModel()
@@ -138,4 +149,5 @@ class ConstructPipelineView(qw.QGroupBox):
                                "But, you already knew that, right?")
         else:
             index = sel_mdl.selectedIndexes()[0].row()
-            self._active_pipe.move_down(index)
+            self._active_pipeline.move_down(index)
+"""

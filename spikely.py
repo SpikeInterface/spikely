@@ -25,7 +25,8 @@ from op_view import OperatePipelineView
 from cp_view import ConstructPipelineView
 from ce_view import ConfigureElementView
 
-from pi_model import SpikePipeline
+from pi_model import SpikePipelineModel
+from el_model import SpikeElementModel
 
 __version__ = "0.2.0"
 
@@ -37,8 +38,9 @@ class SpikelyMainWindow(qw.QMainWindow):
 
         super().__init__()
 
-        # The primary role of the UI is to manage the active pipeline
-        self._active_pipe = SpikePipeline()
+        # Active pipeline and selected element models
+        self._pipeline_model = SpikePipelineModel()
+        self._element_model = SpikeElementModel()
 
         # Enhances print() use for debug
         sys.stdout.flush()
@@ -66,13 +68,16 @@ class SpikelyMainWindow(qw.QMainWindow):
         cp_ce_splitter.setChildrenCollapsible(False)
 
         # Actual widget construction done in View classes
-        cp_ce_splitter.addWidget(ConstructPipelineView(self._active_pipe))
-        cp_ce_splitter.addWidget(ConfigureElementView(self._active_pipe))
+        cp_ce_splitter.addWidget(ConstructPipelineView(
+            self._pipeline_model, self._element_model))
+        cp_ce_splitter.addWidget(ConfigureElementView(
+            self._pipeline_model, self._element_model))
         cp_ce_splitter.setSizes([256, 768])
         main_layout.addWidget(cp_ce_splitter)
 
         # Lay out Operate Pipeline (op)view at bottom of main window
-        main_layout.addWidget(OperatePipelineView(self._active_pipe))
+        main_layout.addWidget(OperatePipelineView(
+            self._pipeline_model, self._element_model))
 
         # Core application UI in main_frame as CentralWidget of QMainWindow
         main_frame = qw.QFrame()

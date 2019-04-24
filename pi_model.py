@@ -12,14 +12,13 @@ import PyQt5.QtGui as qg
 import spikely_core as sc
 
 
-class SpikePipeline(qc.QAbstractListModel):
+class SpikePipelineModel(qc.QAbstractListModel):
     """TBD."""
 
     def __init__(self):
         """TBD."""
         super().__init__()
         self._ele_list = []
-        self._ele_model = None
         self._decorations = [
             qg.QIcon("bin/EXTR.png"),
             qg.QIcon("bin/PREP.png"),
@@ -51,14 +50,6 @@ class SpikePipeline(qc.QAbstractListModel):
 
         return ret_val
 
-    @property
-    def ele_model(self):
-        return self._ele_model
-
-    @ele_model.setter
-    def ele_model(self, ele_model):
-        self._ele_model = ele_model
-
     def run(self):
         """TBD."""
         print("Pipeline Running")
@@ -68,7 +59,6 @@ class SpikePipeline(qc.QAbstractListModel):
         """TBD."""
         with self.doResetModel():
             self._ele_list.clear()
-            self.ele_model.set_element(None)
 
     def delete(self, index):
         with self.doResetModel():
@@ -83,12 +73,12 @@ class SpikePipeline(qc.QAbstractListModel):
         self._ele_list.insert(i, new_ele)
         self.dataChanged.emit(qc.QModelIndex(), qc.QModelIndex())
 
-    def move_up(self, i):
+    def move_up(self, element):
         ele_list = self._ele_list
+        i = ele_list.index(element)
         if i > 0 and ele_list[i].stage_id == ele_list[i-1].stage_id:
-            with self.doResetModel():
-                ele_list[i-1], ele_list[i] = ele_list[i], ele_list[i-1]
-                self.ele_model.set_element(None)
+            ele_list[i-1], ele_list[i] = ele_list[i], ele_list[i-1]
+            self.dataChanged.emit(qc.QModelIndex(), qc.QModelIndex())
 
     def move_down(self, i):
         ele_list = self._ele_list
@@ -96,4 +86,3 @@ class SpikePipeline(qc.QAbstractListModel):
                 ele_list[i].stage_id == ele_list[i+1].stage_id):
             with self.doResetModel():
                 ele_list[i+1], ele_list[i] = ele_list[i], ele_list[i+1]
-                self.ele_model.set_element(None)
