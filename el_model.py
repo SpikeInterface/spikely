@@ -18,6 +18,7 @@ class SpikeElementModel(qc.QAbstractTableModel):
         self._element = None
         super().__init__()
 
+    # Pythonic approach to setters/getters
     @property
     def element(self):
         return self._element
@@ -28,6 +29,7 @@ class SpikeElementModel(qc.QAbstractTableModel):
         self._element = element
         self.endResetModel()
 
+    # Methods sub-classed from QAbstractTableModel
     def rowCount(self, parent=qc.QModelIndex()):
         return 0 if self._element is None else len(self._element.props)
 
@@ -63,7 +65,7 @@ class SpikeElementModel(qc.QAbstractTableModel):
 
 
 class SpikeElement:
-    """TBD."""
+    """Base class for SpikeInterface elements"""
 
     _avail_elements = []
     _proto_elements = [
