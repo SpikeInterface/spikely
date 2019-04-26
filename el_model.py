@@ -4,9 +4,11 @@ Implements the SpikeInterface elements responsible extracellular data
 processing.
 """
 
+import copy
+
 import PyQt5.QtCore as qc
 
-import spikely_core as sc
+import config
 
 
 class SpikeElementModel(qc.QAbstractTableModel):
@@ -16,16 +18,18 @@ class SpikeElementModel(qc.QAbstractTableModel):
         self._element = None
         super().__init__()
 
-    def set_element(self, element):
+    @property
+    def element(self):
+        return self._element
+
+    @element.setter
+    def element(self, element):
         self.beginResetModel()
         self._element = element
         self.endResetModel()
 
     def rowCount(self, parent=qc.QModelIndex()):
-        ret_val = 0
-        if self._element is not None:
-            ret_val = len(self._element.props)
-        return ret_val
+        return 0 if self._element is None else len(self._element.props)
 
     def columnCount(self, parent=qc.QModelIndex()):
         return 2
@@ -40,23 +44,22 @@ class SpikeElementModel(qc.QAbstractTableModel):
 
     def data(self, mod_index, role=qc.Qt.DisplayRole):
         col, row = mod_index.column(), mod_index.row()
-
-        ret_val = qc.QVariant()
+        result = qc.QVariant()
         if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
             if col == 0:
-                ret_val = list(self._element.props.keys())[row]
+                result = list(self._element.props.keys())[row]
             elif col == 1:
-                ret_val = list(self._element.props.values())[row]
+                result = list(self._element.props.values())[row]
 
-        return ret_val
+        return result
 
     def headerData(self, section, orientation, role):
-        ret_val = qc.QVariant()
+        result = qc.QVariant()
         if (orientation == qc.Qt.Horizontal and
                 (role == qc.Qt.DisplayRole or role == qc.Qt.EditRole)):
-            ret_val = ['Property', 'Value'][section]
+            result = ['Property', 'Value'][section]
 
-        return ret_val
+        return result
 
 
 class SpikeElement:
@@ -64,62 +67,66 @@ class SpikeElement:
 
     _avail_elements = []
     _proto_elements = [
-        (sc.EXTRACT, "Extractor A", {
+        (config.EXTRACTOR, "Extractor A", {
             'Extractor A1 Name': 'Extractor A1 Value',
             'Extractor A2 Name': 'Extractor A2 Value'
         }),
-        (sc.EXTRACT, "Extractor B", {
+        (config.EXTRACTOR, "Extractor B", {
             'Extractor B1 Name': 'Extractor B1 Value',
             'Extractor B2 Name': 'Extractor B2 Value'
         }),
-        (sc.PREPROC, "Pre-Processor A", {
+        (config.PRE_PROCESSOR, "Pre-Processor A", {
             'Pre-Processor A1 Name': 'Pre-Processor A1 Value',
             'Pre-Processor A2 Name': 'Pre-Processor A2 Value'
         }),
-        (sc.PREPROC, "Pre-Processor B", {
+        (config.PRE_PROCESSOR, "Pre-Processor B", {
             'Pre-Processor B1 Name': 'Pre-Processor B1 Value',
             'Pre-Processor B2 Name': 'Pre-Processor B2 Value'
         }),
-        (sc.SORTING, "Sorter A", {
+        (config.SORTER, "Sorter A", {
             'Sorter A1 Name': 'Sorter A1 Value',
             'Sorter A2 Name': 'Sorter A2 Value'
         }),
-        (sc.SORTING, "Sorter B", {
+        (config.SORTER, "Sorter B", {
             'Sorter B1 Name': 'Sorter B1 Value',
             'Sorter B2 Name': 'Sorter B2 Value'
         }),
-        (sc.POSTPROC, "Post-Processor A", {
+        (config.POST_PROCESSOR, "Post-Processor A", {
             'Post-Processor A1 Name': 'Post-Processor A1 Value',
             'Post-Processor A2 Name': 'Post-Processor A2 Value'
         }),
-        (sc.POSTPROC, "Post-Processor B", {
+        (config.POST_PROCESSOR, "Post-Processor B", {
             'Post-Processor B1 Name': 'Post-Processor B1 Value',
             'Post-Processor B2 Name': 'Post-Processor B2 Value'
         })
     ]
 
     @classmethod
-    def avail_elements(cls):
+    def available_elements(cls):
         """TBD."""
-        if len(cls._avail_elements) == 0:
+        if not cls._avail_elements:
             cls._fill_elements()
         return cls._avail_elements
 
     @classmethod
     def _fill_elements(cls):
         for proto in cls._proto_elements:
-            stage_id, name, props = proto
-            ele = SpikeElement()
-            ele.stage_id = stage_id
-            ele.name = name
-            ele.props = props
-            cls._avail_elements.append(ele)
+            type, name, props = proto
+            element = SpikeElement()
+            element.type = type
+            element.name = name
+            element.props = props
+            cls._avail_elements.append(element)
 
-    def __init__(self):
+    def __init__(self, element=None):
         """TBD."""
-        self._stage_id = None
-        self._name = None
-        self._props = None
+        if element is None:
+            self._type = None
+            self._name = None
+        else:
+            self._type = element.type
+            self._name = element.name
+            self._props = copy.deepcopy(element.props)
 
     @property
     def name(self):
@@ -130,12 +137,12 @@ class SpikeElement:
         self._name = name
 
     @property
-    def stage_id(self):
-        return self._stage_id
+    def type(self):
+        return self._type
 
-    @stage_id.setter
-    def stage_id(self, stage_id):
-        self._stage_id = stage_id
+    @type.setter
+    def type(self, type):
+        self._type = type
 
     @property
     def props(self):

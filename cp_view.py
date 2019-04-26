@@ -1,6 +1,6 @@
-"""The view-control widget for constructing the active pipeline.
+"""The view-control widget set for constructing the active pipeline.
 
-The Construct Pipeline view/control consists of widgets responsible for
+The Construct Pipeline view-control consists of widgets responsible for
 constructing the active pipeline by inserting, deleting, or moving elements
 within the active pipeline.
 """
@@ -8,141 +8,151 @@ within the active pipeline.
 import PyQt5.QtWidgets as qw
 
 from el_model import SpikeElement
-import spikely_core as sc
+import config
 
 
 class ConstructPipelineView(qw.QGroupBox):
-    """A QGroupBox of widgets enabling user to assemble the pipeline.
+    """QGroupBox containing the view-control widget set
 
     No public methods other than constructor.  All other activites
     of object are triggered by user interaction with sub widgets.
     """
 
-    def __init__(self, active_pipe):
-        """Initialize parent and member variables, construct UI."""
+    def __init__(self, pipeline_model, element_model):
         super().__init__("Construct Pipeline")
 
-        # Like the cheese, the active pipeline stands alone
-        self._active_pipe = active_pipe
-
-        # Need this reference to retrieve elements from combo box
-        self._ele_cbx = qw.QComboBox(self)
-
-        self._pipe_view = qw.QListView(self)
+        self._pipeline_model = pipeline_model
+        self._pipeline_view = qw.QListView(self)
+        self._element_model = element_model
 
         self._init_ui()
 
     def _init_ui(self):
-        """Build composite UI for region.
+        """Assembles the individual widgets into the widget-set.
 
-        Region consists of Controllers for adding and maninpulating active
-        pipeline elements and a View of the in-construction active pipeline.
+        The ConstructPipelineView consists of three separate UI assemblies
+        stacked top to bottom: element selection, pipeline element list view,
+        and pipeline element manipulation controls (move up, delete, move down)
         """
         # Lay out view from top to bottom of group box
-        cp_layout = qw.QVBoxLayout()
-        self.setLayout(cp_layout)
+        self.setLayout(qw.QVBoxLayout())
 
-        # Selection: Lay out view-controllers in frame from left to right
-        sel_layout = qw.QHBoxLayout()
-        sel_frame = qw.QFrame()
-        sel_frame.setLayout(sel_layout)
-
-        stage_cbx = qw.QComboBox()
-        stage_cbx.currentIndexChanged.connect(self._stage_cbx_changed)
-        for stage in sc.STAGE_NAMES:
-            stage_cbx.addItem(stage)
-        sel_layout.addWidget(stage_cbx)
-
-        # self._ele_cbx = qw.QComboBox()
-        sel_layout.addWidget(self._ele_cbx)
-
-        add_button = qw.QPushButton("Add Element")
-        add_button.setToolTip("Push to add element to pipeline.")
-        add_button.clicked.connect(self._add_element_clicked)
-        sel_layout.addWidget(add_button)
-        cp_layout.addWidget(sel_frame)
-
-        # View for pipeline construction - interacts w/ pipeline model
-        # self.pipe_view = qw.QListView(self)
-        self._pipe_view.setModel(self._active_pipe)  # There be dragons here
-        sel_mdl = self._pipe_view.selectionModel()
-        sel_mdl.selectionChanged.connect(self._ele_selection_changed)
-        cp_layout.addWidget(self._pipe_view)
+        self.layout().addWidget(self._element_insertion())
+        self.layout().addWidget(self._pipeline_list())
+        self.layout().addWidget(self._pipeline_commands())
 
         """This funky bit of code is an example of how a class method
         with a specific signature can be bound to an instance of that class
         using a type index, in this case QModelIndex"""
         # treeView.clicked[QModelIndex].connect(self.clicked)
 
-        # Manipulation: Control buttons ordered left to right
-        man_layout = qw.QHBoxLayout()
-        man_frame = qw.QFrame()
-        # man_frame.setEnabled(False)
+    def _element_insertion(self):
+        """Select for and insert elements into pipeline."""
 
-        man_frame.setLayout(man_layout)
+        ui_frame = qw.QFrame()
+        ui_frame.setLayout(qw.QHBoxLayout())
+
+        ele_cbx = qw.QComboBox(self)
+
+        stage_cbx = qw.QComboBox()
+        ui_frame.layout().addWidget(stage_cbx)
+
+        # Change ele_cbx contents when user makes stage_cbx selection
+        def stage_cbx_changed(index):
+            ele_cbx.clear()
+            for element in SpikeElement.available_elements():
+                # Hack - depends on correspondence of type IDs and cbx indexes
+                if element.type == stage_cbx.itemData(index):
+                    # Store name and actual element reference in cbx
+                    ele_cbx.addItem(element.name, element)
+        stage_cbx.currentIndexChanged.connect(stage_cbx_changed)
+
+        # Must come after currentIndexChanged.connect to invoke callback
+        stage_cbx.addItem('Extractors', config.EXTRACTOR)
+        stage_cbx.addItem('Pre-Processors', config.PRE_PROCESSOR)
+        stage_cbx.addItem('Sorters', config.SORTER)
+        stage_cbx.addItem('Post-Processors', config.POST_PROCESSOR)
+
+        # Placed in UI after stage_cbx, but initialized first as fwd reference
+        ui_frame.layout().addWidget(ele_cbx)
+
+        add_button = qw.QPushButton("Add Element")
+
+        def _add_element_clicked():
+            # Takes advantage of actual element reference stored in ele_cbx
+            self._pipeline_model.add_element(ele_cbx.currentData())
+        add_button.clicked.connect(_add_element_clicked)
+
+        ui_frame.layout().addWidget(add_button)
+
+        return ui_frame
+
+    def _pipeline_list(self):
+        # MVC time - link view (widget) to underlying data (model)
+        self._pipeline_view.setModel(self._pipeline_model)
+        self._pipeline_view.setSelectionMode(
+            qw.QAbstractItemView.SingleSelection)
+
+        # Links element (ce_view) and pipeline (cp_view) views
+        def list_selection_changed(selected, deselected):
+            if selected.indexes():
+                # Retrieve selected element from pipeline model
+                element = self._get_selected_element()
+                # Link selected element to element property editor
+                self._element_model.element = element
+            else:
+                self._element_model.element = None
+        self._pipeline_view.selectionModel().selectionChanged.connect(
+            list_selection_changed)
+
+        return self._pipeline_view
+
+    def _pipeline_commands(self):
+        ui_frame = qw.QFrame()
+        ui_frame.setLayout(qw.QHBoxLayout())
 
         mu_btn = qw.QPushButton("Move Up")
-        mu_btn.clicked.connect(self._move_up_clicked)
-        man_layout.addWidget(mu_btn)
+        ui_frame.layout().addWidget(mu_btn)
 
-        de_btn = qw.QPushButton("Delete")
-        de_btn.clicked.connect(self._delete_clicked)
-        man_layout.addWidget(de_btn)
+        def move_up_clicked():
+            element = self._get_selected_element()
+            if element is None:
+                config.status_bar.showMessage(
+                    "Nothing to move up", config.TIMEOUT)
+            else:
+                self._pipeline_model.move_up(element)
+        mu_btn.clicked.connect(move_up_clicked)
 
         md_btn = qw.QPushButton("Move Down")
-        md_btn.clicked.connect(self._move_down_clicked)
-        man_layout.addWidget(md_btn)
+        ui_frame.layout().addWidget(md_btn)
 
-        cp_layout.addWidget(man_frame)
+        def move_down_clicked():
+            element = self._get_selected_element()
+            if element is None:
+                config.status_bar.showMessage(
+                    "Nothing to move down", config.TIMEOUT)
+            else:
+                self._pipeline_model.move_down(element)
+        md_btn.clicked.connect(move_down_clicked)
 
-    def _ele_selection_changed(self, selected, deselected):
-        sel_indexes = selected.indexes()
-        element = self._active_pipe.data(sel_indexes[0], sc.ELEMENT_ROLE)
-        self._active_pipe.ele_model.set_element(element)
+        de_btn = qw.QPushButton("Delete")
+        ui_frame.layout().addWidget(de_btn)
 
-    def _stage_cbx_changed(self, stage_id):
-        """Called by stage combo box to match element combo box with stage.
+        def delete_clicked():
+            element = self._get_selected_element()
+            if element is None:
+                config.status_bar.showMessage(
+                    "Nothing to delete", config.TIMEOUT)
+            else:
+                self._pipeline_model.delete(element)
+        de_btn.clicked.connect(delete_clicked)
 
-        A bit of a hack since stage_id is really the row in the stage combo box
-        that was picked by the user. Gets available elements list, filters for
-        selected stage, and populates element combo box with matching elements.
-        """
-        self._ele_cbx.clear()
-        stage_elements = list(filter(
-            lambda element: element.stage_id == stage_id,
-            SpikeElement.avail_elements()
-        ))
+        return ui_frame
 
-        for element in stage_elements:
-            self._ele_cbx.addItem(element.name, element)
-
-    def _add_element_clicked(self):
-        """Receiver for Add Element button clicked signal."""
-        self._active_pipe.add_element(self._ele_cbx.currentData())
-
-    def _delete_clicked(self):
-        sel_mdl = self._pipe_view.selectionModel()
-        if not sel_mdl.hasSelection():
-            sc.spikely_msg_box(self.parent(), "Nothing to delete.",
-                               "But, you already knew that, right?")
-        else:
-            index = sel_mdl.selectedIndexes()[0].row()
-            self._active_pipe.delete(index)
-
-    def _move_up_clicked(self):
-        sel_mdl = self._pipe_view.selectionModel()
-        if not sel_mdl.hasSelection():
-            sc.spikely_msg_box(self.parent(), "Nothing to move up.",
-                               "But, you already knew that, right?")
-        else:
-            index = sel_mdl.selectedIndexes()[0].row()
-            self._active_pipe.move_up(index)
-
-    def _move_down_clicked(self):
-        sel_mdl = self._pipe_view.selectionModel()
-        if not sel_mdl.hasSelection():
-            sc.spikely_msg_box(self.parent(), "Nothing to move down.",
-                               "But, you already knew that, right?")
-        else:
-            index = sel_mdl.selectedIndexes()[0].row()
-            self._active_pipe.move_down(index)
+    def _get_selected_element(self):
+        element = None
+        model = self._pipeline_view.selectionModel()
+        if model.hasSelection():
+            index = model.selectedIndexes()[0]
+            element = self._pipeline_model.data(index, config.ELEMENT_ROLE)
+        return element

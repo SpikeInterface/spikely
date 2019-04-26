@@ -8,9 +8,9 @@ configuration operate the pipeline.
 
 Modules:
     spikely.py - Main application module
-    spikely_constants.py - common application constant values.
-    op_view.py - Operate Pipeline UI region
+    config.py - Constants and globals
     cp_view.py - Construct Pipeline UI region
+    op_view.py - Operate Pipeline UI region
     ce_view.py - Configure Element UI region
     pi_model.py - Pipeline Model: multi-stage element execution list
     el_model.py - Element Model: SpikeInterface component wrappers
@@ -24,31 +24,33 @@ import PyQt5.QtGui as qg
 from op_view import OperatePipelineView
 from cp_view import ConstructPipelineView
 from ce_view import ConfigureElementView
+from pi_model import SpikePipelineModel
+from el_model import SpikeElementModel
 
-from pi_model import SpikePipeline
+import config
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 
 class SpikelyMainWindow(qw.QMainWindow):
-    """Main window of application.
-
-    No public methods other than constructor.
-    """
+    """Instantiates the overall UI for the application"""
 
     def __init__(self):
-        """Initialize parent, instantiate object members, build UI."""
+
         super().__init__()
 
-        """Primary role of app the is the construction, configuration, and
-        operation of the active pipeline."""
-        self._active_pipe = SpikePipeline()
+        # Active pipeline and element models
+        self._element_model = SpikeElementModel()
+        self._pipeline_model = SpikePipelineModel(
+            self._element_model)
 
-        sys.stdout.flush()  # forces print() out for debugging
+        # Enhances print() use for debug
+        sys.stdout.flush()
+
         self._init_ui()
 
     def _init_ui(self):
-        """Responsible for constructing the UI from delegated views."""
+        """Assembles the main UI from delegated sub-views."""
 
         # Application main window setup
         self.setWindowTitle("Spikely")
@@ -68,14 +70,21 @@ class SpikelyMainWindow(qw.QMainWindow):
         cp_ce_splitter.setChildrenCollapsible(False)
 
         # Actual widget construction done in View classes
-        cp_ce_splitter.addWidget(ConstructPipelineView(self._active_pipe))
-        cp_ce_splitter.addWidget(ConfigureElementView(self._active_pipe))
+        cp_ce_splitter.addWidget(ConstructPipelineView(
+            self._pipeline_model, self._element_model))
+        cp_ce_splitter.addWidget(ConfigureElementView(
+            self._pipeline_model, self._element_model))
         cp_ce_splitter.setSizes([256, 768])
         main_layout.addWidget(cp_ce_splitter)
 
         # Lay out Operate Pipeline (op)view at bottom of main window
-        main_layout.addWidget(OperatePipelineView(self._active_pipe))
+        main_layout.addWidget(OperatePipelineView(
+            self._pipeline_model, self._element_model))
 
+        # Allows any module to post a status message to main window
+        config.status_bar = self.statusBar()
+
+        # Core application UI in main_frame as CentralWidget of QMainWindow
         main_frame = qw.QFrame()
         main_frame.setLayout(main_layout)
         self.setCentralWidget(main_frame)

@@ -6,8 +6,6 @@ viewing and editing the properties of elements (extractors, sorters, etc.).
 
 import PyQt5.QtWidgets as qw
 
-from el_model import SpikeElementModel
-
 
 class ConfigureElementView(qw.QGroupBox):
     """GroupBox of widgets capable of constructing active pipeline.
@@ -23,23 +21,20 @@ class ConfigureElementView(qw.QGroupBox):
     by the Configure Element view.
     """
 
-    def __init__(self, spike_pipe):
+    def __init__(self, pipeline_model, element_model):
         """Initialize parent, set object members, build UI region."""
         super().__init__("Configure Elements")
-        self.spike_pipe = spike_pipe
-        self._ele_model = SpikeElementModel()
+        self._pipeline_model = pipeline_model
+        self._element_model = element_model
 
         self._init_ui()
 
     def _init_ui(self):
         """Build composite UI for element property configuration."""
-        ce_layout = qw.QHBoxLayout()
-        self.setLayout(ce_layout)
+        self.setLayout(qw.QHBoxLayout())
 
         cfg_table = qw.QTableView(self)
-        cfg_table.setModel(self._ele_model)
-
-        self.spike_pipe.ele_model = self._ele_model
+        cfg_table.setModel(self._element_model)
 
         cfg_table.verticalHeader().hide()
         cfg_table.setColumnWidth(0, 200)
@@ -47,17 +42,4 @@ class ConfigureElementView(qw.QGroupBox):
         cfg_table.horizontalHeader().setSectionResizeMode(
             1, qw.QHeaderView.Stretch)
 
-        """
-        cfg_table = qw.QTableWidget()
-        # cfg_table.setSelectionBehavior(qw.QAbstractItemView.SelectRows)
-        cfg_table.setRowCount(10)
-        cfg_table.setColumnCount(2)
-        cfg_table.setHorizontalHeaderLabels(("Property", "Value"))
-        cfg_table.setColumnWidth(0, 200)
-        cfg_table.setColumnWidth(1, 200)
-        cfg_table.verticalHeader().hide()
-        cfg_table.horizontalHeader().setSectionResizeMode(
-            1, qw.QHeaderView.Stretch)
-        """
-
-        ce_layout.addWidget(cfg_table)
+        self.layout().addWidget(cfg_table)
