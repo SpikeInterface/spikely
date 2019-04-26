@@ -5,20 +5,23 @@ extracellular data processing.
 """
 
 from contextlib import contextmanager
+import copy
 
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
 
-import spikely_core as sc
+import config
+from el_model import SpikeElement
 
 
 class SpikePipelineModel(qc.QAbstractListModel):
     """TBD."""
 
-    def __init__(self):
+    def __init__(self, element_model):
         """TBD."""
         super().__init__()
-        self._ele_list = []
+        self._elements = []
+        self._element_model = element_model
         self._decorations = [
             qg.QIcon("bin/EXTR.png"),
             qg.QIcon("bin/PREP.png"),
@@ -26,63 +29,82 @@ class SpikePipelineModel(qc.QAbstractListModel):
             qg.QIcon("bin/POST.png")
         ]
 
-    @contextmanager
-    def doResetModel(self):
-        """Ensures PyQt begin/end reset model calls are made"""
-        self.beginResetModel()
-        yield
-        self.endResetModel()
-
     def rowCount(self, parent):
-        return len(self._ele_list)
+        return len(self._elements)
+
+    def _stage_count(self, type):
+        # The power of Python generator expressions ;^)
+        return sum(1 for ele in self._elements if ele.type == type)
 
     def data(self, mod_index, role=qc.Qt.DisplayRole):
-        ret_val = None
+        result = None
 
-        if mod_index.isValid() and mod_index.row() < len(self._ele_list):
+        if mod_index.isValid() and mod_index.row() < len(self._elements):
+            element = self._elements[mod_index.row()]
             if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
-                ret_val = self._ele_list[mod_index.row()].name
+                result = element.name
             elif role == qc.Qt.DecorationRole:
-                ret_val = self._decorations[
-                    self._ele_list[mod_index.row()].stage_id]
-            elif role == sc.ELEMENT_ROLE:
-                ret_val = self._ele_list[mod_index.row()]
+                result = self._decorations[element.type]
+            elif role == config.ELEMENT_ROLE:
+                result = element
 
-        return ret_val
+        return result
 
     def run(self):
         """TBD."""
-        print("Pipeline Running")
         pass
 
     def clear(self):
         """TBD."""
-        with self.doResetModel():
-            self._ele_list.clear()
+        self.beginResetModel()
+        self._elements.clear()
+        self.endResetModel()
 
-    def delete(self, index):
-        with self.doResetModel():
-            self._ele_list.pop(index)
-            self.ele_model.set_element(None)
+    def add_element(self, element):
 
-    def add_element(self, new_ele):
+        # Only allow one Extractor or Sorter
+        if element.type == config.EXTRACTOR or element.type == config.SORTER:
+            if self._stage_count(element.type) > 0:
+                config.status_bar.showMessage(
+                    "Only one instance of that element type allowed.",
+                    config.TIMEOUT)
+                return
+
         i = 0
-        while (i < len(self._ele_list) and
-                new_ele.stage_id >= self._ele_list[i].stage_id):
+        while (i < len(self._elements) and
+                element.type >= self._elements[i].type):
             i += 1
-        self._ele_list.insert(i, new_ele)
-        self.dataChanged.emit(qc.QModelIndex(), qc.QModelIndex())
+        self.beginInsertRows(qc.QModelIndex(), i, i)
+        self._elements.insert(i, SpikeElement(element))
+        self.endInsertRows()
+
+    def _swap(self, list, pos1, pos2):
+        list[pos1], list[pos2] = list[pos2], list[pos1]
 
     def move_up(self, element):
-        ele_list = self._ele_list
-        i = ele_list.index(element)
-        if i > 0 and ele_list[i].stage_id == ele_list[i-1].stage_id:
-            ele_list[i-1], ele_list[i] = ele_list[i], ele_list[i-1]
-            self.dataChanged.emit(qc.QModelIndex(), qc.QModelIndex())
+        i = self._elements.index(element)
+        if i > 0 and self._elements[i].type == self._elements[i-1].type:
+            self.beginMoveRows(qc.QModelIndex(), i, i, qc.QModelIndex(), i-1)
+            self._swap(self._elements, i, i-1)
+            self.endMoveRows()
+        else:
+            config.status_bar.showMessage(
+                "Cannot move element any higher.", config.TIMEOUT)
 
-    def move_down(self, i):
-        ele_list = self._ele_list
-        if (i < (len(ele_list) - 1) and
-                ele_list[i].stage_id == ele_list[i+1].stage_id):
-            with self.doResetModel():
-                ele_list[i+1], ele_list[i] = ele_list[i], ele_list[i+1]
+    def move_down(self, element):
+        i = self._elements.index(element)
+        if (i < (len(self._elements) - 1) and
+                self._elements[i].type == self._elements[i+1].type):
+            # beginMoveRows behavior is fubar if move down from source to dest
+            self.beginMoveRows(qc.QModelIndex(), i+1, i+1, qc.QModelIndex(), i)
+            self._swap(self._elements, i, i+1)
+            self.endMoveRows()
+        else:
+            config.status_bar.showMessage(
+                "Cannot move element any lower.", config.TIMEOUT)
+
+    def delete(self, element):
+        index = self._elements.index(element)
+        self.beginRemoveRows(qc.QModelIndex(), index, index)
+        self._elements.pop(index)
+        self.endRemoveRows()

@@ -43,16 +43,3 @@ class ConfigureElementView(qw.QGroupBox):
             1, qw.QHeaderView.Stretch)
 
         self.layout().addWidget(cfg_table)
-
-        """
-        cfg_table = qw.QTableWidget()
-        # cfg_table.setSelectionBehavior(qw.QAbstractItemView.SelectRows)
-        cfg_table.setRowCount(10)
-        cfg_table.setColumnCount(2)
-        cfg_table.setHorizontalHeaderLabels(("Property", "Value"))
-        cfg_table.setColumnWidth(0, 200)
-        cfg_table.setColumnWidth(1, 200)
-        cfg_table.verticalHeader().hide()
-        cfg_table.horizontalHeader().setSectionResizeMode(
-            1, qw.QHeaderView.Stretch)
-        """

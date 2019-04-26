@@ -7,7 +7,7 @@ and queueing the active pipeline.
 """
 
 import PyQt5.QtWidgets as qw
-import spikely_core as sc
+import config
 
 
 class OperatePipelineView(qw.QGroupBox):
@@ -32,7 +32,7 @@ class OperatePipelineView(qw.QGroupBox):
 
         # Pipeline operation commands
         run_btn = qw.QPushButton("Run")
-        run_btn.clicked.connect(self._pipeline_model.run)
+        run_btn.clicked.connect(self._run_btn_clicked)
         hbox.addWidget(run_btn)
 
         clear_btn = qw.QPushButton("Clear")
@@ -48,5 +48,7 @@ class OperatePipelineView(qw.QGroupBox):
         hbox.addWidget(queue_btn)
 
     def _queue_btn_clicked(self):
-        sc.spikely_msg_box(self.parent(), "Feature not implemented",
-                           "...not to say that it is not top of mind.")
+        config.status_bar.showMessage("Queue not implemented", config.TIMEOUT)
+
+    def _run_btn_clicked(self):
+        config.status_bar.showMessage("Run not implemented", config.TIMEOUT)
