@@ -52,6 +52,7 @@ class ConstructPipelineView(qw.QGroupBox):
         ui_frame = qw.QFrame()
         ui_frame.setLayout(qw.QHBoxLayout())
 
+        # Out of order declaration needed as forward reference
         ele_cbx = qw.QComboBox(self)
 
         stage_cbx = qw.QComboBox()
@@ -61,9 +62,9 @@ class ConstructPipelineView(qw.QGroupBox):
         def stage_cbx_changed(index):
             ele_cbx.clear()
             for element in SpikeElement.available_elements():
-                # Hack - depends on correspondence of type IDs and cbx indexes
+                # stage_cbx items store type ID associated w/ name
                 if element.type == stage_cbx.itemData(index):
-                    # Store name and actual element reference in cbx
+                    # ele_cbx items store element object w/ name
                     ele_cbx.addItem(element.name, element)
         stage_cbx.currentIndexChanged.connect(stage_cbx_changed)
 
@@ -73,7 +74,7 @@ class ConstructPipelineView(qw.QGroupBox):
         stage_cbx.addItem('Sorters', config.SORTER)
         stage_cbx.addItem('Post-Processors', config.POST_PROCESSOR)
 
-        # Placed in UI after stage_cbx, but initialized first as fwd reference
+        # Layout after stage_cbx, but declared first as fwd reference
         ui_frame.layout().addWidget(ele_cbx)
 
         add_button = qw.QPushButton("Add Element")
@@ -88,8 +89,9 @@ class ConstructPipelineView(qw.QGroupBox):
         return ui_frame
 
     def _pipeline_list(self):
-        # MVC time - link view (widget) to underlying data (model)
+        # MVC in action - connect View (widget) to Model
         self._pipeline_view.setModel(self._pipeline_model)
+
         self._pipeline_view.setSelectionMode(
             qw.QAbstractItemView.SingleSelection)
 
@@ -111,6 +113,7 @@ class ConstructPipelineView(qw.QGroupBox):
         ui_frame = qw.QFrame()
         ui_frame.setLayout(qw.QHBoxLayout())
 
+        # Move Up element button and associated action
         mu_btn = qw.QPushButton("Move Up")
         ui_frame.layout().addWidget(mu_btn)
 
@@ -123,6 +126,7 @@ class ConstructPipelineView(qw.QGroupBox):
                 self._pipeline_model.move_up(element)
         mu_btn.clicked.connect(move_up_clicked)
 
+        # Move Down element button and associated action
         md_btn = qw.QPushButton("Move Down")
         ui_frame.layout().addWidget(md_btn)
 
@@ -135,6 +139,7 @@ class ConstructPipelineView(qw.QGroupBox):
                 self._pipeline_model.move_down(element)
         md_btn.clicked.connect(move_down_clicked)
 
+        # Delete element button and associated action
         de_btn = qw.QPushButton("Delete")
         ui_frame.layout().addWidget(de_btn)
 
@@ -150,6 +155,7 @@ class ConstructPipelineView(qw.QGroupBox):
         return ui_frame
 
     def _get_selected_element(self):
+        """ Convenience function to retrieve selected element in pipe view"""
         element = None
         model = self._pipeline_view.selectionModel()
         if model.hasSelection():
