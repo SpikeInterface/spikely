@@ -1,148 +1,97 @@
-"""
-Spikely - an application built on top of SpikeInterface to create and run
-extracellular data processing pipelines
+"""UI for SpikeInterface extracellular data processing pipelines.
 
-The application is designed to allow users to load an extracellular recording,
-run preprocessing on the recording, run an installed spike sorter, and then perform
-postprocessing on the results. All results are saved into a folder.
+The application enables a user to constuct a pipeline consisting of elements
+associated with extracellular data recording extraction, pre-processing,
+sorting, and post-processing.  The user can configure the properties of each
+element, and once satisifed with the pipeline construction and element
+configuration operate the pipeline.
 
-Author: Roger Hurwitz
+Modules:
+    spikely.py - Main application module
+    config.py - Constants and globals
+    cp_view.py - Construct Pipeline UI region
+    op_view.py - Operate Pipeline UI region
+    ce_view.py - Configure Element UI region
+    pi_model.py - Pipeline Model: multi-stage element execution list
+    el_model.py - Element Model: SpikeInterface component wrappers
 """
 
 import sys
-from PyQt5.QtWidgets import (QApplication, QPushButton, QWidget, 
-    QTreeWidget, QTreeWidgetItem, QHBoxLayout, QGroupBox, QFrame,
-    QVBoxLayout, QComboBox, QTableWidget, QTableWidgetItem, QHeaderView)
-from PyQt5.QtGui import QStandardItemModel, QIcon
 
-SPIKELY_VERSION = "0.2.5"
+import PyQt5.QtWidgets as qw
+import PyQt5.QtGui as qg
 
-class Spikely(QWidget):
+from op_view import OperatePipelineView
+from cp_view import ConstructPipelineView
+from ce_view import ConfigureElementView
+from pi_model import SpikePipelineModel
+from el_model import SpikeElementModel
+
+import config
+
+__version__ = "0.2.1"
+
+
+class SpikelyMainWindow(qw.QMainWindow):
+    """Instantiates the overall UI for the application"""
 
     def __init__(self):
+
         super().__init__()
-        self.initUI()
 
+        # Active pipeline and element models
+        self._element_model = SpikeElementModel()
+        self._pipeline_model = SpikePipelineModel(
+            self._element_model)
 
-    def clicked(self, item, column):
-        print("Clicked")
+        # Enhances print() use for debug
+        sys.stdout.flush()
 
+        self._init_ui()
 
-    def initUI(self):
-        
-        # Processing pipeline model and view
-        self.pipe_tree = QTreeWidget(self)
-        self.pipe_tree.setColumnCount(1)
-        self.pipe_tree.header().hide()
-        # self.pipe_tree.itemClicked.connect(self.clicked)
-        # self.pipe_tree.setItemsExpandable(False)
+    def _init_ui(self):
+        """Assembles the main UI from delegated sub-views."""
 
-        stagelist = [
-            "Stage 1: Recording Extractors", 
-            "Stage 2: Pre-Processing",
-            "Stage 3: Sorters", 
-            "Stage 4: Post-Processing"
-        ]
-        
-        for stage in stagelist:
-            an_item = QTreeWidgetItem(self.pipe_tree)
-            an_item.setText(0, stage)
-            # an_item.setChildIndicatorPolicy(QTreeWidgetItem.DontShowIndicator)
-            an_item.setExpanded(True)
-            child = QTreeWidgetItem()
-            child.setText(0, "Sample Element")
-            an_item.addChild(child)
-          
+        # Application main window setup
+        self.setWindowTitle("Spikely")
+        self.setGeometry(100, 100, 1024, 384)
+        self.setWindowIcon(qg.QIcon("bin/spikely.png"))
+        self.statusBar().addPermanentWidget(
+            qw.QLabel("Version " + __version__))
 
-        # Pipeline element commands
-        self.up_btn, self.delete_btn, self.down_btn = (QPushButton("Move Up"),
-            QPushButton("Delete"), QPushButton("Move Down"))
-        pec_box = QFrame()
-        hbox = QHBoxLayout()
-        hbox.addWidget(self.up_btn)
-        hbox.addWidget(self.delete_btn)
-        hbox.addWidget(self.down_btn)
-        pec_box.setLayout(hbox)
+        # Lay out application views in main window from top to bottom
+        main_layout = qw.QVBoxLayout()
+        main_layout.addStretch(1)  # Pushes app window widgets down
 
-        # Add pipeline elements
-        stage_cbx = QComboBox()
-        stage_cbx.addItem("Recording")
-        stage_cbx.addItem("Pre-Process")
-        stage_cbx.addItem("Sorters")
-        stage_cbx.addItem("Post-Process")
+        """ Lay out Construction Pipeline (cp) and Configure Element (ce)
+        views in a frame at top of main window from left to right
+        """
+        cp_ce_splitter = qw.QSplitter()
+        cp_ce_splitter.setChildrenCollapsible(False)
 
-        ele_cbx = QComboBox()
-        ele_cbx.addItem("Element #1")
-        ele_cbx.addItem("Element #2")
-        ele_cbx.addItem("Element #3")
+        # Actual widget construction done in View classes
+        cp_ce_splitter.addWidget(ConstructPipelineView(
+            self._pipeline_model, self._element_model))
+        cp_ce_splitter.addWidget(ConfigureElementView(
+            self._pipeline_model, self._element_model))
+        cp_ce_splitter.setSizes([256, 768])
+        main_layout.addWidget(cp_ce_splitter)
 
-        ele_box = QFrame()
-        hbox = QHBoxLayout()
-        hbox.addWidget(stage_cbx)
-        hbox.addWidget(ele_cbx)
-        hbox.addWidget(QPushButton("Add Element"))
-        ele_box.setLayout(hbox)
+        # Lay out Operate Pipeline (op)view at bottom of main window
+        main_layout.addWidget(OperatePipelineView(
+            self._pipeline_model, self._element_model))
 
-        # Combine pipeline tree and element commands
-        pipe_box = QGroupBox("Pipeline Elements")
-        vbox = QVBoxLayout()
-        vbox.addWidget(ele_box)
-        vbox.addWidget(self.pipe_tree)
-        vbox.addWidget(pec_box)
-        pipe_box.setLayout(vbox)
+        # Allows any module to post a status message to main window
+        config.status_bar = self.statusBar()
 
-        # Pipeline operation commands
-        self.run_btn, self.queue_btn, self.clear_btn = (QPushButton("Run"),
-            QPushButton("Queue"), QPushButton("Clear"))
-        poc_box = QGroupBox("Pipeline Operations")
-        hbox = QHBoxLayout()
-        hbox.addWidget(self.run_btn)
-        hbox.addWidget(self.queue_btn)
-        hbox.addWidget(self.clear_btn)
-        # hbox.addStretch(1)
-        poc_box.setLayout(hbox)
-
-        # Element Properties
-        prop_tbl = QTableWidget()
-        prop_tbl.setRowCount(10)
-        prop_tbl.setColumnCount(2)
-        prop_tbl.setHorizontalHeaderLabels(("Property", "Value"))
-        prop_tbl.setColumnWidth(0, 200)
-        prop_tbl.setColumnWidth(1, 100)
-        prop_tbl.verticalHeader().hide()
-        prop_tbl.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
-
-        prop_box = QGroupBox("Element Properties") 
-        hbox = QHBoxLayout()
-        hbox.addWidget(prop_tbl)
-        prop_box.setLayout(hbox)
-
-        ele_frame = QFrame()
-        hbox = QHBoxLayout()
-        hbox.addWidget(pipe_box)
-        hbox.addWidget(prop_box)
-        ele_frame.setLayout(hbox)
-
-
-        # Layout of main window
-        main_box = QVBoxLayout()
-        main_box.addStretch(1)
-        main_box.addWidget(ele_frame)
-        main_box.addWidget(poc_box)
-        self.setLayout(main_box)
-
-    
+        # Core application UI in main_frame as CentralWidget of QMainWindow
+        main_frame = qw.QFrame()
+        main_frame.setLayout(main_layout)
+        self.setCentralWidget(main_frame)
 
 
 if __name__ == '__main__':
-  
-    app = QApplication(sys.argv)
-    
-    w = Spikely()
-    # w.setGeometry(400, 400, 300, 220)
-    w.resize(800, 400)
-    w.setWindowTitle("Spikely " + SPIKELY_VERSION)
-    # w.setWindowIcon(QIcon("spikely.png"))
-    w.show()
-
+    app = qw.QApplication(sys.argv)
+    win = SpikelyMainWindow()
+    win.show()
     sys.exit(app.exec_())

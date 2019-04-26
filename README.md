@@ -1,5 +1,5 @@
 Alpha Development
-Version 0.1.0
+Version 0.2.1
 
 # spikely
 An application built on top of [SpikeInterface](https://github.com/SpikeInterface) to create and run extracellular data processing pipelines.
