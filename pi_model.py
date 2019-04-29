@@ -5,14 +5,11 @@ actual concatenation (pipeline) of SpikeInterface element space of extractors,
 pre-processors, sorters, and post-processors.
 """
 
-from contextlib import contextmanager
-import copy
-
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
 
 import config
-from el_model import SpikeElement
+from spike_element import SpikeElement
 
 
 class SpikePipelineModel(qc.QAbstractListModel):
@@ -21,7 +18,7 @@ class SpikePipelineModel(qc.QAbstractListModel):
     def __init__(self, element_model):
         """TBD."""
         super().__init__()
-        
+
         # Underlying data structure proxied by model
         self._elements = []
 

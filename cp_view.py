@@ -7,7 +7,7 @@ within the active pipeline.
 
 import PyQt5.QtWidgets as qw
 
-from el_model import SpikeElement
+from spike_element import SpikeElement
 import config
 
 

@@ -7,13 +7,14 @@ element, and once satisifed with the pipeline construction and element
 configuration operate the pipeline.
 
 Modules:
-    spikely.py - Main application module
-    config.py - Constants and globals
-    cp_view.py - Construct Pipeline UI region
-    op_view.py - Operate Pipeline UI region
-    ce_view.py - Configure Element UI region
-    pi_model.py - Pipeline Model: multi-stage element execution list
-    el_model.py - Element Model: SpikeInterface component wrappers
+    ce_view.py - UI to configure element parameters
+    config.py - Constants and globals used throughout
+    cp_view.py - UI to select, insert, and manipulate elements in pipeline
+    el_model.py - SpikeElementModel bridges SpikeElement to/from UI
+    op_view.py - UI to manage pipeline commands (e.g., clear, run, queue)
+    pi_model.py - SpikePipeline model bridges element pipeline to/from UI
+    spike_element.py - SpikeElement class from which to subclass elements
+    spikely.py - Main application sets up UI and executes event loop
 """
 
 import sys
