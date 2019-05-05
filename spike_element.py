@@ -18,13 +18,16 @@ class SpikeElement:
     def __init__(self, element=None):
         """To support multi instancing, makes deep copy of template element"""
         if element is None:
+            # From config.py: EXTRACTOR, PRE_PROCESSOR, SORTER, POST_PROCESSOR
             self._type = None
+            # Used for display purposes
             self._name = None
-            self._props = None
+            # Parameter dictionary associated with element
+            self._params = None
         else:
             self._type = element.type
             self._name = element.name
-            self._props = copy.deepcopy(element.props)
+            self._params = copy.deepcopy(element.params)
 
     @property
     def name(self):
@@ -43,12 +46,12 @@ class SpikeElement:
         self._type = type
 
     @property
-    def props(self):
-        return self._props
+    def params(self):
+        return self._params
 
-    @props.setter
-    def props(self, props):
-        self._props = props
+    @params.setter
+    def params(self, props):
+        self._params = props
 
     def __str__(self):
         return self._name
@@ -96,5 +99,5 @@ def _create_dummy_elements(elements):
         element = SpikeElement()
         element.type = type
         element.name = name
-        element.props = props
+        element.params = props
         elements.append(element)

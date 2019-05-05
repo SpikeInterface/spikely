@@ -29,7 +29,7 @@ class ConfigureElementView(qw.QGroupBox):
         self.setLayout(qw.QHBoxLayout())
 
         cfg_table = qw.QTableView(self)
-        
+
         # Key to refreshing widget contents
         cfg_table.setModel(self._element_model)
 

@@ -27,7 +27,7 @@ class SpikeElementModel(qc.QAbstractTableModel):
 
     # Methods sub-classed from QAbstractTableModel
     def rowCount(self, parent=qc.QModelIndex()):
-        return 0 if self._element is None else len(self._element.props)
+        return 0 if self._element is None else len(self._element.params)
 
     def columnCount(self, parent=qc.QModelIndex()):
         return 2
@@ -45,9 +45,9 @@ class SpikeElementModel(qc.QAbstractTableModel):
         result = qc.QVariant()
         if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
             if col == 0:
-                result = list(self._element.props.keys())[row]
+                result = list(self._element.params.keys())[row]
             elif col == 1:
-                result = list(self._element.props.values())[row]
+                result = list(self._element.params.values())[row]
 
         return result
 
