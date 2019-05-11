@@ -7,8 +7,12 @@ within the active pipeline.
 
 import PyQt5.QtWidgets as qw
 
-from spike_element import SpikeElement
+from extractor import Extractor
+from preprocessor import Preprocessor
 import config
+
+import spikeextractors as se
+import spiketoolkit as st
 
 
 class ConstructPipelineView(qw.QGroupBox):
@@ -20,6 +24,9 @@ class ConstructPipelineView(qw.QGroupBox):
 
     def __init__(self, pipeline_model, element_model):
         super().__init__("Construct Pipeline")
+
+        self._available_elements = []
+        self._get_available_elements()
 
         self._pipeline_model = pipeline_model
         self._pipeline_view = qw.QListView(self)
@@ -61,9 +68,9 @@ class ConstructPipelineView(qw.QGroupBox):
         # Change ele_cbx contents when user makes stage_cbx selection
         def stage_cbx_changed(index):
             ele_cbx.clear()
-            for element in SpikeElement.available_elements():
+            for element in self._available_elements:
                 # stage_cbx items store type ID associated w/ name
-                if element.type == stage_cbx.itemData(index):
+                if element.interface_id == stage_cbx.itemData(index):
                     # ele_cbx items store element object w/ name
                     ele_cbx.addItem(element.name, element)
         stage_cbx.currentIndexChanged.connect(stage_cbx_changed)
@@ -162,3 +169,21 @@ class ConstructPipelineView(qw.QGroupBox):
             index = model.selectedIndexes()[0]
             element = self._pipeline_model.data(index, config.ELEMENT_ROLE)
         return element
+
+    def _get_available_elements(self):
+        extractor_list = se.extractorlist.installed_recording_extractor_list
+        for extractor_class in extractor_list:
+            self._available_elements.append(
+                Extractor(extractor_class, config.EXTRACTOR))
+
+        preprocessor_list = st.preprocessing.preprocessinglist.installed_preprocessers_list
+        for preprocessor_class in preprocessor_list:
+            self._available_elements.append(
+                Preprocessor(preprocessor_class, config.PRE_PROCESSOR)
+            )
+
+        sorter_list = st.sorters.sorterlist.installed_sorter_list
+        for sorter_class in sorter_list:
+            self._available_elements.append(
+                Preprocessor(sorter_class, config.SORTER)
+            )

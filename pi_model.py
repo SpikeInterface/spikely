@@ -8,8 +8,9 @@ pre-processors, sorters, and post-processors.
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
 
+import copy
+
 import config
-from spike_element import SpikeElement
 
 
 class SpikePipelineModel(qc.QAbstractListModel):
@@ -42,19 +43,19 @@ class SpikePipelineModel(qc.QAbstractListModel):
             if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
                 result = element.name
             elif role == qc.Qt.DecorationRole:
-                result = self._decorations[element.type]
+                result = self._decorations[element.interface_id]
             elif role == config.ELEMENT_ROLE:
                 result = element
 
         return result
 
     # Convenience methods used by class APIs
-    def _has_instance(self, type):
+    def _has_instance(self, interface_id):
         for element in self._elements:
-            if element.type == type:
+            if element.interface_id == interface_id:
                 return True
         # Generator expression equivalent for future reference
-        # return sum(1 for ele in self._elements if ele.type == type)
+        # return sum(1 for ele in self._elements if ele.interface_id == interface_id)
 
     def _swap(self, list, pos1, pos2):
         list[pos1], list[pos2] = list[pos2], list[pos1]
@@ -71,28 +72,29 @@ class SpikePipelineModel(qc.QAbstractListModel):
         self.endResetModel()
 
     def add_element(self, element):
-        """ Adds element at top of stage associated w/ element type"""
+        """ Adds element at top of stage associated w/ element interface_id"""
         # Only allow one Extractor or Sorter
-        if element.type == config.EXTRACTOR or element.type == config.SORTER:
-            if self._has_instance(element.type):
+        if (element.interface_id == config.EXTRACTOR or
+            element.interface_id == config.SORTER):
+            if self._has_instance(element.interface_id):
                 config.status_bar.showMessage(
                     "Only one instance of that element type allowed",
                     config.TIMEOUT)
                 return
-        # A bit hacky since it assumes order of type constants
+        # A bit hacky since it assumes order of interface_id constants
         i = 0
         while (i < len(self._elements) and
-                element.type >= self._elements[i].type):
+                element.interface_id >= self._elements[i].interface_id):
             i += 1
         self.beginInsertRows(qc.QModelIndex(), i, i)
         # Need a deep copy of element to support multi-instance element use
-        self._elements.insert(i, SpikeElement(element))
+        self._elements.insert(i, copy.deepcopy(element))
         self.endInsertRows()
 
     def move_up(self, element):
         i = self._elements.index(element)
         # Elements confined to their stage
-        if i > 0 and self._elements[i].type == self._elements[i-1].type:
+        if i > 0 and self._elements[i].interface_id == self._elements[i-1].interface_id:
             self.beginMoveRows(qc.QModelIndex(), i, i, qc.QModelIndex(), i-1)
             self._swap(self._elements, i, i-1)
             self.endMoveRows()
@@ -104,7 +106,7 @@ class SpikePipelineModel(qc.QAbstractListModel):
         i = self._elements.index(element)
         # Elements confined to their stage
         if (i < (len(self._elements) - 1) and
-                self._elements[i].type == self._elements[i+1].type):
+                self._elements[i].interface_id == self._elements[i+1].interface_id):
             # beginMoveRows behavior is fubar if move down from source to dest
             self.beginMoveRows(qc.QModelIndex(), i+1, i+1, qc.QModelIndex(), i)
             self._swap(self._elements, i, i+1)

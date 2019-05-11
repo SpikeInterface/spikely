@@ -45,9 +45,12 @@ class SpikeElementModel(qc.QAbstractTableModel):
         result = qc.QVariant()
         if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
             if col == 0:
-                result = list(self._element.params.keys())[row]
+                result = self._element.params[row]['name']
             elif col == 1:
-                result = list(self._element.params.values())[row]
+                if 'value' in self._element.params[row].keys():
+                    result = self._element.params[row]['value']
+                else:
+                    result = ''
 
         return result
 
