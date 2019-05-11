@@ -7,13 +7,14 @@ element, and once satisifed with the pipeline construction and element
 configuration operate the pipeline.
 
 Modules:
-    spikely.py - Main application module
-    config.py - Constants and globals
-    cp_view.py - Construct Pipeline UI region
-    op_view.py - Operate Pipeline UI region
-    ce_view.py - Configure Element UI region
-    pi_model.py - Pipeline Model: multi-stage element execution list
-    el_model.py - Element Model: SpikeInterface component wrappers
+    ce_view.py - UI to configure element parameters
+    config.py - Constants and globals used throughout
+    cp_view.py - UI to select, insert, and manipulate elements in pipeline
+    el_model.py - SpikeElementModel bridges SpikeElement to/from UI
+    op_view.py - UI to manage pipeline commands (e.g., clear, run, queue)
+    pi_model.py - SpikePipeline model bridges element pipeline to/from UI
+    spike_element.py - SpikeElement class from which to subclass elements
+    spikely.py - Main application sets up UI and executes event loop
 """
 
 import sys
@@ -26,14 +27,13 @@ from cp_view import ConstructPipelineView
 from ce_view import ConfigureElementView
 from pi_model import SpikePipelineModel
 from el_model import SpikeElementModel
-
 import config
 
-__version__ = "0.2.1"
+__version__ = "0.2.5"
 
 
 class SpikelyMainWindow(qw.QMainWindow):
-    """Instantiates the overall UI for the application"""
+    """Main window for the application"""
 
     def __init__(self):
 
@@ -59,9 +59,11 @@ class SpikelyMainWindow(qw.QMainWindow):
         self.statusBar().addPermanentWidget(
             qw.QLabel("Version " + __version__))
 
-        # Lay out application views in main window from top to bottom
-        main_layout = qw.QVBoxLayout()
-        main_layout.addStretch(1)  # Pushes app window widgets down
+        # Core application UI in main_frame as CentralWidget of QMainWindow
+        main_frame = qw.QFrame()
+        self.setCentralWidget(main_frame)
+        main_frame.setLayout(qw.QVBoxLayout())
+        main_frame.layout().addStretch(1)  # Pushes app window widgets down
 
         """ Lay out Construction Pipeline (cp) and Configure Element (ce)
         views in a frame at top of main window from left to right
@@ -74,20 +76,15 @@ class SpikelyMainWindow(qw.QMainWindow):
             self._pipeline_model, self._element_model))
         cp_ce_splitter.addWidget(ConfigureElementView(
             self._pipeline_model, self._element_model))
-        cp_ce_splitter.setSizes([256, 768])
-        main_layout.addWidget(cp_ce_splitter)
+        cp_ce_splitter.setSizes([328, 640])
+        main_frame.layout().addWidget(cp_ce_splitter)
 
-        # Lay out Operate Pipeline (op)view at bottom of main window
-        main_layout.addWidget(OperatePipelineView(
+        # Lay out Operate Pipeline (op) view at bottom of main window
+        main_frame.layout().addWidget(OperatePipelineView(
             self._pipeline_model, self._element_model))
 
         # Allows any module to post a status message to main window
         config.status_bar = self.statusBar()
-
-        # Core application UI in main_frame as CentralWidget of QMainWindow
-        main_frame = qw.QFrame()
-        main_frame.setLayout(main_layout)
-        self.setCentralWidget(main_frame)
 
 
 if __name__ == '__main__':

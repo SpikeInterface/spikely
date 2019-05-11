@@ -1,4 +1,4 @@
-"""Creates an MVC view-control for configuring piepline element properties.
+"""Creates an MVC view-control for configuring pipeline element properties.
 
 The Configure Element view/control consists of widgets responsible for
 viewing and editing the properties of elements (extractors, sorters, etc.).
@@ -8,17 +8,12 @@ import PyQt5.QtWidgets as qw
 
 
 class ConfigureElementView(qw.QGroupBox):
-    """GroupBox of widgets capable of constructing active pipeline.
+    """GroupBox of widgets capable of editing element properties.
 
-    No public methods other than constructor.  All other activites
-    of object are triggered by user interaction with sub widgets.
-
-    Keys off of changes to the active_element attribute in the pipeline
-    which in turn is keyed off of user interactions with elements in the
-    pipeline view.  User selects element in Pipeline View causing view
-    to signal model to set Active Element to selection.  In turn, the
-    pipeline model signals a change to Active Element that is received
-    by the Configure Element view.
+    Application instance of element model is updated everytime user selects an
+    element in the pipeline view.  In turn, this view keys off of those
+    element model changes to display properties associated with user selected
+    element.
     """
 
     def __init__(self, pipeline_model, element_model):
@@ -34,6 +29,8 @@ class ConfigureElementView(qw.QGroupBox):
         self.setLayout(qw.QHBoxLayout())
 
         cfg_table = qw.QTableView(self)
+
+        # Key to refreshing widget contents
         cfg_table.setModel(self._element_model)
 
         cfg_table.verticalHeader().hide()
