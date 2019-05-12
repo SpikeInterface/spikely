@@ -21,6 +21,6 @@ class Extractor(SpikeElement):
             param_value = param['value']
             params_dict[param_name] = param_value
         recording = self._interface_class(**params_dict)
-        if(not self._interface_class.has_locations):
+        if(not self._interface_class.has_default_locations):
             se.load_probe_file(recording, probe_path)
         return recording
