@@ -5,6 +5,7 @@ processing.
 """
 
 import PyQt5.QtCore as qc
+from pydoc import locate
 
 
 class SpikeElementModel(qc.QAbstractTableModel):
@@ -50,7 +51,17 @@ class SpikeElementModel(qc.QAbstractTableModel):
                 if 'value' in self._element.params[row].keys():
                     result = self._element.params[row]['value']
                 else:
-                    result = ''
+                    value_type = locate(self._element.params[row]['type'])
+                    if value_type is int:
+                        result = -10
+                    elif value_type is float:
+                        result = -10.0
+                    elif value_type is bool:
+                        result = False
+                    elif value_type is str:
+                        result = ''
+                    else:
+                        result = 'Unknown Type'
 
         return result
 
@@ -58,6 +69,14 @@ class SpikeElementModel(qc.QAbstractTableModel):
         result = qc.QVariant()
         if (orientation == qc.Qt.Horizontal and
                 (role == qc.Qt.DisplayRole or role == qc.Qt.EditRole)):
-            result = ['Property', 'Value'][section]
+            result = ['Parameter', 'Value'][section]
 
+        return result
+
+    def setData(self, mod_index, value, role=qc.Qt.EditRole):
+        row = mod_index.row()
+        result = False
+        if role == qc.Qt.EditRole:
+            self._element.params[row]['value'] = value
+            result = True
         return result

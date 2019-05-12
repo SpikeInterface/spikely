@@ -9,6 +9,8 @@ import PyQt5.QtWidgets as qw
 
 from extractor import Extractor
 from preprocessor import Preprocessor
+from sorter import Sorter
+
 import config
 
 import spikeextractors as se
@@ -185,5 +187,5 @@ class ConstructPipelineView(qw.QGroupBox):
         sorter_list = st.sorters.sorterlist.installed_sorter_list
         for sorter_class in sorter_list:
             self._available_elements.append(
-                Preprocessor(sorter_class, config.SORTER)
+                Sorter(sorter_class, config.SORTER)
             )

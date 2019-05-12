@@ -11,7 +11,7 @@ class Sorter(SpikeElement):
     def run(self, input_payload):
         base_sorter_param_dict = {}
         base_sorter_param_dict['recording'] = input_payload
-        
+
         params = self._params
         output_folder = params[0]
         parallel = params[1]
@@ -28,5 +28,5 @@ class Sorter(SpikeElement):
             sub_sorter_param_dict[param_name] = param_value
         sorter.set_params(**sub_sorter_param_dict)
         sorter.run()
-        
+
         return sorter.get_result()

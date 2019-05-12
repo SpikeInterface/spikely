@@ -54,8 +54,9 @@ class SpikePipelineModel(qc.QAbstractListModel):
         for element in self._elements:
             if element.interface_id == interface_id:
                 return True
-        # Generator expression equivalent for future reference
-        # return sum(1 for ele in self._elements if ele.interface_id == interface_id)
+        """Generator expression equivalent for future reference
+        return sum(1 for ele in self._elements if
+        ele.interface_id == interface_id)"""
 
     def _swap(self, list, pos1, pos2):
         list[pos1], list[pos2] = list[pos2], list[pos1]
@@ -63,7 +64,9 @@ class SpikePipelineModel(qc.QAbstractListModel):
     # Methods for other parts of Spikely to manipulate pipeline
     def run(self):
         """Causes SpikeInterface APIs to be executed on pipeline"""
-        pass
+        input_payload = None
+        for element in self._elements:
+            input_payload = element.run(input_payload)
 
     def clear(self):
         """Removes all elements from pipeline"""
@@ -75,7 +78,7 @@ class SpikePipelineModel(qc.QAbstractListModel):
         """ Adds element at top of stage associated w/ element interface_id"""
         # Only allow one Extractor or Sorter
         if (element.interface_id == config.EXTRACTOR or
-            element.interface_id == config.SORTER):
+                element.interface_id == config.SORTER):
             if self._has_instance(element.interface_id):
                 config.status_bar.showMessage(
                     "Only one instance of that element type allowed",
@@ -94,7 +97,8 @@ class SpikePipelineModel(qc.QAbstractListModel):
     def move_up(self, element):
         i = self._elements.index(element)
         # Elements confined to their stage
-        if i > 0 and self._elements[i].interface_id == self._elements[i-1].interface_id:
+        if (i > 0 and self._elements[i].interface_id
+                == self._elements[i-1].interface_id):
             self.beginMoveRows(qc.QModelIndex(), i, i, qc.QModelIndex(), i-1)
             self._swap(self._elements, i, i-1)
             self.endMoveRows()
@@ -106,7 +110,8 @@ class SpikePipelineModel(qc.QAbstractListModel):
         i = self._elements.index(element)
         # Elements confined to their stage
         if (i < (len(self._elements) - 1) and
-                self._elements[i].interface_id == self._elements[i+1].interface_id):
+                self._elements[i].interface_id
+                == self._elements[i+1].interface_id):
             # beginMoveRows behavior is fubar if move down from source to dest
             self.beginMoveRows(qc.QModelIndex(), i+1, i+1, qc.QModelIndex(), i)
             self._swap(self._elements, i, i+1)
