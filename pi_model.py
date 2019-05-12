@@ -67,6 +67,7 @@ class SpikePipelineModel(qc.QAbstractListModel):
         input_payload = None
         for element in self._elements:
             input_payload = element.run(input_payload)
+        print("Finished job!")
 
     def clear(self):
         """Removes all elements from pipeline"""
