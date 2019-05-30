@@ -130,7 +130,7 @@ class ConstructPipelineView(qw.QGroupBox):
             element = self._get_selected_element()
             if element is None:
                 config.status_bar.showMessage(
-                    "Nothing to move up", config.TIMEOUT)
+                    "Nothing to move up", config.STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.move_up(element)
         mu_btn.clicked.connect(move_up_clicked)
@@ -143,7 +143,7 @@ class ConstructPipelineView(qw.QGroupBox):
             element = self._get_selected_element()
             if element is None:
                 config.status_bar.showMessage(
-                    "Nothing to move down", config.TIMEOUT)
+                    "Nothing to move down", config.STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.move_down(element)
         md_btn.clicked.connect(move_down_clicked)
@@ -156,7 +156,7 @@ class ConstructPipelineView(qw.QGroupBox):
             element = self._get_selected_element()
             if element is None:
                 config.status_bar.showMessage(
-                    "Nothing to delete", config.TIMEOUT)
+                    "Nothing to delete", config.STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.delete(element)
         de_btn.clicked.connect(delete_clicked)

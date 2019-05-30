@@ -49,7 +49,8 @@ class OperatePipelineView(qw.QGroupBox):
 
     def _queue_btn_clicked(self):
         # Pipeline model should be responsible for this
-        config.status_bar.showMessage("Queue not implemented", config.TIMEOUT)
+        config.status_bar.showMessage(
+            "Queue not implemented", config.STATUS_MSG_TIMEOUT)
 
     def _run_btn_clicked(self):
         # Pipeline model should be responsible for this
