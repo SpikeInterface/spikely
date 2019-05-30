@@ -7,6 +7,7 @@ pre-processors, sorters, and post-processors.
 
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
+# import PyQt5.QtWidgets as qw
 
 import copy
 
@@ -63,11 +64,25 @@ class SpikePipelineModel(qc.QAbstractListModel):
 
     # Methods for other parts of Spikely to manipulate pipeline
     def run(self):
-        """Causes SpikeInterface APIs to be executed on pipeline"""
-        input_payload = None
-        for element in self._elements:
-            input_payload = element.run(input_payload)
-        print("Finished job!")
+        """Call SpikeInterface APIs on elements in pipeline"""
+        try:
+            input_payload = None
+            for element in self._elements:
+                input_payload = element.run(input_payload)
+        except KeyError:
+            config.status_bar.showMessage(
+                'Run failed due to parameter specification error.',
+                config.STATUS_MSG_TIMEOUT)
+        except Exception as e:
+            config.status_bar.showMessage(
+                f'Run failed due to unspecified error: {e}.',
+                config.STATUS_MSG_TIMEOUT)
+        else:
+            config.status_bar.showMessage(
+                'Run operations successfully completed.',
+                config.STATUS_MSG_TIMEOUT)
+        finally:
+            self.clear()
 
     def clear(self):
         """Removes all elements from pipeline"""
@@ -83,7 +98,7 @@ class SpikePipelineModel(qc.QAbstractListModel):
             if self._has_instance(element.interface_id):
                 config.status_bar.showMessage(
                     "Only one instance of that element type allowed",
-                    config.TIMEOUT)
+                    config.STATUS_MSG_TIMEOUT)
                 return
         # A bit hacky since it assumes order of interface_id constants
         i = 0
@@ -105,7 +120,7 @@ class SpikePipelineModel(qc.QAbstractListModel):
             self.endMoveRows()
         else:
             config.status_bar.showMessage(
-                "Cannot move element any higher", config.TIMEOUT)
+                "Cannot move element any higher", config.STATUS_MSG_TIMEOUT)
 
     def move_down(self, element):
         i = self._elements.index(element)
@@ -119,7 +134,7 @@ class SpikePipelineModel(qc.QAbstractListModel):
             self.endMoveRows()
         else:
             config.status_bar.showMessage(
-                "Cannot move element any lower", config.TIMEOUT)
+                "Cannot move element any lower", config.STATUS_MSG_TIMEOUT)
 
     def delete(self, element):
         index = self._elements.index(element)
