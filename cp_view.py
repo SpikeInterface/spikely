@@ -64,18 +64,25 @@ class ConstructPipelineView(qw.QGroupBox):
         # Out of order declaration needed as forward reference
         ele_cbx = qw.QComboBox(self)
 
+        """
+        # Indicates user selection of combobox entry
+        def _ele_cbx_activated(index):
+            print('_ele_cbx activated')
+        ele_cbx.activated.connect(_ele_cbx_activated)
+        """
+
         stage_cbx = qw.QComboBox()
         ui_frame.layout().addWidget(stage_cbx)
 
         # Change ele_cbx contents when user makes stage_cbx selection
-        def stage_cbx_changed(index):
+        def _stage_cbx_changed(index):
             ele_cbx.clear()
             for element in self._available_elements:
                 # stage_cbx items store type ID associated w/ name
                 if element.interface_id == stage_cbx.itemData(index):
                     # ele_cbx items store element object w/ name
                     ele_cbx.addItem(element.name, element)
-        stage_cbx.currentIndexChanged.connect(stage_cbx_changed)
+        stage_cbx.currentIndexChanged.connect(_stage_cbx_changed)
 
         # Must come after currentIndexChanged.connect to invoke callback
         stage_cbx.addItem('Extractors', config.EXTRACTOR)
@@ -89,8 +96,10 @@ class ConstructPipelineView(qw.QGroupBox):
         add_button = qw.QPushButton("Add Element")
 
         def _add_element_clicked():
-            # Takes advantage of actual element reference stored in ele_cbx
-            self._pipeline_model.add_element(ele_cbx.currentData())
+            # Prevents the addition of nu
+            if ele_cbx.currentIndex() > -1:
+                # Takes advantage of actual element reference stored in ele_cbx
+                self._pipeline_model.add_element(ele_cbx.currentData())
         add_button.clicked.connect(_add_element_clicked)
 
         ui_frame.layout().addWidget(add_button)
