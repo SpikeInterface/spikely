@@ -81,8 +81,6 @@ class SpikePipelineModel(qc.QAbstractListModel):
             config.status_bar.showMessage(
                 'Run operations successfully completed.',
                 config.STATUS_MSG_TIMEOUT)
-        finally:
-            self.clear()
 
     def clear(self):
         """Removes all elements from pipeline"""
