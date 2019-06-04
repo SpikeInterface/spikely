@@ -10,7 +10,7 @@ class Postprocessor(SpikeElement):
 
     def run(self, input_payload):
         params_dict = {}
-        params_dict['recording'] = input_payload
+        params_dict['sorting'] = input_payload
         params = self._params
         for param in params:
             param_name = param['name']
@@ -18,5 +18,5 @@ class Postprocessor(SpikeElement):
             # param_title = param['title']
             param_value = param['value']
             params_dict[param_name] = param_value
-        pp = self._interface_class(**params_dict)
-        return pp
+        sorting = self._interface_class(**params_dict)
+        return sorting

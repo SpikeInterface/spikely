@@ -10,6 +10,7 @@ import PyQt5.QtWidgets as qw
 from extractor import Extractor
 from preprocessor import Preprocessor
 from sorter import Sorter
+from postprocessor import Postprocessor
 
 import config
 
@@ -197,4 +198,10 @@ class ConstructPipelineView(qw.QGroupBox):
         for sorter_class in sorter_list:
             self._available_elements.append(
                 Sorter(sorter_class, config.SORTER)
+            )
+
+        postprocessing_list = st.postprocessing.postprocessinglist.installed_postprocessors_list
+        for postprocessing_class in postprocessing_list:
+            self._available_elements.append(
+                Postprocessor(postprocessing_class, config.POST_PROCESSOR)
             )

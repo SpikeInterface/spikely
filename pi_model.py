@@ -7,10 +7,10 @@ pre-processors, sorters, and post-processors.
 
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
-# import PyQt5.QtWidgets as qw
-
+from pathlib import Path
+import spikeextractors as se
+import os
 import copy
-
 import config
 
 
@@ -69,6 +69,24 @@ class SpikePipelineModel(qc.QAbstractListModel):
             input_payload = None
             for element in self._elements:
                 input_payload = element.run(input_payload)
+
+            has_postprocessor = False
+            sorter_class = None
+            for element in self._elements:
+                if(element.interface_id == config.POST_PROCESSOR):
+                    has_postprocessor = True
+                if(element.interface_id == config.SORTER):
+                    sorter = element
+            output_folder_path = sorter.output_folder_path
+            if(has_postprocessor):
+                curated_output_folder_path = output_folder_path + '_curated'
+                curated_output_folder = Path(curated_output_folder_path).absolute()
+                if not curated_output_folder.is_dir():
+                    os.makedirs(str(curated_output_folder))
+                print("Saving curated results....")
+                se.PhySortingExtractor.write_sorting(input_payload, curated_output_folder)
+                print("Done!")
+
         except KeyError:
             config.status_bar.showMessage(
                 'Run failed due to parameter specification error.',
