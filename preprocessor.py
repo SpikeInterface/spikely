@@ -8,7 +8,7 @@ class Preprocessor(SpikeElement):
         SpikeElement.__init__(self, interface_id, interface_class,
                               interface_class.preprocessor_name)
 
-    def run(self, input_payload):
+    def run(self, input_payload, next_element):
         params_dict = {}
         params_dict['recording'] = input_payload
         params = self._params

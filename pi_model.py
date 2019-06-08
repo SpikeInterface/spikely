@@ -67,8 +67,14 @@ class SpikePipelineModel(qc.QAbstractListModel):
         """Call SpikeInterface APIs on elements in pipeline"""
         try:
             input_payload = None
-            for element in self._elements:
-                input_payload = element.run(input_payload)
+            element_count = len(self._elements)
+            for i in range(0, element_count):
+                next_element = (
+                    self._elements[i+1] if i < (element_count - 1) else None
+                )
+                input_payload = self._elements[i].run(
+                    input_payload, next_element
+                )
         except KeyError:
             config.status_bar.showMessage(
                 'Run failed due to parameter specification error.',

@@ -8,7 +8,7 @@ class Sorter(SpikeElement):
         SpikeElement.__init__(self, interface_id, interface_class,
                               interface_class.sorter_name)
 
-    def run(self, input_payload):
+    def run(self, input_payload, next_element):
         base_sorter_param_dict = {}
         base_sorter_param_dict['recording'] = input_payload
 
