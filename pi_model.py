@@ -7,7 +7,7 @@ pre-processors, sorters, and post-processors.
 
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
-# import PyQt5.QtWidgets as qw
+import PyQt5.QtWidgets as qw
 
 import copy
 
@@ -76,13 +76,14 @@ class SpikePipelineModel(qc.QAbstractListModel):
                     input_payload, next_element
                 )
         except KeyError:
-            config.status_bar.showMessage(
-                'Run failed due to parameter specification error.',
-                config.STATUS_MSG_TIMEOUT)
+            err_dlg = qw.QErrorMessage(config.main_window)
+            err_dlg.showMessage(
+                'Run failure: One or more invalid element parameter '
+                'values. Please ensure all parameter values are set '
+                ' properly for all elements in the pipeline.')
         except Exception as e:
-            config.status_bar.showMessage(
-                f'Run failed due to unspecified error: {e}.',
-                config.STATUS_MSG_TIMEOUT)
+            err_dlg = qw.QErrorMessage(config.main_window)
+            err_dlg.showMessage(f'Run failure: {e}')
         else:
             config.status_bar.showMessage(
                 'Run operations successfully completed.',

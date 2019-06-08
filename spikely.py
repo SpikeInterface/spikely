@@ -89,6 +89,6 @@ class SpikelyMainWindow(qw.QMainWindow):
 
 if __name__ == '__main__':
     app = qw.QApplication(sys.argv)
-    win = SpikelyMainWindow()
-    win.show()
+    config.main_window = SpikelyMainWindow()
+    config.main_window.show()
     sys.exit(app.exec_())
