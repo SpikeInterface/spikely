@@ -9,7 +9,7 @@ class Extractor(SpikeElement):
         SpikeElement.__init__(self, interface_id, interface_class,
                               interface_class.extractor_name)
 
-    def run(self, input_payload=None):
+    def run(self, input_payload, next_element):
         if(not self._interface_class.has_default_locations):
             probe_path = self._params.pop(-1)['value']
         params = self._params

@@ -29,5 +29,5 @@ class SpikeElement:
     def setup(self):
         pass
 
-    def run(self, input_payload=None):
+    def run(self, input_payload, next_element):
         pass
