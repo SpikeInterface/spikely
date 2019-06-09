@@ -30,4 +30,4 @@ class Sorter(SpikeElement):
         sorter.set_params(**sub_sorter_param_dict)
         sorter.run()
 
-        return sorter.get_result()
+        return sorter.get_result(), output_folder['value']

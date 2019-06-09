@@ -1,4 +1,5 @@
 from spike_element import SpikeElement
+import spikeextractors import se
 
 
 class Postprocessor(SpikeElement):
@@ -10,7 +11,9 @@ class Postprocessor(SpikeElement):
 
     def run(self, input_payload, next_element):
         params_dict = {}
-        params_dict['sorting'] = input_payload
+        params_dict['sorting'] = input_payload[0]
+        output_folder_path = input_payload[1]
+        
         params = self._params
         for param in params:
             param_name = param['name']
@@ -27,4 +30,4 @@ class Postprocessor(SpikeElement):
             print("Saving curated results....")
             se.PhySortingExtractor.write_sorting(input_payload, curated_output_folder)
             print("Done!")
-        return sorting
+        return sorting, output_folder_path
