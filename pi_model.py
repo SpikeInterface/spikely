@@ -85,15 +85,19 @@ class SpikePipelineModel(qc.QAbstractListModel):
             err_dlg = qw.QErrorMessage(config.main_window)
             err_dlg.showMessage(f'Run failure: {e}')
         else:
-            config.status_bar.showMessage(
-                'Run operations successfully completed.',
-                config.STATUS_MSG_TIMEOUT)
+            msg = ('Run successful' if element_count > 0 else
+                   'Nothing to run')
+            config.status_bar.showMessage(msg, config.STATUS_MSG_TIMEOUT)
 
     def clear(self):
         """Removes all elements from pipeline"""
-        self.beginResetModel()
-        self._elements.clear()
-        self.endResetModel()
+        if len(self._elements):
+            self.beginResetModel()
+            self._elements.clear()
+            self.endResetModel()
+        else:
+            config.status_bar.showMessage('Nothing to clear',
+                                          config.STATUS_MSG_TIMEOUT)
 
     def add_element(self, element):
         """ Adds element at top of stage associated w/ element interface_id"""
