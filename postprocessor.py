@@ -1,5 +1,5 @@
 from spike_element import SpikeElement
-from spikeextractors import se
+import spikeextractors as se
 
 
 class Postprocessor(SpikeElement):
