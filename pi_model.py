@@ -67,26 +67,14 @@ class SpikePipelineModel(qc.QAbstractListModel):
         """Call SpikeInterface APIs on elements in pipeline"""
         try:
             input_payload = None
-            for element in self._elements:
-                input_payload = element.run(input_payload)
-
-            has_postprocessor = False
-            sorter_class = None
-            for element in self._elements:
-                if(element.interface_id == config.POST_PROCESSOR):
-                    has_postprocessor = True
-                if(element.interface_id == config.SORTER):
-                    sorter = element
-            output_folder_path = sorter.output_folder_path
-            if(has_postprocessor):
-                curated_output_folder_path = output_folder_path + '_curated'
-                curated_output_folder = Path(curated_output_folder_path).absolute()
-                if not curated_output_folder.is_dir():
-                    os.makedirs(str(curated_output_folder))
-                print("Saving curated results....")
-                se.PhySortingExtractor.write_sorting(input_payload, curated_output_folder)
-                print("Done!")
-
+            element_count = len(self._elements)
+            for i in range(0, element_count):
+                next_element = (
+                    self._elements[i+1] if i < (element_count - 1) else None
+                )
+                input_payload = self._elements[i].run(
+                    input_payload, next_element
+                )
         except KeyError:
             config.status_bar.showMessage(
                 'Run failed due to parameter specification error.',

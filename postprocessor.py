@@ -8,7 +8,7 @@ class Postprocessor(SpikeElement):
         SpikeElement.__init__(self, interface_id, interface_class,
                               interface_class.postprocessor_name)
 
-    def run(self, input_payload):
+    def run(self, input_payload, next_element):
         params_dict = {}
         params_dict['sorting'] = input_payload
         params = self._params
@@ -19,4 +19,12 @@ class Postprocessor(SpikeElement):
             param_value = param['value']
             params_dict[param_name] = param_value
         sorting = self._interface_class(**params_dict)
+        if(next_element is None):
+            curated_output_folder_path = output_folder_path + '_curated'
+            curated_output_folder = Path(curated_output_folder_path).absolute()
+            if not curated_output_folder.is_dir():
+                os.makedirs(str(curated_output_folder))
+            print("Saving curated results....")
+            se.PhySortingExtractor.write_sorting(input_payload, curated_output_folder)
+            print("Done!")
         return sorting
