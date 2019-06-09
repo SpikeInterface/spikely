@@ -1,5 +1,5 @@
 from spike_element import SpikeElement
-import spikeextractors import se
+from spikeextractors import se
 
 
 class Postprocessor(SpikeElement):
@@ -13,7 +13,7 @@ class Postprocessor(SpikeElement):
         params_dict = {}
         params_dict['sorting'] = input_payload[0]
         output_folder_path = input_payload[1]
-        
+
         params = self._params
         for param in params:
             param_name = param['name']
