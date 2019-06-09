@@ -1,5 +1,7 @@
 from spike_element import SpikeElement
 import spikeextractors as se
+from pathlib import Path
+import os
 
 
 class Postprocessor(SpikeElement):
@@ -28,6 +30,6 @@ class Postprocessor(SpikeElement):
             if not curated_output_folder.is_dir():
                 os.makedirs(str(curated_output_folder))
             print("Saving curated results....")
-            se.PhySortingExtractor.write_sorting(input_payload, curated_output_folder)
+            se.PhySortingExtractor.write_sorting(sorting, curated_output_folder)
             print("Done!")
         return sorting, output_folder_path
