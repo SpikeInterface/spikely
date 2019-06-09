@@ -10,7 +10,6 @@ import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
 
 import copy
-
 import config
 
 

@@ -14,6 +14,7 @@ class Sorter(SpikeElement):
 
         params = self._params
         output_folder = params[0]
+        print(output_folder['value'])
         parallel = params[1]
         base_sorter_param_dict[output_folder['name']] = output_folder['value']
         base_sorter_param_dict[parallel['name']] = parallel['value']
@@ -28,5 +29,5 @@ class Sorter(SpikeElement):
             sub_sorter_param_dict[param_name] = param_value
         sorter.set_params(**sub_sorter_param_dict)
         sorter.run()
-
-        return sorter.get_result()
+        print(output_folder['value'])
+        return sorter.get_result(), output_folder['value']
