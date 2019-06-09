@@ -7,8 +7,15 @@ within the active pipeline.
 
 import PyQt5.QtWidgets as qw
 
-from el_model import SpikeElement
+from extractor import Extractor
+from preprocessor import Preprocessor
+from sorter import Sorter
+from postprocessor import Postprocessor
+
 import config
+
+import spikeextractors as se
+import spiketoolkit as st
 
 
 class ConstructPipelineView(qw.QGroupBox):
@@ -20,6 +27,9 @@ class ConstructPipelineView(qw.QGroupBox):
 
     def __init__(self, pipeline_model, element_model):
         super().__init__("Construct Pipeline")
+
+        self._available_elements = []
+        self._get_available_elements()
 
         self._pipeline_model = pipeline_model
         self._pipeline_view = qw.QListView(self)
@@ -52,20 +62,28 @@ class ConstructPipelineView(qw.QGroupBox):
         ui_frame = qw.QFrame()
         ui_frame.setLayout(qw.QHBoxLayout())
 
+        # Out of order declaration needed as forward reference
         ele_cbx = qw.QComboBox(self)
+
+        """
+        # Indicates user selection of combobox entry
+        def _ele_cbx_activated(index):
+            print('_ele_cbx activated')
+        ele_cbx.activated.connect(_ele_cbx_activated)
+        """
 
         stage_cbx = qw.QComboBox()
         ui_frame.layout().addWidget(stage_cbx)
 
         # Change ele_cbx contents when user makes stage_cbx selection
-        def stage_cbx_changed(index):
+        def _stage_cbx_changed(index):
             ele_cbx.clear()
-            for element in SpikeElement.available_elements():
-                # Hack - depends on correspondence of type IDs and cbx indexes
-                if element.type == stage_cbx.itemData(index):
-                    # Store name and actual element reference in cbx
+            for element in self._available_elements:
+                # stage_cbx items store type ID associated w/ name
+                if element.interface_id == stage_cbx.itemData(index):
+                    # ele_cbx items store element object w/ name
                     ele_cbx.addItem(element.name, element)
-        stage_cbx.currentIndexChanged.connect(stage_cbx_changed)
+        stage_cbx.currentIndexChanged.connect(_stage_cbx_changed)
 
         # Must come after currentIndexChanged.connect to invoke callback
         stage_cbx.addItem('Extractors', config.EXTRACTOR)
@@ -73,14 +91,16 @@ class ConstructPipelineView(qw.QGroupBox):
         stage_cbx.addItem('Sorters', config.SORTER)
         stage_cbx.addItem('Post-Processors', config.POST_PROCESSOR)
 
-        # Placed in UI after stage_cbx, but initialized first as fwd reference
+        # Layout after stage_cbx, but declared first as fwd reference
         ui_frame.layout().addWidget(ele_cbx)
 
         add_button = qw.QPushButton("Add Element")
 
         def _add_element_clicked():
-            # Takes advantage of actual element reference stored in ele_cbx
-            self._pipeline_model.add_element(ele_cbx.currentData())
+            # Prevents the addition of nu
+            if ele_cbx.currentIndex() > -1:
+                # Takes advantage of actual element reference stored in ele_cbx
+                self._pipeline_model.add_element(ele_cbx.currentData())
         add_button.clicked.connect(_add_element_clicked)
 
         ui_frame.layout().addWidget(add_button)
@@ -88,8 +108,9 @@ class ConstructPipelineView(qw.QGroupBox):
         return ui_frame
 
     def _pipeline_list(self):
-        # MVC time - link view (widget) to underlying data (model)
+        # MVC in action - connect View (widget) to Model
         self._pipeline_view.setModel(self._pipeline_model)
+
         self._pipeline_view.setSelectionMode(
             qw.QAbstractItemView.SingleSelection)
 
@@ -111,6 +132,7 @@ class ConstructPipelineView(qw.QGroupBox):
         ui_frame = qw.QFrame()
         ui_frame.setLayout(qw.QHBoxLayout())
 
+        # Move Up element button and associated action
         mu_btn = qw.QPushButton("Move Up")
         ui_frame.layout().addWidget(mu_btn)
 
@@ -118,11 +140,12 @@ class ConstructPipelineView(qw.QGroupBox):
             element = self._get_selected_element()
             if element is None:
                 config.status_bar.showMessage(
-                    "Nothing to move up", config.TIMEOUT)
+                    "Nothing to move up", config.STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.move_up(element)
         mu_btn.clicked.connect(move_up_clicked)
 
+        # Move Down element button and associated action
         md_btn = qw.QPushButton("Move Down")
         ui_frame.layout().addWidget(md_btn)
 
@@ -130,11 +153,12 @@ class ConstructPipelineView(qw.QGroupBox):
             element = self._get_selected_element()
             if element is None:
                 config.status_bar.showMessage(
-                    "Nothing to move down", config.TIMEOUT)
+                    "Nothing to move down", config.STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.move_down(element)
         md_btn.clicked.connect(move_down_clicked)
 
+        # Delete element button and associated action
         de_btn = qw.QPushButton("Delete")
         ui_frame.layout().addWidget(de_btn)
 
@@ -142,7 +166,7 @@ class ConstructPipelineView(qw.QGroupBox):
             element = self._get_selected_element()
             if element is None:
                 config.status_bar.showMessage(
-                    "Nothing to delete", config.TIMEOUT)
+                    "Nothing to delete", config.STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.delete(element)
         de_btn.clicked.connect(delete_clicked)
@@ -150,9 +174,34 @@ class ConstructPipelineView(qw.QGroupBox):
         return ui_frame
 
     def _get_selected_element(self):
+        """ Convenience function to retrieve selected element in pipe view"""
         element = None
         model = self._pipeline_view.selectionModel()
         if model.hasSelection():
             index = model.selectedIndexes()[0]
             element = self._pipeline_model.data(index, config.ELEMENT_ROLE)
         return element
+
+    def _get_available_elements(self):
+        extractor_list = se.extractorlist.installed_recording_extractor_list
+        for extractor_class in extractor_list:
+            self._available_elements.append(
+                Extractor(extractor_class, config.EXTRACTOR))
+
+        preprocessor_list = st.preprocessing.preprocessinglist.installed_preprocessers_list
+        for preprocessor_class in preprocessor_list:
+            self._available_elements.append(
+                Preprocessor(preprocessor_class, config.PRE_PROCESSOR)
+            )
+
+        sorter_list = st.sorters.sorterlist.installed_sorter_list
+        for sorter_class in sorter_list:
+            self._available_elements.append(
+                Sorter(sorter_class, config.SORTER)
+            )
+
+        postprocessing_list = st.postprocessing.postprocessinglist.installed_postprocessors_list
+        for postprocessing_class in postprocessing_list:
+            self._available_elements.append(
+                Postprocessor(postprocessing_class, config.POST_PROCESSOR)
+            )
