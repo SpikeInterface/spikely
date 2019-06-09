@@ -7,9 +7,8 @@ pre-processors, sorters, and post-processors.
 
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
-from pathlib import Path
-import spikeextractors as se
-import os
+import PyQt5.QtWidgets as qw
+
 import copy
 import config
 
@@ -76,23 +75,28 @@ class SpikePipelineModel(qc.QAbstractListModel):
                     input_payload, next_element
                 )
         except KeyError:
-            config.status_bar.showMessage(
-                'Run failed due to parameter specification error.',
-                config.STATUS_MSG_TIMEOUT)
+            err_dlg = qw.QErrorMessage(config.main_window)
+            err_dlg.showMessage(
+                'Run failure: One or more invalid element parameter '
+                'values. Please ensure all parameter values are set '
+                ' properly for all elements in the pipeline.')
         except Exception as e:
-            config.status_bar.showMessage(
-                f'Run failed due to unspecified error: {e}.',
-                config.STATUS_MSG_TIMEOUT)
+            err_dlg = qw.QErrorMessage(config.main_window)
+            err_dlg.showMessage(f'Run failure: {e}')
         else:
-            config.status_bar.showMessage(
-                'Run operations successfully completed.',
-                config.STATUS_MSG_TIMEOUT)
+            msg = ('Run successful' if element_count > 0 else
+                   'Nothing to run')
+            config.status_bar.showMessage(msg, config.STATUS_MSG_TIMEOUT)
 
     def clear(self):
         """Removes all elements from pipeline"""
-        self.beginResetModel()
-        self._elements.clear()
-        self.endResetModel()
+        if len(self._elements):
+            self.beginResetModel()
+            self._elements.clear()
+            self.endResetModel()
+        else:
+            config.status_bar.showMessage('Nothing to clear',
+                                          config.STATUS_MSG_TIMEOUT)
 
     def add_element(self, element):
         """ Adds element at top of stage associated w/ element interface_id"""
