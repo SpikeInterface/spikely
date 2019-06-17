@@ -10,6 +10,8 @@ import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
 
 import copy
+# import threading
+
 import config
 
 
@@ -67,22 +69,31 @@ class SpikePipelineModel(qc.QAbstractListModel):
         try:
             input_payload = None
             element_count = len(self._elements)
+            '''
+            progress = qw.QProgressDialog(
+                'Running the pipeline...', 'Cancel', 0,
+                element_count, config.main_window)
+            progress.setMinimumDuration(0)
+            progress.setWindowModality(qc.Qt.WindowModal)
+            '''
             for i in range(0, element_count):
+                # progress.setValue(i)
                 next_element = (
                     self._elements[i+1] if i < (element_count - 1) else None
                 )
                 input_payload = self._elements[i].run(
                     input_payload, next_element
                 )
+            # progress.setValue(element_count)
         except KeyError:
-            err_dlg = qw.QErrorMessage(config.main_window)
-            err_dlg.showMessage(
-                'Run failure: One or more invalid element parameter '
-                'values. Please ensure all parameter values are set '
-                ' properly for all elements in the pipeline.')
+            qw.QMessageBox.warning(
+                config.main_window, 'Run Failure',
+                'One or more invalid element parameter values.  Please ensure '
+                'all parameter values are set properly for all elements in '
+                'the pipeline.')
         except Exception as e:
-            err_dlg = qw.QErrorMessage(config.main_window)
-            err_dlg.showMessage(f'Run failure: {e}')
+            qw.QMessageBox.warning(
+                config.main_window, 'Run Failure', e)
         else:
             msg = ('Run successful' if element_count > 0 else
                    'Nothing to run')

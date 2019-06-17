@@ -201,7 +201,8 @@ class ConstructPipelineView(qw.QGroupBox):
                 Sorter(sorter_class, config.SORTER)
             )
 
-        postprocessing_list = st.postprocessing.postprocessinglist.installed_postprocessors_list
+        postprocessing_list = st.postprocessing.postprocessinglist. \
+            installed_postprocessors_list
         for postprocessing_class in postprocessing_list:
             self._available_elements.append(
                 Postprocessor(postprocessing_class, config.POST_PROCESSOR)
