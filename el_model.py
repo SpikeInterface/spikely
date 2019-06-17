@@ -2,9 +2,17 @@
 
 Implements the SpikeInterface elements responsible extracellular data
 processing.
+
+name output_folder
+type str
+value None
+default None
+title Sorting output folder path
 """
 
 import PyQt5.QtCore as qc
+import PyQt5.QtGui as qg
+
 from pydoc import locate
 
 
@@ -43,13 +51,17 @@ class SpikeElementModel(qc.QAbstractTableModel):
 
     def data(self, mod_index, role=qc.Qt.DisplayRole):
         col, row = mod_index.column(), mod_index.row()
+
         result = qc.QVariant()
+        param_dict = self._element.params[row]
+
         if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
             if col == 0:
                 result = self._element.params[row]['name']
             elif col == 1:
                 if 'value' in self._element.params[row].keys():
                     result = self._element.params[row]['value']
+                """
                 else:
                     value_type = locate(self._element.params[row]['type'])
                     if value_type is int:
@@ -62,6 +74,32 @@ class SpikeElementModel(qc.QAbstractTableModel):
                         result = ''
                     else:
                         result = 'Unknown Type'
+                """
+
+        elif role == qc.Qt.ToolTipRole:
+            if col == 0 and 'title' in param_dict.keys():
+                result = param_dict['title']
+
+        elif role == qc.Qt.BackgroundRole:
+            """
+            for v, k in self._element.params[row].items():
+                print(v, k)
+            """
+
+            if col == 1:
+
+                if 'value' in param_dict.keys():
+
+                    value = param_dict['value']
+                    value_type = param_dict['type']
+
+                    if value is None:
+                        result = qg.QBrush(qg.QColor(255, 128, 128))
+                    elif ((value_type == 'str' or value_type == 'path')
+                            and not value.strip()):
+                        result = qg.QBrush(qg.QColor(255, 128, 128))
+                else:
+                    result = qg.QBrush(qg.QColor(255, 128, 128))
 
         return result
 
