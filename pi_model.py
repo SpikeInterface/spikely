@@ -85,7 +85,7 @@ class SpikePipelineModel(qc.QAbstractListModel):
                     input_payload, next_element
                 )
             # progress.setValue(element_count)
-        except KeyError:
+        except (KeyError, AttributeError):
             qw.QMessageBox.warning(
                 config.main_window, 'Run Failure',
                 'One or more invalid element parameter values.  Please ensure '
@@ -93,7 +93,7 @@ class SpikePipelineModel(qc.QAbstractListModel):
                 'the pipeline.')
         except Exception as e:
             qw.QMessageBox.warning(
-                config.main_window, 'Run Failure', e)
+                config.main_window, 'Run Failure', f'{e}')
         else:
             msg = ('Run successful' if element_count > 0 else
                    'Nothing to run')
