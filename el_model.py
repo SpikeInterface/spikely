@@ -13,7 +13,9 @@ title Sorting output folder path
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
 
-from pydoc import locate
+import config
+
+# from pydoc import locate
 
 
 class SpikeElementModel(qc.QAbstractTableModel):
@@ -23,61 +25,57 @@ class SpikeElementModel(qc.QAbstractTableModel):
         self._element = None
         super().__init__()
 
-    # Pythonic approach to setters/getters
+    # Pythonic setters/getters
     @property
     def element(self):
         return self._element
 
     @element.setter
     def element(self, element):
+        '''Ensures views are signaled on element changes'''
         self.beginResetModel()
         self._element = element
         self.endResetModel()
 
     # Methods sub-classed from QAbstractTableModel
     def rowCount(self, parent=qc.QModelIndex()):
+        '''One element parameter per table view row'''
         return 0 if self._element is None else len(self._element.params)
 
     def columnCount(self, parent=qc.QModelIndex()):
-        return 2
+        '''Number of display columns in parameter table view'''
+        return 3
 
     def flags(self, mod_index):
+        '''Sets UI policy for columns in table view'''
         flags = qc.QAbstractTableModel.flags(self, mod_index)
-        if mod_index.column() == 0:
+        col = mod_index.column()
+
+        if col == config.PARAM_COL or col == config.VTYPE_COL:
             flags ^= qc.Qt.ItemIsSelectable
-        elif mod_index.column() == 1:
+        elif col == config.VALUE_COL:
             flags |= qc.Qt.ItemIsEditable
         return flags
 
     def data(self, mod_index, role=qc.Qt.DisplayRole):
+        '''Returns data for one row/param and one col/field at a time'''
         col, row = mod_index.column(), mod_index.row()
-
-        result = qc.QVariant()
         param_dict = self._element.params[row]
+        result = qc.QVariant()
 
         if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
-            if col == 0:
-                result = self._element.params[row]['name']
-            elif col == 1:
-                if 'value' in self._element.params[row].keys():
-                    result = self._element.params[row]['value']
-                """
-                else:
-                    value_type = locate(self._element.params[row]['type'])
-                    if value_type is int:
-                        result = -10
-                    elif value_type is float:
-                        result = -10.0
-                    elif value_type is bool:
-                        result = False
-                    elif value_type is str:
-                        result = ''
-                    else:
-                        result = 'Unknown Type'
-                """
+            if col == config.PARAM_COL:
+                result = param_dict['name']
+            elif col == config.VTYPE_COL:
+                result = param_dict['type']
+            elif col == config.VALUE_COL:
+                if 'value' in param_dict.keys():
+                    result = str(param_dict['value']).strip()
+                    if not result and 'default' in param_dict.keys():
+                        result = str(param_dict['default'])
 
         elif role == qc.Qt.ToolTipRole:
-            if col == 0 and 'title' in param_dict.keys():
+            if col == config.PARAM_COL and 'title' in param_dict.keys():
                 result = param_dict['title']
 
         elif role == qc.Qt.BackgroundRole:
@@ -86,8 +84,7 @@ class SpikeElementModel(qc.QAbstractTableModel):
                 print(v, k)
             """
 
-            if col == 1:
-
+            if col == config.VALUE_COL:
                 if 'value' in param_dict.keys():
 
                     value = param_dict['value']
@@ -104,14 +101,16 @@ class SpikeElementModel(qc.QAbstractTableModel):
         return result
 
     def headerData(self, section, orientation, role):
+        '''Sets properties for column headers in table view'''
         result = qc.QVariant()
         if (orientation == qc.Qt.Horizontal and
                 (role == qc.Qt.DisplayRole or role == qc.Qt.EditRole)):
-            result = ['Parameter', 'Value'][section]
+            result = ['Parameter', 'Type', 'Value'][section]
 
         return result
 
     def setData(self, mod_index, value, role=qc.Qt.EditRole):
+        '''Takes data from table view and passes it to model'''
         row = mod_index.row()
         result = False
         if role == qc.Qt.EditRole:
