@@ -3,23 +3,17 @@
 Implements the SpikeInterface elements responsible extracellular data
 processing.
 
-name output_folder
-type str
-value None
-default None
-title Sorting output folder path
 """
 
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
+import PyQt5.QtWidgets as qw
 
 import config
 
-# from pydoc import locate
-
 
 class SpikeElementModel(qc.QAbstractTableModel):
-    """TBD"""
+    """Model representation of pipeline elements"""
 
     def __init__(self):
         self._element = None
@@ -79,24 +73,10 @@ class SpikeElementModel(qc.QAbstractTableModel):
                 result = param_dict['title']
 
         elif role == qc.Qt.BackgroundRole:
-            """
-            for v, k in self._element.params[row].items():
-                print(v, k)
-            """
-
             if col == config.VALUE_COL:
-                if 'value' in param_dict.keys():
-
-                    value = param_dict['value']
-                    value_type = param_dict['type']
-
-                    if value is None:
-                        result = qg.QBrush(qg.QColor(255, 128, 128))
-                    elif ((value_type == 'str' or value_type == 'path')
-                            and not value.strip()):
-                        result = qg.QBrush(qg.QColor(255, 128, 128))
-                else:
-                    result = qg.QBrush(qg.QColor(255, 128, 128))
+                if ('value' not in param_dict.keys() and
+                        'default' not in param_dict.keys()):
+                    result = qg.QBrush(qg.QColor(255, 192, 192))
 
         return result
 
@@ -112,8 +92,48 @@ class SpikeElementModel(qc.QAbstractTableModel):
     def setData(self, mod_index, value, role=qc.Qt.EditRole):
         '''Takes data from table view and passes it to model'''
         row = mod_index.row()
-        result = False
+        param_dict = self._element.params[row]
+        success = True
+
         if role == qc.Qt.EditRole:
-            self._element.params[row]['value'] = value
-            result = True
-        return result
+            '''
+            This is a little tricky - if user enters anything assign it to
+            'value' in the param dictionary.  If user enters nothing assign
+            'default' to 'value' if 'default' exists otherwise delete 'value'
+            from the param dictionary.  Talk to Cole if you don't like this.
+            '''
+            if value.strip():
+                success, cvt_value = self._convert_value(
+                    param_dict['type'], value)
+                if success:
+                    param_dict['value'] = cvt_value
+            else:
+                if 'default' in param_dict.keys():
+                    param_dict['value'] = param_dict['default']
+                else:
+                    param_dict.pop('value', None)
+
+        return success
+
+    def _convert_value(self, type_str, value_str):
+        success, value = True, value_str
+        try:
+            if value_str == 'None':
+                value = None
+            elif type_str == 'int':
+                value = int(value_str)
+            elif type_str == 'float':
+                value = float(value_str)
+            elif type_str == 'bool':
+                if value_str in ['True', 'true', 'Yes', 'yes']:
+                    value = True
+                elif value_str in ['False', 'false', 'No', 'no']:
+                    value = False
+                else:
+                    raise TypeError(f'{value_str} is not a valid bool type')
+        except (TypeError, ValueError) as err:
+            qw.QMessageBox.warning(
+                config.main_window, 'Type Conversion Error', repr(err))
+            success = False
+
+        return success, value
