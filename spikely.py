@@ -29,7 +29,7 @@ from pi_model import SpikePipelineModel
 from el_model import SpikeElementModel
 import config
 
-__version__ = "0.2.5"
+__version__ = "0.3.0"
 
 
 class SpikelyMainWindow(qw.QMainWindow):
@@ -54,7 +54,7 @@ class SpikelyMainWindow(qw.QMainWindow):
 
         # Application main window setup
         self.setWindowTitle("Spikely")
-        self.setGeometry(100, 100, 1024, 384)
+        self.setGeometry(100, 100, 1152, 384)
         self.setWindowIcon(qg.QIcon("bin/spikely.png"))
         self.statusBar().addPermanentWidget(
             qw.QLabel("Version " + __version__))
