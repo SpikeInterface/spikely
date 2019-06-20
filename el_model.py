@@ -33,7 +33,7 @@ class SpikeElementModel(qc.QAbstractTableModel):
 
     # Methods sub-classed from QAbstractTableModel
     def rowCount(self, parent=qc.QModelIndex()):
-        '''One element parameter per table view row'''
+        '''Count of parameters associated with an element instance'''
         return 0 if self._element is None else len(self._element.params)
 
     def columnCount(self, parent=qc.QModelIndex()):
@@ -41,10 +41,9 @@ class SpikeElementModel(qc.QAbstractTableModel):
         return 3
 
     def flags(self, mod_index):
-        '''Sets UI policy for columns in table view'''
+        '''Sets UI policy for columns in table view for element'''
         flags = qc.QAbstractTableModel.flags(self, mod_index)
         col = mod_index.column()
-
         if col == config.PARAM_COL or col == config.VTYPE_COL:
             flags ^= qc.Qt.ItemIsSelectable
         elif col == config.VALUE_COL:
@@ -97,10 +96,10 @@ class SpikeElementModel(qc.QAbstractTableModel):
 
         if role == qc.Qt.EditRole:
             '''
-            This is a little tricky - if user enters anything assign it to
+            This is a little tricky - if user enters valid value assign it to
             'value' in the param dictionary.  If user enters nothing assign
-            'default' to 'value' if 'default' exists otherwise delete 'value'
-            from the param dictionary.  Talk to Cole if you don't like this.
+            'default' to 'value' if 'default' exists, otherwise delete 'value'
+            from param dictionary.  Talk to Cole if you don't like this.
             '''
             if value.strip():
                 success, cvt_value = self._convert_value(
@@ -115,25 +114,29 @@ class SpikeElementModel(qc.QAbstractTableModel):
 
         return success
 
-    def _convert_value(self, type_str, value_str):
-        success, value = True, value_str
+    def _convert_value(self, type_str, value):
+        success, cvt_value = True, None
         try:
-            if value_str == 'None':
-                value = None
+            if value == 'None':
+                cvt_value = None
+            elif type_str in ['str', 'path']:
+                cvt_value = value
             elif type_str == 'int':
-                value = int(value_str)
+                cvt_value = int(value)
             elif type_str == 'float':
-                value = float(value_str)
+                cvt_value = float(value)
             elif type_str == 'bool':
-                if value_str in ['True', 'true', 'Yes', 'yes']:
-                    value = True
-                elif value_str in ['False', 'false', 'No', 'no']:
-                    value = False
+                if value.lower() in ['true', 'yes']:
+                    cvt_value = True
+                elif value.lower() in ['false', 'no']:
+                    cvt_value = False
                 else:
-                    raise TypeError(f'{value_str} is not a valid bool type')
+                    raise TypeError(f'{value} is not a valid bool type')
+            else:
+                raise TypeError(f'{type_str} is not a Spikely supported type')
         except (TypeError, ValueError) as err:
             qw.QMessageBox.warning(
                 config.main_window, 'Type Conversion Error', repr(err))
             success = False
 
-        return success, value
+        return success, cvt_value

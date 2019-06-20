@@ -17,7 +17,6 @@ EXTRACTOR, PRE_PROCESSOR, SORTER, POST_PROCESSOR = range(4)
 ELEMENT_ROLE = 0x100
 
 # Column IDs used by QTableView to display element parameter data
-
 PARAM_COL = 0
 VTYPE_COL = 1
 VALUE_COL = 2

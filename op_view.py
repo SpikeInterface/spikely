@@ -28,20 +28,22 @@ class OperatePipelineView(qw.QGroupBox):
 
     def _init_ui(self):
 
+        '''
         self._pipeline_model.rowsInserted.connect(self._pipeline_changed)
         self._pipeline_model.rowsRemoved.connect(self._pipeline_changed)
         self._pipeline_model.modelReset.connect(self._pipeline_changed)
+        '''
 
         self.setLayout(qw.QHBoxLayout())
 
         # Pipeline operation commands
         self._run_btn = qw.QPushButton("Run")
-        self._run_btn.setEnabled(False)
+        # self._run_btn.setEnabled(False)
         self._run_btn.clicked.connect(self._run_clicked)
         self.layout().addWidget(self._run_btn)
 
         self._clear_btn = qw.QPushButton("Clear")
-        self._clear_btn.setEnabled(False)
+        # self._clear_btn.setEnabled(False)
         self.layout().addWidget(self._clear_btn)
 
         def clear_clicked():
@@ -63,8 +65,10 @@ class OperatePipelineView(qw.QGroupBox):
         # Pipeline model should be responsible for this
         self._pipeline_model.run()
 
+    '''
     def _pipeline_changed(self, parent=None, first=None, last=None):
         enabled = self._pipeline_model.rowCount(None) > 0
         self._run_btn.setEnabled(enabled)
         self._clear_btn.setEnabled(enabled)
         self._queue_btn.setEnabled(enabled)
+    '''
