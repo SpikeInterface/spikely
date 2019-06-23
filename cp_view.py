@@ -188,7 +188,8 @@ class ConstructPipelineView(qw.QGroupBox):
             self._available_elements.append(
                 Extractor(extractor_class, config.EXTRACTOR))
 
-        preprocessor_list = st.preprocessing.preprocessinglist.installed_preprocessers_list
+        preprocessor_list = st.preprocessing.preprocessinglist. \
+            installed_preprocessers_list
         for preprocessor_class in preprocessor_list:
             self._available_elements.append(
                 Preprocessor(preprocessor_class, config.PRE_PROCESSOR)
@@ -200,7 +201,8 @@ class ConstructPipelineView(qw.QGroupBox):
                 Sorter(sorter_class, config.SORTER)
             )
 
-        postprocessing_list = st.postprocessing.postprocessinglist.installed_postprocessors_list
+        postprocessing_list = st.postprocessing.postprocessinglist. \
+            installed_postprocessors_list
         for postprocessing_class in postprocessing_list:
             self._available_elements.append(
                 Postprocessor(postprocessing_class, config.POST_PROCESSOR)

@@ -27,31 +27,48 @@ class OperatePipelineView(qw.QGroupBox):
         self._init_ui()
 
     def _init_ui(self):
+
+        '''
+        self._pipeline_model.rowsInserted.connect(self._pipeline_changed)
+        self._pipeline_model.rowsRemoved.connect(self._pipeline_changed)
+        self._pipeline_model.modelReset.connect(self._pipeline_changed)
+        '''
+
         self.setLayout(qw.QHBoxLayout())
 
         # Pipeline operation commands
-        run_btn = qw.QPushButton("Run")
-        run_btn.clicked.connect(self._run_btn_clicked)
-        self.layout().addWidget(run_btn)
+        self._run_btn = qw.QPushButton("Run")
+        # self._run_btn.setEnabled(False)
+        self._run_btn.clicked.connect(self._run_clicked)
+        self.layout().addWidget(self._run_btn)
 
-        clear_btn = qw.QPushButton("Clear")
-        self.layout().addWidget(clear_btn)
+        self._clear_btn = qw.QPushButton("Clear")
+        # self._clear_btn.setEnabled(False)
+        self.layout().addWidget(self._clear_btn)
 
         def clear_clicked():
             self._pipeline_model.clear()
             # Should element model be responsible for this?
             self._element_model.element = None
-        clear_btn.clicked.connect(clear_clicked)
+        self._clear_btn.clicked.connect(clear_clicked)
 
-        queue_btn = qw.QPushButton("Queue")
-        queue_btn.clicked.connect(self._queue_btn_clicked)
-        self.layout().addWidget(queue_btn)
+        self._queue_btn = qw.QPushButton("Queue")
+        self._queue_btn.clicked.connect(self._queue_clicked)
+        self.layout().addWidget(self._queue_btn)
 
-    def _queue_btn_clicked(self):
+    def _queue_clicked(self):
         # Pipeline model should be responsible for this
         config.status_bar.showMessage(
             "Queue not implemented", config.STATUS_MSG_TIMEOUT)
 
-    def _run_btn_clicked(self):
+    def _run_clicked(self):
         # Pipeline model should be responsible for this
         self._pipeline_model.run()
+
+    '''
+    def _pipeline_changed(self, parent=None, first=None, last=None):
+        enabled = self._pipeline_model.rowCount(None) > 0
+        self._run_btn.setEnabled(enabled)
+        self._clear_btn.setEnabled(enabled)
+        self._queue_btn.setEnabled(enabled)
+    '''

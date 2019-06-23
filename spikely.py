@@ -29,7 +29,7 @@ from pi_model import SpikePipelineModel
 from el_model import SpikeElementModel
 import config
 
-__version__ = "0.2.5"
+__version__ = "0.3.0"
 
 
 class SpikelyMainWindow(qw.QMainWindow):
@@ -54,7 +54,7 @@ class SpikelyMainWindow(qw.QMainWindow):
 
         # Application main window setup
         self.setWindowTitle("Spikely")
-        self.setGeometry(100, 100, 1024, 384)
+        self.setGeometry(100, 100, 1152, 448)
         self.setWindowIcon(qg.QIcon("bin/spikely.png"))
         self.statusBar().addPermanentWidget(
             qw.QLabel("Version " + __version__))
@@ -63,7 +63,6 @@ class SpikelyMainWindow(qw.QMainWindow):
         main_frame = qw.QFrame()
         self.setCentralWidget(main_frame)
         main_frame.setLayout(qw.QVBoxLayout())
-        main_frame.layout().addStretch(1)  # Pushes app window widgets down
 
         """ Lay out Construction Pipeline (cp) and Configure Element (ce)
         views in a frame at top of main window from left to right
@@ -83,12 +82,14 @@ class SpikelyMainWindow(qw.QMainWindow):
         main_frame.layout().addWidget(OperatePipelineView(
             self._pipeline_model, self._element_model))
 
+        main_frame.layout().addStretch(1)  # Pushes app window widgets up
+
         # Allows any module to post a status message to main window
         config.status_bar = self.statusBar()
 
 
 if __name__ == '__main__':
     app = qw.QApplication(sys.argv)
-    win = SpikelyMainWindow()
-    win.show()
+    config.main_window = SpikelyMainWindow()
+    config.main_window.show()
     sys.exit(app.exec_())

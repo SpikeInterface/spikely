@@ -7,10 +7,11 @@ pre-processors, sorters, and post-processors.
 
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
-from pathlib import Path
-import spikeextractors as se
-import os
+import PyQt5.QtWidgets as qw
+
 import copy
+# import threading
+
 import config
 
 
@@ -64,35 +65,49 @@ class SpikePipelineModel(qc.QAbstractListModel):
 
     # Methods for other parts of Spikely to manipulate pipeline
     def run(self):
-        """Call SpikeInterface APIs on elements in pipeline"""
-        try:
-            input_payload = None
-            element_count = len(self._elements)
-            for i in range(0, element_count):
-                next_element = (
-                    self._elements[i+1] if i < (element_count - 1) else None
-                )
-                input_payload = self._elements[i].run(
-                    input_payload, next_element
-                )
-        except KeyError:
-            config.status_bar.showMessage(
-                'Run failed due to parameter specification error.',
-                config.STATUS_MSG_TIMEOUT)
-        except Exception as e:
-            config.status_bar.showMessage(
-                f'Run failed due to unspecified error: {e}.',
-                config.STATUS_MSG_TIMEOUT)
+
+        bad_count = self._bad_param_count()
+        if bad_count:
+            qw.QMessageBox.warning(
+                config.main_window, 'Run Failure',
+                f'Missing {self._bad_param_count()} required ' +
+                ('parameter' if bad_count == 1 else 'parameters'))
         else:
-            config.status_bar.showMessage(
-                'Run operations successfully completed.',
-                config.STATUS_MSG_TIMEOUT)
+            """Call SpikeInterface APIs on elements in pipeline"""
+            try:
+                input_payload = None
+                element_count = len(self._elements)
+
+                for i in range(0, element_count):
+                    next_element = self._elements[i+1] \
+                        if i < (element_count - 1) else None
+                    input_payload = self._elements[i].run(
+                        input_payload, next_element
+                    )
+
+            except (KeyError, AttributeError):
+                qw.QMessageBox.warning(
+                    config.main_window, 'Run Failure',
+                    'One or more invalid element parameter values.  Please '
+                    'ensure all parameter values are set properly for all '
+                    'elements in the pipeline.')
+            except Exception as e:
+                qw.QMessageBox.warning(
+                    config.main_window, 'Run Failure', f'{e}')
+            else:
+                msg = 'Run successful' \
+                    if element_count > 0 else 'Nothing to run'
+                config.status_bar.showMessage(msg, config.STATUS_MSG_TIMEOUT)
 
     def clear(self):
         """Removes all elements from pipeline"""
-        self.beginResetModel()
-        self._elements.clear()
-        self.endResetModel()
+        if len(self._elements):
+            self.beginResetModel()
+            self._elements.clear()
+            self.endResetModel()
+        else:
+            config.status_bar.showMessage('Nothing to clear',
+                                          config.STATUS_MSG_TIMEOUT)
 
     def add_element(self, element):
         """ Adds element at top of stage associated w/ element interface_id"""
@@ -145,3 +160,11 @@ class SpikePipelineModel(qc.QAbstractListModel):
         self.beginRemoveRows(qc.QModelIndex(), index, index)
         self._elements.pop(index)
         self.endRemoveRows()
+
+    def _bad_param_count(self):
+        count = 0
+        for element in self._elements:
+            for param in element.params:
+                if 'value' not in param.keys():
+                    count += 1
+        return count
