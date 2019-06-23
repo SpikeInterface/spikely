@@ -16,6 +16,9 @@ Once these packages are installed, spikely can be launched in the command line w
 python spikely.py
 ```
 
+Spikely allows users to run any sorting algorithms that are installed on their machine from within a graphical user interface.
+
+
 A full python package for spikely is in developement.
 
 ## Authors
