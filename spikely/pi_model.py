@@ -26,10 +26,10 @@ class SpikePipelineModel(qc.QAbstractListModel):
         self._elements = []
 
         self._decorations = [
-            qg.QIcon("bin/EXTR.png"),
-            qg.QIcon("bin/PREP.png"),
-            qg.QIcon("bin/SORT.png"),
-            qg.QIcon("bin/POST.png")
+            qg.QIcon("resources/EXTR.png"),
+            qg.QIcon("resources/PREP.png"),
+            qg.QIcon("resources/SORT.png"),
+            qg.QIcon("resources/POST.png")
         ]
 
     # Methods sub-classed from QAbstractListModel
