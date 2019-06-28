@@ -195,7 +195,7 @@ class ConstructPipelineView(qw.QGroupBox):
                 Preprocessor(preprocessor_class, config.PRE_PROCESSOR)
             )
 
-        sorter_list = st.sorters.sorterlist.installed_sorter_list
+        sorter_list = st.sorters.installed_sorter_list
         for sorter_class in sorter_list:
             self._available_elements.append(
                 Sorter(sorter_class, config.SORTER)
