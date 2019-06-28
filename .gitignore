@@ -1,2 +1,4 @@
+dist/
+spikely.egg-info/
 .vscode/
 __pycache__
