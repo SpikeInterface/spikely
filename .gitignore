@@ -1,3 +1,2 @@
-.vs*
-__*
-sample_mtn_data
+.vscode/
+__pycache__
