@@ -1,3 +1,5 @@
-.vs*
-__*
-sample_mtn_data
+dist/
+spikely.egg-info/
+.vscode/
+build/
+__pycache__
