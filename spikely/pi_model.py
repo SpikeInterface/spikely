@@ -12,7 +12,7 @@ import PyQt5.QtWidgets as qw
 import copy
 # import threading
 
-import config
+import spikely.config as config
 
 
 class SpikePipelineModel(qc.QAbstractListModel):

@@ -1,6 +1,5 @@
-from spike_element import SpikeElement
+from spikely.spike_element import SpikeElement
 import spikeextractors as se
-from pathlib import Path
 import os
 
 
@@ -26,10 +25,14 @@ class Curator(SpikeElement):
         sorting = self._interface_class(**params_dict)
         if(next_element is None):
             curated_output_folder = output_folder_path/'curated_phy_results'
-            #curated_output_folder = Path(curated_output_folder_path).absolute()
+            '''
+            curated_output_folder =
+                Path(curated_output_folder_path).absolute()
+            '''
             if not curated_output_folder.is_dir():
                 os.makedirs(str(curated_output_folder))
             print("Saving curated results....")
-            se.PhySortingExtractor.write_sorting(sorting, curated_output_folder)
+            se.PhySortingExtractor.write_sorting(
+                sorting, curated_output_folder)
             print("Done!")
         return sorting, output_folder_path

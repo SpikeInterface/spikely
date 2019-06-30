@@ -7,12 +7,12 @@ within the active pipeline.
 
 import PyQt5.QtWidgets as qw
 
-from extractor import Extractor
-from preprocessor import Preprocessor
-from sorter import Sorter
-from curator import Curator
+from spikely.extractor import Extractor
+from spikely.preprocessor import Preprocessor
+from spikely.sorter import Sorter
+from spikely.curator import Curator
 
-import config
+import spikely.config as config
 
 import spikeextractors as se
 import spiketoolkit as st

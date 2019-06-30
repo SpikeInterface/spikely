@@ -7,7 +7,7 @@ and queueing the active pipeline.
 """
 
 import PyQt5.QtWidgets as qw
-import config
+import spikely.config as config
 
 
 class OperatePipelineView(qw.QGroupBox):

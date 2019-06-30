@@ -1,4 +1,4 @@
-from spike_element import SpikeElement
+from spikely.spike_element import SpikeElement
 
 
 class Sorter(SpikeElement):

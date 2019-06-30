@@ -22,12 +22,12 @@ import sys
 import PyQt5.QtWidgets as qw
 import PyQt5.QtGui as qg
 
-from op_view import OperatePipelineView
-from cp_view import ConstructPipelineView
-from ce_view import ConfigureElementView
-from pi_model import SpikePipelineModel
-from el_model import SpikeElementModel
-import config
+from spikely.op_view import OperatePipelineView
+from spikely.cp_view import ConstructPipelineView
+from spikely.ce_view import ConfigureElementView
+from spikely.pi_model import SpikePipelineModel
+from spikely.el_model import SpikeElementModel
+import spikely.config as config
 
 __version__ = "0.3.5"
 
@@ -88,7 +88,7 @@ class SpikelyMainWindow(qw.QMainWindow):
         config.status_bar = self.statusBar()
 
 
-def main():
+def launch_spikely():
     app = qw.QApplication(sys.argv)
     config.main_window = SpikelyMainWindow()
     config.main_window.show()
@@ -96,4 +96,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    launch_spikely()

@@ -6,7 +6,7 @@ viewing and editing the properties of elements (extractors, sorters, etc.).
 
 import PyQt5.QtWidgets as qw
 
-import config
+import spikely.config as config
 
 
 class ConfigureElementView(qw.QGroupBox):
