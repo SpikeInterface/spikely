@@ -2,7 +2,7 @@
 
 The application enables a user to constuct a pipeline consisting of elements
 associated with extracellular data recording extraction, pre-processing,
-sorting, and post-processing.  The user can configure the properties of each
+sorting, and curation.  The user can configure the properties of each
 element, and once satisifed with the pipeline construction and element
 configuration operate the pipeline.
 

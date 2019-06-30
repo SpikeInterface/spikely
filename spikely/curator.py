@@ -4,12 +4,12 @@ from pathlib import Path
 import os
 
 
-class Postprocessor(SpikeElement):
-    """Postprocessor class"""
+class Curator(SpikeElement):
+    """Curator class"""
 
     def __init__(self, interface_class, interface_id):
         SpikeElement.__init__(self, interface_id, interface_class,
-                              interface_class.postprocessor_name)
+                              interface_class.curator_name)
 
     def run(self, input_payload, next_element):
         params_dict = {}
