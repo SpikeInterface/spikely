@@ -2,7 +2,7 @@
 
 Supports the main UI using MVC pattern semantics.  This class proxies the
 actual concatenation (pipeline) of SpikeInterface element space of extractors,
-pre-processors, sorters, and post-processors.
+pre-processors, sorters, and curators.
 """
 
 import PyQt5.QtCore as qc
@@ -29,7 +29,7 @@ class SpikePipelineModel(qc.QAbstractListModel):
             qg.QIcon("resources/EXTR.png"),
             qg.QIcon("resources/PREP.png"),
             qg.QIcon("resources/SORT.png"),
-            qg.QIcon("resources/POST.png")
+            qg.QIcon("resources/CURATOR.png")
         ]
 
     # Methods sub-classed from QAbstractListModel

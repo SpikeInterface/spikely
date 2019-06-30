@@ -2,7 +2,7 @@ Alpha Development
 Version 0.3.0
 
 # spikely
-An application built on top of SpikeInterface to create and run extracellular data processing pipelines. Spikely currently supports loading, preprocessing, sorting, and postprocessing extracellular datasets that are stored in SpikeInterface compatible file formats.
+An application built on top of SpikeInterface to create and run extracellular data processing pipelines. Spikely currently supports loading, preprocessing, sorting, and curating extracellular datasets that are stored in SpikeInterface compatible file formats.
 
 To run Spikely, first you must install spikeextractors, spiketoolkit, and PyQt5.
 

@@ -11,7 +11,7 @@ STATUS_MSG_TIMEOUT = 3500
 main_window = None
 
 # Used to represent types of elements
-EXTRACTOR, PRE_PROCESSOR, SORTER, POST_PROCESSOR = range(4)
+EXTRACTOR, PRE_PROCESSOR, SORTER, CURATOR = range(4)
 
 # Identifier to get element object from pipeline model data()
 ELEMENT_ROLE = 0x100
