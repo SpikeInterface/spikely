@@ -44,14 +44,14 @@ sorter.run()
 sorting_ms4 = sorter.get_result()
 print("Sorting Extractor for ms4: " + str(sorting_ms4) + '\n')
 
-################################ Postprocessing ###############################
+################################ CURATION ###############################
 
-# This is function call from the postprocessing module, doesn't return anything (we support this)
+# This is function call from the curation module, doesn't return anything (we support this)
 st.postprocessing.export_to_phy(recording, sorting_ms4, output_folder='phy')
 print("")
 
 #Returns a sorting extractor object which has some curated results inside
-curated_sorting = st.postprocessing.ThresholdMinNumSpike(sorting_ms4, min_num_spike_threshold=120)
+curated_sorting = st.curation.ThresholdMinNumSpike(sorting_ms4, min_num_spike_threshold=120)
 print("Curated Sorting Extractor: " + str(curated_sorting) + '\n')
 
 #The curation gets rid of all units with less than 50 spikes

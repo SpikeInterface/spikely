@@ -10,7 +10,7 @@ import PyQt5.QtWidgets as qw
 from extractor import Extractor
 from preprocessor import Preprocessor
 from sorter import Sorter
-from postprocessor import Postprocessor
+from curator import Curator
 
 import config
 
@@ -89,7 +89,7 @@ class ConstructPipelineView(qw.QGroupBox):
         stage_cbx.addItem('Extractors', config.EXTRACTOR)
         stage_cbx.addItem('Pre-Processors', config.PRE_PROCESSOR)
         stage_cbx.addItem('Sorters', config.SORTER)
-        stage_cbx.addItem('Post-Processors', config.POST_PROCESSOR)
+        stage_cbx.addItem('Curators', config.CURATOR)
 
         # Layout after stage_cbx, but declared first as fwd reference
         ui_frame.layout().addWidget(ele_cbx)
@@ -195,15 +195,14 @@ class ConstructPipelineView(qw.QGroupBox):
                 Preprocessor(preprocessor_class, config.PRE_PROCESSOR)
             )
 
-        sorter_list = st.sorters.sorterlist.installed_sorter_list
+        sorter_list = st.sorters.installed_sorter_list
         for sorter_class in sorter_list:
             self._available_elements.append(
                 Sorter(sorter_class, config.SORTER)
             )
 
-        postprocessing_list = st.postprocessing.postprocessinglist. \
-            installed_postprocessors_list
-        for postprocessing_class in postprocessing_list:
+        curator_list = st.curation.installed_curation_list
+        for curator_class in curator_list:
             self._available_elements.append(
-                Postprocessor(postprocessing_class, config.POST_PROCESSOR)
+                Curator(curator_class, config.CURATOR)
             )
