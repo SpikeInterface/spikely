@@ -12,8 +12,9 @@ setup(
     name='spikely',
     version=version['__version__'],
     packages=find_packages(),
+    include_package_data=True,
     install_requires=[
-        'PyQt5>=5.12.3',
+        'PyQt5>=5.9.2',
         'spikeextractors>=0.5.3',
         'spiketoolkit>=0.3.5'
     ],
