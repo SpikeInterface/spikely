@@ -9,7 +9,7 @@ import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
 
-import spikely.config as config
+from .config import VTYPE_COL, PARAM_COL, VALUE_COL, main_window
 
 
 class SpikeElementModel(qc.QAbstractTableModel):
@@ -44,9 +44,9 @@ class SpikeElementModel(qc.QAbstractTableModel):
         '''Sets UI policy for columns in table view for element'''
         flags = qc.QAbstractTableModel.flags(self, mod_index)
         col = mod_index.column()
-        if col == config.PARAM_COL or col == config.VTYPE_COL:
+        if col == PARAM_COL or col == VTYPE_COL:
             flags ^= qc.Qt.ItemIsSelectable
-        elif col == config.VALUE_COL:
+        elif col == VALUE_COL:
             flags |= qc.Qt.ItemIsEditable
         return flags
 
@@ -57,22 +57,22 @@ class SpikeElementModel(qc.QAbstractTableModel):
         result = qc.QVariant()
 
         if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
-            if col == config.PARAM_COL:
+            if col == PARAM_COL:
                 result = param_dict['name']
-            elif col == config.VTYPE_COL:
+            elif col == VTYPE_COL:
                 result = param_dict['type']
-            elif col == config.VALUE_COL:
+            elif col == VALUE_COL:
                 if 'value' in param_dict.keys():
                     result = str(param_dict['value']).strip()
                     if not result and 'default' in param_dict.keys():
                         result = str(param_dict['default'])
 
         elif role == qc.Qt.ToolTipRole:
-            if col == config.PARAM_COL and 'title' in param_dict.keys():
+            if col == PARAM_COL and 'title' in param_dict.keys():
                 result = param_dict['title']
 
         elif role == qc.Qt.BackgroundRole:
-            if col == config.VALUE_COL:
+            if col == VALUE_COL:
                 if ('value' not in param_dict.keys() and
                         'default' not in param_dict.keys()):
                     result = qg.QBrush(qg.QColor(255, 192, 192))
@@ -136,7 +136,7 @@ class SpikeElementModel(qc.QAbstractTableModel):
                 raise TypeError(f'{type_str} is not a Spikely supported type')
         except (TypeError, ValueError) as err:
             qw.QMessageBox.warning(
-                config.main_window, 'Type Conversion Error', repr(err))
+                main_window, 'Type Conversion Error', repr(err))
             success = False
 
         return success, cvt_value

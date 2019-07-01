@@ -1,4 +1,4 @@
-from spikely.spike_element import SpikeElement
+from .spike_element import SpikeElement
 import spikeextractors as se
 import os
 

@@ -7,12 +7,13 @@ within the active pipeline.
 
 import PyQt5.QtWidgets as qw
 
-from spikely.extractor import Extractor
-from spikely.preprocessor import Preprocessor
-from spikely.sorter import Sorter
-from spikely.curator import Curator
+from .extractor import Extractor
+from .preprocessor import Preprocessor
+from .sorter import Sorter
+from .curator import Curator
 
-import spikely.config as config
+from .config import SORTER, PRE_PROCESSOR, EXTRACTOR, CURATOR, \
+    status_bar, STATUS_MSG_TIMEOUT, ELEMENT_ROLE
 
 import spikeextractors as se
 import spiketoolkit as st
@@ -86,10 +87,10 @@ class ConstructPipelineView(qw.QGroupBox):
         stage_cbx.currentIndexChanged.connect(_stage_cbx_changed)
 
         # Must come after currentIndexChanged.connect to invoke callback
-        stage_cbx.addItem('Extractors', config.EXTRACTOR)
-        stage_cbx.addItem('Pre-Processors', config.PRE_PROCESSOR)
-        stage_cbx.addItem('Sorters', config.SORTER)
-        stage_cbx.addItem('Curators', config.CURATOR)
+        stage_cbx.addItem('Extractors', EXTRACTOR)
+        stage_cbx.addItem('Pre-Processors', PRE_PROCESSOR)
+        stage_cbx.addItem('Sorters', SORTER)
+        stage_cbx.addItem('Curators', CURATOR)
 
         # Layout after stage_cbx, but declared first as fwd reference
         ui_frame.layout().addWidget(ele_cbx)
@@ -139,8 +140,8 @@ class ConstructPipelineView(qw.QGroupBox):
         def move_up_clicked():
             element = self._get_selected_element()
             if element is None:
-                config.status_bar.showMessage(
-                    "Nothing to move up", config.STATUS_MSG_TIMEOUT)
+                status_bar.showMessage(
+                    "Nothing to move up", STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.move_up(element)
         mu_btn.clicked.connect(move_up_clicked)
@@ -152,8 +153,8 @@ class ConstructPipelineView(qw.QGroupBox):
         def move_down_clicked():
             element = self._get_selected_element()
             if element is None:
-                config.status_bar.showMessage(
-                    "Nothing to move down", config.STATUS_MSG_TIMEOUT)
+                status_bar.showMessage(
+                    "Nothing to move down", STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.move_down(element)
         md_btn.clicked.connect(move_down_clicked)
@@ -165,8 +166,8 @@ class ConstructPipelineView(qw.QGroupBox):
         def delete_clicked():
             element = self._get_selected_element()
             if element is None:
-                config.status_bar.showMessage(
-                    "Nothing to delete", config.STATUS_MSG_TIMEOUT)
+                status_bar.showMessage(
+                    "Nothing to delete", STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.delete(element)
         de_btn.clicked.connect(delete_clicked)
@@ -179,30 +180,30 @@ class ConstructPipelineView(qw.QGroupBox):
         model = self._pipeline_view.selectionModel()
         if model.hasSelection():
             index = model.selectedIndexes()[0]
-            element = self._pipeline_model.data(index, config.ELEMENT_ROLE)
+            element = self._pipeline_model.data(index, ELEMENT_ROLE)
         return element
 
     def _get_available_elements(self):
         extractor_list = se.extractorlist.installed_recording_extractor_list
         for extractor_class in extractor_list:
             self._available_elements.append(
-                Extractor(extractor_class, config.EXTRACTOR))
+                Extractor(extractor_class, EXTRACTOR))
 
         preprocessor_list = st.preprocessing.preprocessinglist. \
             installed_preprocessers_list
         for preprocessor_class in preprocessor_list:
             self._available_elements.append(
-                Preprocessor(preprocessor_class, config.PRE_PROCESSOR)
+                Preprocessor(preprocessor_class, PRE_PROCESSOR)
             )
 
         sorter_list = st.sorters.installed_sorter_list
         for sorter_class in sorter_list:
             self._available_elements.append(
-                Sorter(sorter_class, config.SORTER)
+                Sorter(sorter_class, SORTER)
             )
 
         curator_list = st.curation.installed_curation_list
         for curator_class in curator_list:
             self._available_elements.append(
-                Curator(curator_class, config.CURATOR)
+                Curator(curator_class, CURATOR)
             )

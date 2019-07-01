@@ -28,8 +28,7 @@ from spikely.ce_view import ConfigureElementView
 from spikely.pi_model import SpikePipelineModel
 from spikely.el_model import SpikeElementModel
 import spikely.config as config
-
-__version__ = "0.3.5"
+from spikely.version import __version__
 
 
 class SpikelyMainWindow(qw.QMainWindow):

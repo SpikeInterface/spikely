@@ -1,17 +1,26 @@
-from setuptools import setup, find_packages
+from setuptools import setup
+
+version = {}
+with open('spikely/version.py') as fp:
+    exec(fp.read(), version)
+
 
 setup(
     name='spikely',
-    version='0.3.5',
-    packages=find_packages(),
-    install_requires=['PyQt5', 'spikeextractors', 'spiketoolkit'],
+    version=version['__version__'],
+    packages=['spikely'],
+    install_requires=[
+        'PyQt5>=5.12.3',
+        'spikeextractors',
+        'spiketoolkit'
+    ],
     author='Roger Hurwitz',
     author_email='rogerhurwitz@gmail.com',
     description='An app wrapper around spikeextractors and spiketoolkit',
     url='https://github.com/SpikeInterface/spikely',
     entry_points={
         'console_scripts': [
-            'spikely=spikely.main:launch_spikely'
+            'spikely=spikely.spikely_main:launch_spikely'
         ]
     },
     classifiers=[

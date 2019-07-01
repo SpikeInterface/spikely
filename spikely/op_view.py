@@ -7,7 +7,7 @@ and queueing the active pipeline.
 """
 
 import PyQt5.QtWidgets as qw
-import spikely.config as config
+from .config import status_bar, STATUS_MSG_TIMEOUT
 
 
 class OperatePipelineView(qw.QGroupBox):
@@ -58,8 +58,8 @@ class OperatePipelineView(qw.QGroupBox):
 
     def _queue_clicked(self):
         # Pipeline model should be responsible for this
-        config.status_bar.showMessage(
-            "Queue not implemented", config.STATUS_MSG_TIMEOUT)
+        status_bar.showMessage(
+            "Queue not implemented", STATUS_MSG_TIMEOUT)
 
     def _run_clicked(self):
         # Pipeline model should be responsible for this
