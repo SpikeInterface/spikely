@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 version = {}
 with open('spikely/version.py') as fp:
@@ -11,7 +11,7 @@ with open('README.md', 'r') as fp:
 setup(
     name='spikely',
     version=version['__version__'],
-    packages=['spikely'],
+    packages=find_packages(),
     install_requires=[
         'PyQt5>=5.12.3',
         'spikeextractors>=0.5.3',
