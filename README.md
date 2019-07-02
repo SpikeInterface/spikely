@@ -4,7 +4,9 @@ data processing pipelines within a GUI. Spikely currently supports loading, prep
 sorting, and curating extracellular datasets that are stored in SpikeInterface
 compatible file formats.
 
-To run Spikely, first you must install it:
+## Setup
+
+To run spikely first you must install it:
 
 ```
 pip install spikely
@@ -15,6 +17,8 @@ Once installed, spikely can be launched from the command line:
 ```
 spikely
 ```
+## Screenshot
+
 ![gui](./spikely/resources/spikely_gui.png)
 
 ## Authors
