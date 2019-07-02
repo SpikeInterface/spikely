@@ -12,10 +12,11 @@ setup(
     name='spikely',
     version=version['__version__'],
     packages=find_packages(),
+    include_package_data=True,
     install_requires=[
-        'PyQt5>=5.12.3',
-        'spikeextractors>=0.5.3',
-        'spiketoolkit>=0.3.5'
+        'PyQt5',
+        'spikeextractors',
+        'spiketoolkit'
     ],
     author='Roger Hurwitz',
     author_email='rogerhurwitz@gmail.com',
