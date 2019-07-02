@@ -22,4 +22,4 @@ spikely
 
 [Cole Hurwitz](https://www.inf.ed.ac.uk/people/students/Cole_Hurwitz.html) - The Institute for Adaptive and Neural Computation (ANC), University of Edinburgh, Edinburgh, Scotland 
 
-![logo](./spikely/resources/spikely_tiny.png)
+![gui](./spikely/resources/spikely_gui.png)

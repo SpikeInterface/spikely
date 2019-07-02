@@ -10,10 +10,14 @@ import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
 
 import copy
-# import threading
+import pkg_resources
 
+from . import config as cfg
+
+'''
 from .config import ELEMENT_ROLE, main_window, status_bar, \
     STATUS_MSG_TIMEOUT, EXTRACTOR, SORTER
+'''
 
 
 class SpikePipelineModel(qc.QAbstractListModel):
@@ -26,12 +30,22 @@ class SpikePipelineModel(qc.QAbstractListModel):
         # Underlying data structure proxied by model
         self._elements = []
 
-        self._decorations = [
-            qg.QIcon("resources/EXTR.png"),
-            qg.QIcon("resources/PREP.png"),
-            qg.QIcon("resources/SORT.png"),
-            qg.QIcon("resources/CURATOR.png")
-        ]
+        self._decorations = [None, None, None, None]
+        fn = pkg_resources.resource_filename(
+            'spikely.resources', 'EXTRACTOR.png')
+        self._decorations[cfg.EXTRACTOR] = qg.QIcon(fn)
+
+        fn = pkg_resources.resource_filename(
+            'spikely.resources', 'PRE_PROCESSOR.png')
+        self._decorations[cfg.PRE_PROCESSOR] = qg.QIcon(fn)
+
+        fn = pkg_resources.resource_filename(
+            'spikely.resources', 'SORTER.png')
+        self._decorations[cfg.SORTER] = qg.QIcon(fn)
+
+        fn = pkg_resources.resource_filename(
+            'spikely.resources', 'CURATOR.png')
+        self._decorations[cfg.CURATOR] = qg.QIcon(fn)
 
     # Methods sub-classed from QAbstractListModel
     def rowCount(self, parent):
@@ -47,7 +61,7 @@ class SpikePipelineModel(qc.QAbstractListModel):
                 result = element.name
             elif role == qc.Qt.DecorationRole:
                 result = self._decorations[element.interface_id]
-            elif role == ELEMENT_ROLE:
+            elif role == cfg.ELEMENT_ROLE:
                 result = element
 
         return result
@@ -70,7 +84,7 @@ class SpikePipelineModel(qc.QAbstractListModel):
         bad_count = self._bad_param_count()
         if bad_count:
             qw.QMessageBox.warning(
-                main_window, 'Run Failure',
+                cfg.main_window, 'Run Failure',
                 f'Missing {self._bad_param_count()} required ' +
                 ('parameter' if bad_count == 1 else 'parameters'))
         else:
@@ -88,17 +102,17 @@ class SpikePipelineModel(qc.QAbstractListModel):
 
             except (KeyError, AttributeError):
                 qw.QMessageBox.warning(
-                    main_window, 'Run Failure',
+                    cfg.main_window, 'Run Failure',
                     'One or more invalid element parameter values.  Please '
                     'ensure all parameter values are set properly for all '
                     'elements in the pipeline.')
             except Exception as e:
                 qw.QMessageBox.warning(
-                    main_window, 'Run Failure', f'{e}')
+                    cfg.main_window, 'Run Failure', f'{e}')
             else:
                 msg = 'Run successful' \
                     if element_count > 0 else 'Nothing to run'
-                status_bar.showMessage(msg, STATUS_MSG_TIMEOUT)
+                cfg.status_bar.showMessage(msg, cfg.STATUS_MSG_TIMEOUT)
 
     def clear(self):
         """Removes all elements from pipeline"""
@@ -107,17 +121,18 @@ class SpikePipelineModel(qc.QAbstractListModel):
             self._elements.clear()
             self.endResetModel()
         else:
-            status_bar.showMessage('Nothing to clear', STATUS_MSG_TIMEOUT)
+            cfg.status_bar.showMessage(
+                'Nothing to clear', cfg.STATUS_MSG_TIMEOUT)
 
     def add_element(self, element):
         """ Adds element at top of stage associated w/ element interface_id"""
         # Only allow one Extractor or Sorter
-        if (element.interface_id == EXTRACTOR or
-                element.interface_id == SORTER):
+        if (element.interface_id == cfg.EXTRACTOR or
+                element.interface_id == cfg.SORTER):
             if self._has_instance(element.interface_id):
-                status_bar.showMessage(
+                cfg.status_bar.showMessage(
                     "Only one instance of that element type allowed",
-                    STATUS_MSG_TIMEOUT)
+                    cfg.STATUS_MSG_TIMEOUT)
                 return
         # A bit hacky since it assumes order of interface_id constants
         i = 0
@@ -138,8 +153,8 @@ class SpikePipelineModel(qc.QAbstractListModel):
             self._swap(self._elements, i, i-1)
             self.endMoveRows()
         else:
-            status_bar.showMessage(
-                "Cannot move element any higher", STATUS_MSG_TIMEOUT)
+            cfg.status_bar.showMessage(
+                "Cannot move element any higher", cfg.STATUS_MSG_TIMEOUT)
 
     def move_down(self, element):
         i = self._elements.index(element)
@@ -152,8 +167,8 @@ class SpikePipelineModel(qc.QAbstractListModel):
             self._swap(self._elements, i, i+1)
             self.endMoveRows()
         else:
-            status_bar.showMessage(
-                "Cannot move element any lower", STATUS_MSG_TIMEOUT)
+            cfg.status_bar.showMessage(
+                "Cannot move element any lower", cfg.STATUS_MSG_TIMEOUT)
 
     def delete(self, element):
         index = self._elements.index(element)
