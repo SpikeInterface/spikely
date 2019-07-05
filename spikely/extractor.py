@@ -10,17 +10,16 @@ class Extractor(SpikeElement):
                               interface_class.extractor_name)
 
     def run(self, input_payload, next_element):
-        if(not self._interface_class.has_default_locations):
-            probe_path = self._params.pop(-1)['value']
+        probe_path = self._params[-1]['value']
         params = self._params
         params_dict = {}
-        for param in params:
+        for param in params[:-1]:
             param_name = param['name']
             # param_type = param['type']
             # param_title = param['title']
             param_value = param['value']
             params_dict[param_name] = param_value
         recording = self._interface_class(**params_dict)
-        if(not self._interface_class.has_default_locations):
+        if(probe_path is not None):
             se.load_probe_file(recording, probe_path)
         return recording
