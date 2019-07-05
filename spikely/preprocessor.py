@@ -1,4 +1,4 @@
-from spike_element import SpikeElement
+from .spike_element import SpikeElement
 
 
 class Preprocessor(SpikeElement):

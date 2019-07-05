@@ -8,7 +8,7 @@ configuration operate the pipeline.
 
 Modules:
     ce_view.py - UI to configure element parameters
-    config.py - Constants and globals used throughout
+    cfg.py - Constants and globals used throughout
     cp_view.py - UI to select, insert, and manipulate elements in pipeline
     el_model.py - SpikeElementModel bridges SpikeElement to/from UI
     op_view.py - UI to manage pipeline commands (e.g., clear, run, queue)
@@ -22,14 +22,16 @@ import sys
 import PyQt5.QtWidgets as qw
 import PyQt5.QtGui as qg
 
-from op_view import OperatePipelineView
-from cp_view import ConstructPipelineView
-from ce_view import ConfigureElementView
-from pi_model import SpikePipelineModel
-from el_model import SpikeElementModel
-import config
+from spikely.op_view import OperatePipelineView
+from spikely.cp_view import ConstructPipelineView
+from spikely.ce_view import ConfigureElementView
+from spikely.pi_model import SpikePipelineModel
+from spikely.el_model import SpikeElementModel
 
-__version__ = "0.3.5"
+import pkg_resources
+
+from . import config as cfg
+from spikely.version import __version__
 
 
 class SpikelyMainWindow(qw.QMainWindow):
@@ -55,7 +57,11 @@ class SpikelyMainWindow(qw.QMainWindow):
         # Application main window setup
         self.setWindowTitle("Spikely")
         self.setGeometry(100, 100, 1152, 448)
-        self.setWindowIcon(qg.QIcon("resources/spikely.png"))
+
+        spikely_png_path = pkg_resources.resource_filename(
+            'spikely.resources', 'spikely.png')
+
+        self.setWindowIcon(qg.QIcon(spikely_png_path))
         self.statusBar().addPermanentWidget(
             qw.QLabel("Version " + __version__))
 
@@ -85,15 +91,16 @@ class SpikelyMainWindow(qw.QMainWindow):
         main_frame.layout().addStretch(1)  # Pushes app window widgets up
 
         # Allows any module to post a status message to main window
-        config.status_bar = self.statusBar()
+        # cfg.status_bar = self.statusBar()
 
 
-def main():
+def launch_spikely():
     app = qw.QApplication(sys.argv)
-    config.main_window = SpikelyMainWindow()
-    config.main_window.show()
+    cfg.main_window = SpikelyMainWindow()
+    cfg.status_bar = cfg.main_window.statusBar()
+    cfg.main_window.show()
     sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
-    main()
+    launch_spikely()

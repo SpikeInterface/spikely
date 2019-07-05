@@ -1,4 +1,4 @@
-from spike_element import SpikeElement
+from .spike_element import SpikeElement
 import spikeextractors as se
 from pathlib import Path
 import spiketoolkit as st

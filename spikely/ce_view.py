@@ -6,7 +6,7 @@ viewing and editing the properties of elements (extractors, sorters, etc.).
 
 import PyQt5.QtWidgets as qw
 
-import config
+from .config import PARAM_COL, VTYPE_COL, VALUE_COL
 
 
 class ConfigureElementView(qw.QGroupBox):
@@ -36,9 +36,9 @@ class ConfigureElementView(qw.QGroupBox):
         cfg_table.setModel(self._element_model)
 
         cfg_table.verticalHeader().hide()
-        cfg_table.setColumnWidth(config.PARAM_COL, 200)
-        cfg_table.setColumnWidth(config.VTYPE_COL, 100)
-        cfg_table.setColumnWidth(config.VALUE_COL, 200)
+        cfg_table.setColumnWidth(PARAM_COL, 200)
+        cfg_table.setColumnWidth(VTYPE_COL, 100)
+        cfg_table.setColumnWidth(VALUE_COL, 200)
         cfg_table.horizontalHeader().setStretchLastSection(True)
 
         """

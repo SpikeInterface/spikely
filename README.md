@@ -1,27 +1,28 @@
-Alpha Development
-Version 0.3.0
+# spikely 
+An application built on top of SpikeInterface to create and run extracellular
+data processing pipelines within a GUI. Spikely currently supports loading, preprocessing,
+sorting, and curating extracellular datasets that are stored in SpikeInterface
+compatible file formats.
 
-# spikely
-An application built on top of SpikeInterface to create and run extracellular data processing pipelines. Spikely currently supports loading, preprocessing, sorting, and curating extracellular datasets that are stored in SpikeInterface compatible file formats.
+## Setup
 
-To run Spikely, first you must install spikeextractors, spiketoolkit, and PyQt5.
-
-```
-pip install spikeextractors spiketoolkit PyQt5
-```
-
-Once these packages are installed, spikely can be launched in the command line with,
+To run spikely first you must install it:
 
 ```
-python spikely.py
+pip install spikely
 ```
 
-Spikely allows users to run any sorting algorithms that are installed on their machine from within a graphical user interface.
+Once installed, spikely can be launched from the command line:
 
+```
+spikely
+```
+## Screenshot
 
-A full python package for spikely is in developement.
+![gui](./spikely/resources/spikely_gui.png)
 
 ## Authors
-[Roger Hurwitz](https://www.linkedin.com/in/rogerhurwitz/) - software developer, Portland, Oregon, USA
+
+[Roger Hurwitz](mailto:rogerhurwitz@gmail.com?subject=Spikely) - Software Developer, Portland, Oregon, USA
 
 [Cole Hurwitz](https://www.inf.ed.ac.uk/people/students/Cole_Hurwitz.html) - The Institute for Adaptive and Neural Computation (ANC), University of Edinburgh, Edinburgh, Scotland 
