@@ -28,4 +28,4 @@ class Sorter(SpikeElement):
             sub_sorter_param_dict[param_name] = param_value
         sorter.set_params(**sub_sorter_param_dict)
         sorter.run()
-        return sorter.get_result(), sorter.output_folders[0], input_payload
+        return sorter.get_result_list(), sorter.output_folders, input_payload
