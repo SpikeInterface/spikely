@@ -23,8 +23,6 @@ class Sorter(SpikeElement):
         sub_sorter_param_dict = {}
         for param in params[2:]:
             param_name = param['name']
-            # param_type = param['type']
-            # param_title = param['title']
             param_value = param['value']
             sub_sorter_param_dict[param_name] = param_value
         sorter.set_params(**sub_sorter_param_dict)
