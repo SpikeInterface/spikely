@@ -17,7 +17,8 @@ class Extractor(SpikeElement):
     def run(self, input_payload, next_element):
         params = self._params
         params_dict = {}
-        for param in params[:-1]:
+        probe_path = None
+        for param in params:
             param_name = param['name']
             param_value = param['value']
             if(param_name == 'probe_path'):
