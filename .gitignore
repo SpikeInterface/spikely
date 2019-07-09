@@ -3,3 +3,7 @@ spikely.egg-info/
 .vscode/
 build/
 __pycache__
+mtn_sort_dataset/
+tmp_klusta/
+data_sets/
+klusta/

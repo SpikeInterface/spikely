@@ -22,16 +22,16 @@ import sys
 import PyQt5.QtWidgets as qw
 import PyQt5.QtGui as qg
 
-from spikely.op_view import OperatePipelineView
-from spikely.cp_view import ConstructPipelineView
-from spikely.ce_view import ConfigureElementView
-from spikely.pi_model import SpikePipelineModel
-from spikely.el_model import SpikeElementModel
+from .op_view import OperatePipelineView
+from .cp_view import ConstructPipelineView
+from .ce_view import ConfigureElementView
+from .pi_model import SpikePipelineModel
+from .el_model import SpikeElementModel
 
 import pkg_resources
 
 from . import config as cfg
-from spikely.version import __version__
+from .version import __version__
 
 
 class SpikelyMainWindow(qw.QMainWindow):
@@ -55,7 +55,7 @@ class SpikelyMainWindow(qw.QMainWindow):
         """Assembles the main UI from delegated sub-views."""
 
         # Application main window setup
-        self.setWindowTitle("Spikely")
+        self.setWindowTitle("spikely")
         self.setGeometry(100, 100, 1152, 448)
 
         spikely_png_path = pkg_resources.resource_filename(
@@ -64,6 +64,17 @@ class SpikelyMainWindow(qw.QMainWindow):
         self.setWindowIcon(qg.QIcon(spikely_png_path))
         self.statusBar().addPermanentWidget(
             qw.QLabel("Version " + __version__))
+
+        # Menus
+        main_menu = self.menuBar()
+        file_menu = main_menu.addMenu('File')
+        # tools_menu = main_menu.addMenu('Tools')
+
+        exit_btn = qw.QAction('Exit', self)
+        exit_btn.setShortcut('Ctrl+Q')
+        exit_btn.setStatusTip('Exit application')
+        exit_btn.triggered.connect(self.close)
+        file_menu.addAction(exit_btn)
 
         # Core application UI in main_frame as CentralWidget of QMainWindow
         main_frame = qw.QFrame()

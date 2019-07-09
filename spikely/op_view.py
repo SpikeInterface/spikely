@@ -62,9 +62,11 @@ class OperatePipelineView(qw.QGroupBox):
             "Queue not implemented", cfg.STATUS_MSG_TIMEOUT)
 
     def _run_clicked(self):
-        # Pipeline model should be responsible for this
-        self._pipeline_model.run()
-
+        if self._pipeline_model.rowCount():
+            self._pipeline_model.run()
+        else:
+            cfg.status_bar.showMessage(
+                "Add elements to run pipeline", cfg.STATUS_MSG_TIMEOUT)
     '''
     def _pipeline_changed(self, parent=None, first=None, last=None):
         enabled = self._pipeline_model.rowCount(None) > 0
