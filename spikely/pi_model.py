@@ -10,9 +10,10 @@ import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
 
 import copy
+import multiprocessing as mp
 import pkg_resources
 
-from . import config as cfg
+from spikely import config as cfg
 
 '''
 from .config import ELEMENT_ROLE, main_window, status_bar, \
@@ -48,7 +49,7 @@ class SpikePipelineModel(qc.QAbstractListModel):
         self._decorations[cfg.CURATOR] = qg.QIcon(fn)
 
     # Methods sub-classed from QAbstractListModel
-    def rowCount(self, parent):
+    def rowCount(self, parent=None):
         return len(self._elements)
 
     def data(self, mod_index, role=qc.Qt.DisplayRole):
@@ -89,30 +90,21 @@ class SpikePipelineModel(qc.QAbstractListModel):
                 ('parameter' if bad_count == 1 else 'parameters'))
         else:
             """Call SpikeInterface APIs on elements in pipeline"""
-            try:
-                input_payload = None
-                element_count = len(self._elements)
+            cfg.status_bar.showMessage(
+                'Running pipeline', cfg.STATUS_MSG_TIMEOUT)
+            p = mp.Process(target=self.async_run)
+            p.start()
 
-                for i in range(0, element_count):
-                    next_element = self._elements[i+1] \
-                        if i < (element_count - 1) else None
-                    input_payload = self._elements[i].run(
-                        input_payload, next_element
-                    )
+    def async_run(self):
+        input_payload = None
+        element_count = len(self._elements)
 
-            except (KeyError, AttributeError):
-                qw.QMessageBox.warning(
-                    cfg.main_window, 'Run Failure',
-                    'One or more invalid element parameter values.  Please '
-                    'ensure all parameter values are set properly for all '
-                    'elements in the pipeline.')
-            except Exception as e:
-                qw.QMessageBox.warning(
-                    cfg.main_window, 'Run Failure', f'{e}')
-            else:
-                msg = 'Run successful' \
-                    if element_count > 0 else 'Nothing to run'
-                cfg.status_bar.showMessage(msg, cfg.STATUS_MSG_TIMEOUT)
+        for i in range(0, element_count):
+            next_element = self._elements[i+1] \
+                if i < (element_count - 1) else None
+            input_payload = self._elements[i].run(
+                input_payload, next_element
+            )
 
     def clear(self):
         """Removes all elements from pipeline"""
