@@ -21,7 +21,7 @@ from .config import ELEMENT_ROLE, main_window, status_bar, \
 '''
 
 
-class SpikePipelineModel(qc.QAbstractListModel):
+class PipelineModel(qc.QAbstractListModel):
     """Used by UI to display pipeline of elements in a decoupled fashion"""
 
     def __init__(self, element_model):

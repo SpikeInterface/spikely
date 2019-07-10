@@ -10,7 +10,7 @@ import PyQt5.QtWidgets as qw
 from . import config as cfg
 
 
-class OperatePipelineView(qw.QGroupBox):
+class OperationView(qw.QGroupBox):
     """GroupBox of widgets capable of operating the active pipeline.
 
     Invokes methods on the active pipeline. No public methods other than

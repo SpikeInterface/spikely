@@ -18,7 +18,7 @@ import spikeextractors as se
 import spiketoolkit as st
 
 
-class ConstructPipelineView(qw.QGroupBox):
+class PipelineView(qw.QGroupBox):
     """QGroupBox containing the view-control widget set
 
     No public methods other than constructor.  All other activites
@@ -40,7 +40,7 @@ class ConstructPipelineView(qw.QGroupBox):
     def _init_ui(self):
         """Assembles the individual widgets into the widget-set.
 
-        The ConstructPipelineView consists of three separate UI assemblies
+        The PipelineView consists of three separate UI assemblies
         stacked top to bottom: element selection, pipeline element list view,
         and pipeline element manipulation controls (move up, delete, move down)
         """
@@ -114,7 +114,7 @@ class ConstructPipelineView(qw.QGroupBox):
         self._pipeline_view.setSelectionMode(
             qw.QAbstractItemView.SingleSelection)
 
-        # Links element (ce_view) and pipeline (cp_view) views
+        # Links element (parameter_view) and pipeline (pipeline_view) views
         def list_selection_changed(selected, deselected):
             if selected.indexes():
                 # Retrieve selected element from pipeline model

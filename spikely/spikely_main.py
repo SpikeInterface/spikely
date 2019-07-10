@@ -1,20 +1,14 @@
 """UI for SpikeInterface extracellular data processing pipelines.
 
-The application enables a user to constuct a pipeline consisting of elements
-associated with extracellular data recording extraction, pre-processing,
-sorting, and curation.  The user can configure the properties of each
-element, and once satisifed with the pipeline construction and element
-configuration operate the pipeline.
+spikely enables a user to construct and execute a pipeline of elements
+used extracellular data recording extraction, pre-processing, sorting, and
+curation.
 
-Modules:
-    ce_view.py - UI to configure element parameters
-    cfg.py - Constants and globals used throughout
-    cp_view.py - UI to select, insert, and manipulate elements in pipeline
-    el_model.py - SpikeElementModel bridges SpikeElement to/from UI
-    op_view.py - UI to manage pipeline commands (e.g., clear, run, queue)
-    pi_model.py - SpikePipeline model bridges element pipeline to/from UI
-    spike_element.py - SpikeElement class from which to subclass elements
-    spikely.py - Main application sets up UI and executes event loop
+The code is organized along hierarchical MVC lines.  The pipeline, parameter,
+and operation views represent the three primary regions of the UI, while the
+element and pipeline models proxy for individual and collective SpikeInterface
+objects respectively.
+
 """
 
 import sys
@@ -22,11 +16,11 @@ import sys
 import PyQt5.QtWidgets as qw
 import PyQt5.QtGui as qg
 
-from .op_view import OperatePipelineView
-from .cp_view import ConstructPipelineView
-from .ce_view import ConfigureElementView
-from .pi_model import SpikePipelineModel
-from .el_model import SpikeElementModel
+from .operation_view import OperationView
+from .pipeline_view import PipelineView
+from .parameter_view import ParameterView
+from .pipeline_model import PipelineModel
+from .element_model import ElementModel
 
 import pkg_resources
 
@@ -42,8 +36,8 @@ class SpikelyMainWindow(qw.QMainWindow):
         super().__init__()
 
         # Active pipeline and element models
-        self._element_model = SpikeElementModel()
-        self._pipeline_model = SpikePipelineModel(
+        self._element_model = ElementModel()
+        self._pipeline_model = PipelineModel(
             self._element_model)
 
         # Enhances print() use for debug
@@ -88,15 +82,15 @@ class SpikelyMainWindow(qw.QMainWindow):
         cp_ce_splitter.setChildrenCollapsible(False)
 
         # Actual widget construction done in View classes
-        cp_ce_splitter.addWidget(ConstructPipelineView(
+        cp_ce_splitter.addWidget(PipelineView(
             self._pipeline_model, self._element_model))
-        cp_ce_splitter.addWidget(ConfigureElementView(
+        cp_ce_splitter.addWidget(ParameterView(
             self._pipeline_model, self._element_model))
         cp_ce_splitter.setSizes([328, 640])
         main_frame.layout().addWidget(cp_ce_splitter)
 
         # Lay out Operate Pipeline (op) view at bottom of main window
-        main_frame.layout().addWidget(OperatePipelineView(
+        main_frame.layout().addWidget(OperationView(
             self._pipeline_model, self._element_model))
 
         main_frame.layout().addStretch(1)  # Pushes app window widgets up

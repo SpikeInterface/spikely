@@ -9,7 +9,7 @@ import PyQt5.QtWidgets as qw
 from .config import PARAM_COL, VTYPE_COL, VALUE_COL
 
 
-class ConfigureElementView(qw.QGroupBox):
+class ParameterView(qw.QGroupBox):
     """GroupBox of widgets capable of editing element properties.
 
     Application instance of element model is updated everytime user selects an

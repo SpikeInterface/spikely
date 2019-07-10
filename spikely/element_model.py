@@ -12,7 +12,7 @@ import PyQt5.QtWidgets as qw
 from . import config as cfg
 
 
-class SpikeElementModel(qc.QAbstractTableModel):
+class ElementModel(qc.QAbstractTableModel):
     """Model representation of pipeline elements"""
 
     def __init__(self):
