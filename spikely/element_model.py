@@ -1,19 +1,15 @@
-"""Class definition of SpikeElement.
-
-Implements the SpikeInterface elements responsible extracellular data
-processing.
-
-"""
-
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
 
+import re
+
 from . import config as cfg
 
 
+# An MVC model representation of a SpikeInterface element
+# used almost exclusively to expose parameters to UI Views
 class ElementModel(qc.QAbstractTableModel):
-    """Model representation of pipeline elements"""
 
     def __init__(self):
         self._element = None
@@ -26,34 +22,41 @@ class ElementModel(qc.QAbstractTableModel):
 
     @element.setter
     def element(self, element):
-        '''Ensures views are signaled on element changes'''
+        # Ensures dependent Views are signaled on element changes
         self.beginResetModel()
         self._element = element
         self.endResetModel()
 
-    # Methods sub-classed from QAbstractTableModel
+    #
+    # QAbstractTableModel Methods
+    #
+
+    # Count of parameters associated with an element instance
     def rowCount(self, parent=qc.QModelIndex()):
-        '''Count of parameters associated with an element instance'''
         return 0 if self._element is None else len(self._element.params)
 
+    # Number of display columns: Parameter, Type, Value
     def columnCount(self, parent=qc.QModelIndex()):
-        '''Number of display columns in parameter table view'''
         return 3
 
+    # Sets UI policy for columns in table view for element parameters
     def flags(self, mod_index):
-        '''Sets UI policy for columns in table view for element'''
-        flags = qc.QAbstractTableModel.flags(self, mod_index)
+        column_flags = qc.QAbstractTableModel.flags(self, mod_index)
         col = mod_index.column()
-        if col == cfg.PARAM_COL or col == cfg.VTYPE_COL:
-            flags ^= qc.Qt.ItemIsSelectable
-        elif col == cfg.VALUE_COL:
-            flags |= qc.Qt.ItemIsEditable
-        return flags
 
+        # Parameter and Type column cells are read only
+        if col == cfg.PARAM_COL or col == cfg.VTYPE_COL:
+            column_flags ^= qc.Qt.ItemIsSelectable
+        elif col == cfg.VALUE_COL:
+            column_flags |= qc.Qt.ItemIsEditable
+        return column_flags
+
+    # Called by Views, gets element parameter data based on index and role
     def data(self, mod_index, role=qc.Qt.DisplayRole):
-        '''Returns data for one row/param and one col/field at a time'''
         col, row = mod_index.column(), mod_index.row()
         param_dict = self._element.params[row]
+
+        # If no actual result return empty value indicator
         result = qc.QVariant()
 
         if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
@@ -71,6 +74,8 @@ class ElementModel(qc.QAbstractTableModel):
             if col == cfg.PARAM_COL and 'title' in param_dict.keys():
                 result = param_dict['title']
 
+        # Paints cell red if mandatory parameter value is missing.
+        # Mandatory parameters are those with no default keys
         elif role == qc.Qt.BackgroundRole:
             if col == cfg.VALUE_COL:
                 if ('value' not in param_dict.keys() and
@@ -80,7 +85,6 @@ class ElementModel(qc.QAbstractTableModel):
         return result
 
     def headerData(self, section, orientation, role):
-        '''Sets properties for column headers in table view'''
         result = qc.QVariant()
         if (orientation == qc.Qt.Horizontal and
                 (role == qc.Qt.DisplayRole or role == qc.Qt.EditRole)):
@@ -88,19 +92,17 @@ class ElementModel(qc.QAbstractTableModel):
 
         return result
 
+    # Called after user edits parameter value to keep model in sync
     def setData(self, mod_index, value, role=qc.Qt.EditRole):
-        '''Takes data from table view and passes it to model'''
         row = mod_index.row()
         param_dict = self._element.params[row]
         success = True
 
+        # This is a little tricky - if user enters valid value assign it to
+        # 'value' in the param dictionary.  If user enters nothing assign
+        # 'default' to 'value' if 'default' exists, otherwise delete 'value'
+        # from param dictionary.  Talk to Cole if you don't like this.
         if role == qc.Qt.EditRole:
-            '''
-            This is a little tricky - if user enters valid value assign it to
-            'value' in the param dictionary.  If user enters nothing assign
-            'default' to 'value' if 'default' exists, otherwise delete 'value'
-            from param dictionary.  Talk to Cole if you don't like this.
-            '''
             if value.strip():
                 success, cvt_value = self._convert_value(
                     param_dict['type'], value)
@@ -114,6 +116,10 @@ class ElementModel(qc.QAbstractTableModel):
 
         return success
 
+    #
+    # Helper Methods
+    #
+
     def _convert_value(self, type_str, value):
         success, cvt_value = True, None
         try:
@@ -125,6 +131,11 @@ class ElementModel(qc.QAbstractTableModel):
                 cvt_value = int(value)
             elif type_str == 'float':
                 cvt_value = float(value)
+            elif type_str == 'int_list':
+                cvt_value = []
+                value = re.sub(r'[\[\]]', '', value)
+                for i in value.split(','):
+                    cvt_value.append(int(i))
             elif type_str == 'bool':
                 if value.lower() in ['true', 'yes']:
                     cvt_value = True
