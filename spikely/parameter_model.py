@@ -7,9 +7,8 @@ import re
 from . import config as cfg
 
 
-# An MVC model representation of a SpikeInterface element
-# used almost exclusively to expose parameters to UI Views
-class ElementModel(qc.QAbstractTableModel):
+# An MVC model representation of an element's parameters
+class ParameterModel(qc.QAbstractTableModel):
 
     def __init__(self):
         self._element = None
@@ -22,7 +21,7 @@ class ElementModel(qc.QAbstractTableModel):
 
     @element.setter
     def element(self, element):
-        # Ensures dependent Views are signaled on element changes
+        # Ensures dependent views are signaled on element changes
         self.beginResetModel()
         self._element = element
         self.endResetModel()
@@ -45,13 +44,13 @@ class ElementModel(qc.QAbstractTableModel):
         col = mod_index.column()
 
         # Parameter and Type column cells are read only
-        if col == cfg.PARAM_COL or col == cfg.VTYPE_COL:
+        if col == cfg.PARAM_COL or col == cfg.TYPE_COL:
             column_flags ^= qc.Qt.ItemIsSelectable
         elif col == cfg.VALUE_COL:
             column_flags |= qc.Qt.ItemIsEditable
         return column_flags
 
-    # Called by Views, gets element parameter data based on index and role
+    # Called by Views, get element parameter data based on index and role
     def data(self, mod_index, role=qc.Qt.DisplayRole):
         col, row = mod_index.column(), mod_index.row()
         param_dict = self._element.params[row]
@@ -62,7 +61,7 @@ class ElementModel(qc.QAbstractTableModel):
         if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
             if col == cfg.PARAM_COL:
                 result = param_dict['name']
-            elif col == cfg.VTYPE_COL:
+            elif col == cfg.TYPE_COL:
                 result = param_dict['type']
             elif col == cfg.VALUE_COL:
                 if 'value' in param_dict.keys():

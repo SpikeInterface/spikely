@@ -25,7 +25,7 @@ class PipelineView(qw.QGroupBox):
     of object are triggered by user interaction with sub widgets.
     """
 
-    def __init__(self, pipeline_model, element_model):
+    def __init__(self, pipeline_model, parameter_model):
         super().__init__("Construct Pipeline")
 
         self._available_elements = []
@@ -33,7 +33,7 @@ class PipelineView(qw.QGroupBox):
 
         self._pipeline_model = pipeline_model
         self._pipeline_view = qw.QListView(self)
-        self._element_model = element_model
+        self._parameter_model = parameter_model
 
         self._init_ui()
 
@@ -120,9 +120,9 @@ class PipelineView(qw.QGroupBox):
                 # Retrieve selected element from pipeline model
                 element = self._get_selected_element()
                 # Link selected element to element property editor
-                self._element_model.element = element
+                self._parameter_model.element = element
             else:
-                self._element_model.element = None
+                self._parameter_model.element = None
         self._pipeline_view.selectionModel().selectionChanged.connect(
             list_selection_changed)
 
