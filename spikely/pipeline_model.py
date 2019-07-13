@@ -1,10 +1,3 @@
-""" Model associated with user constructed pipeline of elements.
-
-Supports the main UI using MVC pattern semantics.  This class proxies the
-actual concatenation (pipeline) of SpikeInterface element space of extractors,
-pre-processors, sorters, and curators.
-"""
-
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
@@ -14,11 +7,6 @@ import multiprocessing as mp
 import pkg_resources
 
 from spikely import config as cfg
-
-'''
-from .config import ELEMENT_ROLE, main_window, status_bar, \
-    STATUS_MSG_TIMEOUT, EXTRACTOR, SORTER
-'''
 
 
 class PipelineModel(qc.QAbstractListModel):
@@ -48,12 +36,13 @@ class PipelineModel(qc.QAbstractListModel):
             'spikely.resources', 'CURATOR.png')
         self._decorations[cfg.CURATOR] = qg.QIcon(fn)
 
+    #
     # Methods sub-classed from QAbstractListModel
+    #
     def rowCount(self, parent=None):
         return len(self._elements)
 
     def data(self, mod_index, role=qc.Qt.DisplayRole):
-        """ Retrieves data facet (role) from model based on positional index"""
         result = None
 
         if mod_index.isValid() and mod_index.row() < len(self._elements):
@@ -66,20 +55,9 @@ class PipelineModel(qc.QAbstractListModel):
                 result = element
 
         return result
-
-    # Convenience methods used by class APIs
-    def _has_instance(self, interface_id):
-        for element in self._elements:
-            if element.interface_id == interface_id:
-                return True
-        """Generator expression equivalent for future reference
-        return sum(1 for ele in self._elements if
-        ele.interface_id == interface_id)"""
-
-    def _swap(self, list, pos1, pos2):
-        list[pos1], list[pos2] = list[pos2], list[pos1]
-
-    # Methods for other parts of Spikely to manipulate pipeline
+    #
+    # Methods called by app to manipulate and operate pipeline
+    #
     def run(self):
 
         bad_count = self._bad_param_count()
@@ -107,7 +85,6 @@ class PipelineModel(qc.QAbstractListModel):
             )
 
     def clear(self):
-        """Removes all elements from pipeline"""
         if len(self._elements):
             self.beginResetModel()
             self._elements.clear()
@@ -117,7 +94,6 @@ class PipelineModel(qc.QAbstractListModel):
                 'Nothing to clear', cfg.STATUS_MSG_TIMEOUT)
 
     def add_element(self, element):
-        """ Adds element at top of stage associated w/ element interface_id"""
         # Only allow one Extractor or Sorter
         if (element.interface_id == cfg.EXTRACTOR or
                 element.interface_id == cfg.SORTER):
@@ -168,7 +144,24 @@ class PipelineModel(qc.QAbstractListModel):
         self._elements.pop(index)
         self.endRemoveRows()
 
+    #
+    # Convenience methods used only within class
+    #
+    def _has_instance(self, interface_id):
+        # Checks if element instance already in pipeline
+        for element in self._elements:
+            if element.interface_id == interface_id:
+                return True
+
+        # Generator expression equivalent for future reference
+        # return sum(1 for ele in self._elements if
+        # ele.interface_id == interface_id)
+
+    def _swap(self, list, pos1, pos2):
+        list[pos1], list[pos2] = list[pos2], list[pos1]
+
     def _bad_param_count(self):
+        # Counts incomplete mandatory parameters in pipeline
         count = 0
         for element in self._elements:
             for param in element.params:
