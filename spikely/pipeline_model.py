@@ -10,9 +10,8 @@ from spikely import config as cfg
 
 
 class PipelineModel(qc.QAbstractListModel):
-    """Used by UI to display pipeline of elements in a decoupled fashion"""
 
-    def __init__(self, element_model):
+    def __init__(self, parameter_model):
         """TBD."""
         super().__init__()
 
@@ -37,7 +36,7 @@ class PipelineModel(qc.QAbstractListModel):
         self._decorations[cfg.CURATOR] = qg.QIcon(fn)
 
     #
-    # Methods sub-classed from QAbstractListModel
+    # Overloaded methods from QAbstractListModel
     #
     def rowCount(self, parent=None):
         return len(self._elements)
@@ -51,6 +50,7 @@ class PipelineModel(qc.QAbstractListModel):
                 result = element.name
             elif role == qc.Qt.DecorationRole:
                 result = self._decorations[element.interface_id]
+            # Custom role for spikely callers to access pipeline elements
             elif role == cfg.ELEMENT_ROLE:
                 result = element
 
@@ -102,7 +102,7 @@ class PipelineModel(qc.QAbstractListModel):
                     "Only one instance of that element type allowed",
                     cfg.STATUS_MSG_TIMEOUT)
                 return
-        # A bit hacky since it assumes order of interface_id constants
+        # A kludge since it assumes order of interface_id constants
         i = 0
         while (i < len(self._elements) and
                 element.interface_id >= self._elements[i].interface_id):

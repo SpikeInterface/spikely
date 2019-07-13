@@ -20,7 +20,7 @@ from .operation_view import OperationView
 from .pipeline_view import PipelineView
 from .parameter_view import ParameterView
 from .pipeline_model import PipelineModel
-from .element_model import ElementModel
+from .parameter_model import ParameterModel
 
 import pkg_resources
 
@@ -36,9 +36,9 @@ class SpikelyMainWindow(qw.QMainWindow):
         super().__init__()
 
         # Active pipeline and element models
-        self._element_model = ElementModel()
+        self._parameter_model = ParameterModel()
         self._pipeline_model = PipelineModel(
-            self._element_model)
+            self._parameter_model)
 
         # Enhances print() use for debug
         sys.stdout.flush()
@@ -61,14 +61,20 @@ class SpikelyMainWindow(qw.QMainWindow):
 
         # Menus
         main_menu = self.menuBar()
-        file_menu = main_menu.addMenu('File')
-        # tools_menu = main_menu.addMenu('Tools')
 
-        exit_btn = qw.QAction('Exit', self)
-        exit_btn.setShortcut('Ctrl+Q')
-        exit_btn.setStatusTip('Exit application')
-        exit_btn.triggered.connect(self.close)
-        file_menu.addAction(exit_btn)
+        file_menu = main_menu.addMenu('File')
+        exit_action = qw.QAction('Exit', self)
+        exit_action.setShortcut('Ctrl+Q')
+        exit_action.setStatusTip('Exit application')
+        exit_action.triggered.connect(self.close)
+        file_menu.addAction(exit_action)
+
+        # tool_menu = main_menu.addMenu('Tools')
+        # dir_action = qw.QAction('Pick Directory', self)
+        # dir_action.setShortcut('Ctrl+D')
+        # dir_action.setStatusTip('Copy directory path to clipboard')
+        # dir_action.triggered.connect(self.do_dir_action)
+        # tool_menu.addAction(dir_action)
 
         # Core application UI in main_frame as CentralWidget of QMainWindow
         main_frame = qw.QFrame()
@@ -83,20 +89,35 @@ class SpikelyMainWindow(qw.QMainWindow):
 
         # Actual widget construction done in View classes
         cp_ce_splitter.addWidget(PipelineView(
-            self._pipeline_model, self._element_model))
+            self._pipeline_model, self._parameter_model))
         cp_ce_splitter.addWidget(ParameterView(
-            self._pipeline_model, self._element_model))
+            self._pipeline_model, self._parameter_model))
         cp_ce_splitter.setSizes([328, 640])
         main_frame.layout().addWidget(cp_ce_splitter)
 
         # Lay out Operate Pipeline (op) view at bottom of main window
         main_frame.layout().addWidget(OperationView(
-            self._pipeline_model, self._element_model))
+            self._pipeline_model, self._parameter_model))
 
         main_frame.layout().addStretch(1)  # Pushes app window widgets up
 
         # Allows any module to post a status message to main window
         # cfg.status_bar = self.statusBar()
+
+    # def do_dir_action(self):
+    #     dlg = qw.QFileDialog(self)
+    #     dlg.setFileMode(dlg.Directory)
+    #     dlg.setViewMode(dlg.List)
+    #     dlg.setDirectory('.')
+    #     dlg.setOption(dlg.DontUseNativeDialog, True)
+    #     # dlg.setOption(dlg.ShowDirsOnly, True)
+    #     dlg.setOption(dlg.ReadOnly, True)
+    #     dlg.setOption(dlg.HideNameFilterDetails, True)
+
+    #     if (dlg.exec_()):
+    #         file_names = dlg.selectedFiles()
+    #         cb = qw.QApplication.clipboard()
+    #         cb.setText(file_names[0])
 
 
 def launch_spikely():

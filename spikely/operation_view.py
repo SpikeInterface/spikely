@@ -5,10 +5,10 @@ from . import config as cfg
 # The collection of UI widgets assocated with pipeline operations
 class OperationView(qw.QGroupBox):
 
-    def __init__(self, pipeline_model, element_model):
+    def __init__(self, pipeline_model, parameter_model):
         super().__init__("Operate Pipeline")  # Group box label
         self._pipeline_model = pipeline_model
-        self._element_model = element_model
+        self._parameter_model = parameter_model
 
         self._init_ui()
 
@@ -33,7 +33,7 @@ class OperationView(qw.QGroupBox):
         def clear_clicked():
             self._pipeline_model.clear()
             # Ensures synchronization with parameter view
-            self._element_model.element = None
+            self._parameter_model.element = None
         self._clear_btn.clicked.connect(clear_clicked)
 
         self._queue_btn = qw.QPushButton("Queue")

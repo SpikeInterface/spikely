@@ -7,9 +7,8 @@ import re
 from . import config as cfg
 
 
-# An MVC model representation of a SpikeInterface element used
-# almost exclusively to expose parameters to parameter_view.py
-class ElementModel(qc.QAbstractTableModel):
+# An MVC model representation of an element's parameters
+class ParameterModel(qc.QAbstractTableModel):
 
     def __init__(self):
         self._element = None
@@ -22,7 +21,7 @@ class ElementModel(qc.QAbstractTableModel):
 
     @element.setter
     def element(self, element):
-        # Ensures dependent Views are signaled on element changes
+        # Ensures dependent views are signaled on element changes
         self.beginResetModel()
         self._element = element
         self.endResetModel()
