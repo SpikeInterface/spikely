@@ -1,41 +1,27 @@
-"""UI for SpikeInterface extracellular data processing pipelines.
-
-spikely enables a user to construct and execute a pipeline of elements
-used extracellular data recording extraction, pre-processing, sorting, and
-curation.
-
-The code is organized along hierarchical MVC lines.  The pipeline, parameter,
-and operation views represent the three primary regions of the UI, while the
-element and pipeline models proxy for individual and collective SpikeInterface
-objects respectively.
-
-"""
-
 import sys
+import pkg_resources
 
 import PyQt5.QtWidgets as qw
 import PyQt5.QtGui as qg
 
 from .operation_view import OperationView
 from .pipeline_view import PipelineView
-from .parameter_view import ParameterView
 from .pipeline_model import PipelineModel
+from .parameter_view import ParameterView
 from .parameter_model import ParameterModel
-
-import pkg_resources
-
+from . import file_menu
 from . import config as cfg
+
 from .version import __version__
 
 
 class SpikelyMainWindow(qw.QMainWindow):
-    """Main window for the application"""
 
     def __init__(self):
 
         super().__init__()
 
-        # Active pipeline and element models
+        # Active pipeline and element parameter models
         self._parameter_model = ParameterModel()
         self._pipeline_model = PipelineModel(
             self._parameter_model)
@@ -46,9 +32,7 @@ class SpikelyMainWindow(qw.QMainWindow):
         self._init_ui()
 
     def _init_ui(self):
-        """Assembles the main UI from delegated sub-views."""
 
-        # Application main window setup
         self.setWindowTitle("spikely")
         self.setGeometry(100, 100, 1152, 448)
 
@@ -59,50 +43,36 @@ class SpikelyMainWindow(qw.QMainWindow):
         self.statusBar().addPermanentWidget(
             qw.QLabel("Version " + __version__))
 
-        # Menus
-        main_menu = self.menuBar()
+        menu_bar = self.menuBar()
+        menu = file_menu.create_file_menu(self)
+        menu_bar.addMenu(menu)
 
-        file_menu = main_menu.addMenu('File')
-        exit_action = qw.QAction('Exit', self)
-        exit_action.setShortcut('Ctrl+Q')
-        exit_action.setStatusTip('Exit application')
-        exit_action.triggered.connect(self.close)
-        file_menu.addAction(exit_action)
-
-        # tool_menu = main_menu.addMenu('Tools')
+        # tool_menu = menu_bar.addMenu(qw.QMenu('Tools', self))
         # dir_action = qw.QAction('Pick Directory', self)
         # dir_action.setShortcut('Ctrl+D')
         # dir_action.setStatusTip('Copy directory path to clipboard')
         # dir_action.triggered.connect(self.do_dir_action)
         # tool_menu.addAction(dir_action)
 
-        # Core application UI in main_frame as CentralWidget of QMainWindow
         main_frame = qw.QFrame()
         self.setCentralWidget(main_frame)
         main_frame.setLayout(qw.QVBoxLayout())
 
-        """ Lay out Construction Pipeline (cp) and Configure Element (ce)
-        views in a frame at top of main window from left to right
-        """
-        cp_ce_splitter = qw.QSplitter()
-        cp_ce_splitter.setChildrenCollapsible(False)
+        pipe_param_splitter = qw.QSplitter()
+        pipe_param_splitter.setChildrenCollapsible(False)
 
         # Actual widget construction done in View classes
-        cp_ce_splitter.addWidget(PipelineView(
+        pipe_param_splitter.addWidget(PipelineView(
             self._pipeline_model, self._parameter_model))
-        cp_ce_splitter.addWidget(ParameterView(
+        pipe_param_splitter.addWidget(ParameterView(
             self._pipeline_model, self._parameter_model))
-        cp_ce_splitter.setSizes([328, 640])
-        main_frame.layout().addWidget(cp_ce_splitter)
+        pipe_param_splitter.setSizes([328, 640])
+        main_frame.layout().addWidget(pipe_param_splitter)
 
-        # Lay out Operate Pipeline (op) view at bottom of main window
         main_frame.layout().addWidget(OperationView(
             self._pipeline_model, self._parameter_model))
 
         main_frame.layout().addStretch(1)  # Pushes app window widgets up
-
-        # Allows any module to post a status message to main window
-        # cfg.status_bar = self.statusBar()
 
     # def do_dir_action(self):
     #     dlg = qw.QFileDialog(self)

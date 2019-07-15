@@ -97,7 +97,6 @@ class PipelineView(qw.QGroupBox):
         add_button = qw.QPushButton("Add Element")
 
         def _add_element_clicked():
-            # Prevents the addition of nu
             if ele_cbx.currentIndex() > -1:
                 # Takes advantage of actual element reference stored in ele_cbx
                 self._pipeline_model.add_element(ele_cbx.currentData())
