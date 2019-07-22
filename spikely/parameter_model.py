@@ -131,10 +131,16 @@ class ParameterModel(qc.QAbstractTableModel):
             elif type_str == 'float':
                 cvt_value = float(value)
             elif type_str == 'int_list':
-                cvt_value = []
-                value = re.sub(r'[\[\]]', '', value)
-                for i in value.split(','):
-                    cvt_value.append(int(i))
+                cvt_value = self._str_list_to_int_list(value)
+            # elif type_str == 'int_list_list':
+            elif type_str == 'int/int_list':
+                # Strip outer sq brackets: '[[1,2],[3,4]]' -> '[1,2],[3,4]'
+                value = re.sub(r'^\[|\]$', '', value)
+                # Disambiguate list separator: '[1,2],[3,4]' -> [1,2]:[3,4]'
+                value = re.sub(r'\] *, *\[', ':', value)
+                # Split into int_list strings and convert into int_lists
+                cvt_value = list(map(
+                    self._str_list_to_int_list, value.split(':')))
             elif type_str == 'bool':
                 if value.lower() in ['true', 'yes']:
                     cvt_value = True
@@ -150,3 +156,10 @@ class ParameterModel(qc.QAbstractTableModel):
             success = False
 
         return success, cvt_value
+
+    # E.g., '[1,2,3]' -> [1,2,3]
+    def _str_list_to_int_list(self, str_list):
+        # Set up split by stripping square brackets
+        str_list = re.sub(r'^\[|\]$', '', str_list)
+        # Convert list of string ints into actual ints
+        return list(map(int, str_list.split(',')))
