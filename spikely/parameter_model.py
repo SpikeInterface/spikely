@@ -2,6 +2,7 @@ import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
 
+import numpy as np
 import re
 
 from . import config as cfg
@@ -72,6 +73,24 @@ class ParameterModel(qc.QAbstractTableModel):
         elif role == qc.Qt.ToolTipRole:
             if col == cfg.PARAM_COL and 'title' in param_dict.keys():
                 result = param_dict['title']
+            elif col == cfg.TYPE_COL:
+                type_str = param_dict['type']
+                if type_str == 'int':
+                    result = 'integer'
+                elif type_str == 'float':
+                    result = 'floating point'
+                elif type_str == 'bool':
+                    result = 'boolean'
+                elif type_str == 'int_list':
+                    result = 'list of integers'
+                elif type_str == 'str':
+                    result = 'text string'
+                elif type_str == 'path':
+                    result = 'pathname of file or directory'
+                elif type_str == 'int_list_list':
+                    result = 'list of a int_lists'
+                elif type_str == 'dtype':
+                    result = 'numpy dtype object (e.g., int32)'
 
         # Paints cell red if mandatory parameter value is missing.
         # Mandatory parameters are those with no default keys
@@ -153,6 +172,9 @@ class ParameterModel(qc.QAbstractTableModel):
                     cvt_value = False
                 else:
                     raise TypeError(f'{value} is not a valid bool type')
+
+            elif type_str == 'dtype':
+                cvt_value = np.dtype(value)
 
             else:
                 raise TypeError(f'{type_str} is not a Spikely supported type')
