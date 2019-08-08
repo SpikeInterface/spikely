@@ -23,6 +23,6 @@ spikely
 
 ## Authors
 
-[Roger Hurwitz](mailto:rogerhurwitz@gmail.com?subject=Spikely) - Software Developer, Portland, Oregon, USA
+[Roger Hurwitz](mailto:rogerhurwitz@gmail.com?subject=Spikely) - Portland, Oregon, USA
 
 [Cole Hurwitz](https://www.inf.ed.ac.uk/people/students/Cole_Hurwitz.html) - The Institute for Adaptive and Neural Computation (ANC), University of Edinburgh, Edinburgh, Scotland 
