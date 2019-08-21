@@ -16,6 +16,7 @@ from . import config as cfg
 
 import spikeextractors as se
 import spiketoolkit as st
+import spikesorters as ss
 
 
 class PipelineView(qw.QGroupBox):
@@ -194,7 +195,7 @@ class PipelineView(qw.QGroupBox):
                 Preprocessor(preprocessor_class, cfg.PRE_PROCESSOR)
             )
 
-        sorter_list = st.sorters.installed_sorter_list
+        sorter_list = ss.installed_sorter_list
         for sorter_class in sorter_list:
             self._available_elements.append(
                 Sorter(sorter_class, cfg.SORTER)

@@ -2,6 +2,7 @@ from .spike_element import SpikeElement
 import spikeextractors as se
 from pathlib import Path
 import spiketoolkit as st
+import inspect
 import os
 
 
@@ -21,7 +22,10 @@ class Curator(SpikeElement):
         for i, sorting in enumerate(sorting_list):
             params_dict = {}
             params_dict['sorting'] = sorting
-            
+            if 'sampling_frequency' in inspect.getargspec(self._interface_class).args:
+                params_dict['sampling_frequency'] = recording.get_sampling_frequency()
+            if 'recording' in inspect.getargspec(self._interface_class).args:
+                params_dict['recording'] = recording
             params = self._params
             for param in params:
                 param_name = param['name']
@@ -29,6 +33,7 @@ class Curator(SpikeElement):
                 params_dict[param_name] = param_value
             curated_sorting = self._interface_class(**params_dict)
             curated_sorting_list.append(curated_sorting)
+            
             if(next_element is None):
                 output_folder_string_new = output_folder_string + '_phy_curated'
                 output_folder = Path(output_folder_string_new).absolute()
