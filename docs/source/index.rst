@@ -3,18 +3,32 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to spikely's documentation!
-===================================
+ Welcome to spikely's documentation!
+ ==========================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+ .. image:: images/GUI.png
+   :scale: 100 %
+   :align: center
 
+ spikely is an application built on top of SpikeInterface designed to create and
+ run extracellular data processing pipelines within a GUI. Spikely currently
+ supports loading, preprocessing, sorting, and curating extracellular datasets
+ that are stored in SpikeInterface compatible file formats.
 
+ - read many file formats
+ - pre-process extracellular recordings
+ - run several popular spike sorters
+ - curate the spike sorting output
 
-Indices and tables
-==================
+ .. toctree::
+    :maxdepth: 1
+    :caption: Contents:
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    overview
+
+ Indices and tables
+ ==================
+
+ * :ref:`genindex`
+ * :ref:`modindex`
+ * :ref:`search`
