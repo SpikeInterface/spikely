@@ -8,7 +8,6 @@
 
  .. image:: images/GUI.png
    :scale: 100 %
-   :align: center
 
  spikely is an application built on top of SpikeInterface designed to create and
  run extracellular data processing pipelines within a GUI. Spikely currently
