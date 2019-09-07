@@ -4,10 +4,7 @@
    contain the root `toctree` directive.
 
  Welcome to spikely's documentation!
- ==========================================
-
- .. image:: images/GUI.png
-   :scale: 100 %
+ ===================================
 
  spikely is an application built on top of SpikeInterface designed to create and
  run extracellular data processing pipelines within a GUI. Spikely currently
