@@ -34,7 +34,7 @@ class Extractor(SpikeElement):
                 params_dict[param_name] = param_value
         recording = self._interface_class(**params_dict)
         if probe_path is not None:
-            recording = se.load_probe_file(recording, probe_path, channel_map, channel_groups)
+            recording = recording.load_probe_file(probe_path, channel_map, channel_groups)
         else:
             if channel_map is not None:
                 assert np.all([chan in channel_map for chan in recording.get_channel_ids()]), \
