@@ -44,7 +44,7 @@ class SpikelyMainWindow(qw.QMainWindow):
             qw.QLabel("Version " + __version__))
 
         menu_bar = self.menuBar()
-        menu = file_menu.create_file_menu(self)
+        menu = file_menu.create_file_menu(self, self._pipeline_model)
         menu_bar.addMenu(menu)
 
         # tool_menu = menu_bar.addMenu(qw.QMenu('Tools', self))
