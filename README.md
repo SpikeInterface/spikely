@@ -19,7 +19,7 @@ spikely
 ```
 
 ## Documentation 
-All documentation for SpikeInterface can be found here: https://spikely.readthedocs.io/en/latest/.
+All documentation for spikely can be found here: https://spikely.readthedocs.io/en/latest/.
 
 ## Screenshot
 
