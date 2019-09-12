@@ -26,6 +26,10 @@ class SpikeElement:
     def params(self):
         return self._params
 
+    @params.setter
+    def params(self, params):
+        self._params = params
+
     def setup(self):
         pass
 
