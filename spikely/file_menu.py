@@ -14,7 +14,6 @@ from . import config as cfg
 
 
 _pipeline_model = None
-_element_string = None
 
 
 def create_file_menu(main_window, pipeline_model):
@@ -36,63 +35,71 @@ def _create_exit_action(main_window):
 
 
 def _create_load_action(main_window):
-    load_action = qw.QAction('Load Pipeline', main_window)
-    load_action.setShortcut('Ctrl+L')
-    load_action.setStatusTip('Load contents of pipeline from file.')
+    load_action = qw.QAction('Open Pipeline', main_window)
+    load_action.setShortcut('Ctrl+O')
+    load_action.setStatusTip('Open saved pipeline.')
     load_action.triggered.connect(_perform_load_action)
     return load_action
 
 
 def _perform_load_action():
-    global _element_string
     global _pipeline_model
-    element_dict_list = json.loads(_element_string)
 
-    for element_dict in element_dict_list:
-        element_id = element_dict['element_id']
-        element_class = _element_class_from_name(
-            element_dict['class_name'], element_id)
+    options = qw.QFileDialog.Options()
+    options |= qw.QFileDialog.DontUseNativeDialog
+    file_name, _filter = qw.QFileDialog.getOpenFileName(
+            parent=cfg.main_window, caption='Open File',
+            filter='JSON (*.json)', options=options)
 
-        if element_id == cfg.EXTRACTOR:
-            spike_element = Extractor(element_class, cfg.EXTRACTOR)
-        elif element_id == cfg.PRE_PROCESSOR:
-            spike_element = Preprocessor(element_class, cfg.PRE_PROCESSOR)
-        elif element_id == cfg.SORTER:
-            spike_element = Sorter(element_class, cfg.SORTER)
-        elif element_id == cfg.CURATOR:
-            spike_element = Curator(element_class, cfg.CURATOR)
+    if file_name:
+        _pipeline_model.clear()
+        with open(file_name, 'r') as json_file:
+            element_dict_list = json.load(json_file)
 
-        spike_element.params = element_dict['params']
-        _pipeline_model.add_element(spike_element)
+        for element_dict in element_dict_list:
+            element_id = element_dict['element_id']
+            element_class = _element_class_from_name(
+                element_dict['class_name'], element_id)
+
+            if element_id == cfg.EXTRACTOR:
+                spike_element = Extractor(element_class, cfg.EXTRACTOR)
+            elif element_id == cfg.PRE_PROCESSOR:
+                spike_element = Preprocessor(element_class, cfg.PRE_PROCESSOR)
+            elif element_id == cfg.SORTER:
+                spike_element = Sorter(element_class, cfg.SORTER)
+            elif element_id == cfg.CURATOR:
+                spike_element = Curator(element_class, cfg.CURATOR)
+
+            spike_element.params = element_dict['params']
+            _pipeline_model.add_element(spike_element)
 
 
 def _create_save_action(main_window):
     save_action = qw.QAction('Save Pipeline', main_window)
     save_action.setShortcut('Ctrl+S')
-    save_action.setStatusTip('Save contents of pipeline to file.')
+    save_action.setStatusTip('Save current pipeline.')
     save_action.triggered.connect(_perform_save_action)
     return save_action
 
 
 def _perform_save_action():
     global _pipeline_model
-    global _element_string
-    options = qw.QFileDialog.Options()
-    options |= qw.QFileDialog.DontUseNativeDialog
+
     elements = _pipeline_model._elements
 
     if elements:
-        file_name = qw.QFileDialog.getSaveFileName(
-            parent=cfg.main_window, caption='Save Pileine as File',
-            filter='JSON files (*.json)', options=options)
+        options = qw.QFileDialog.Options()
+        options |= qw.QFileDialog.DontUseNativeDialog
+        file_name, _filter = qw.QFileDialog.getSaveFileName(
+            parent=cfg.main_window, caption='Save File',
+            filter='JSON (*.json)', options=options)
 
-        element_dict_list = []
-        for element in elements:
-            element_dict_list.append(
-                _cvt_element_to_dict(element))
+        if file_name:
+            element_dict_list = [
+                _cvt_element_to_dict(element) for element in elements]
 
-        _element_string = json.dumps(
-            element_dict_list)
+            with open(file_name, 'w') as json_file:
+                json.dump(element_dict_list, json_file)
 
 
 def _cvt_element_to_dict(element):
