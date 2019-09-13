@@ -1,5 +1,4 @@
-from .spike_element import SpikeElement
-import spikeextractors as se
+from spikely.spike_element import SpikeElement
 from pathlib import Path
 import spiketoolkit as st
 import inspect

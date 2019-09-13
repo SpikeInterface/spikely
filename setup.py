@@ -20,7 +20,7 @@ setup(
     ],
     author='Roger Hurwitz',
     author_email='rogerhurwitz@gmail.com',
-    description='A GUI around spikeextractors and spiketoolkit',
+    description='A GUI wrapper for SpikeInterface',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/SpikeInterface/spikely',

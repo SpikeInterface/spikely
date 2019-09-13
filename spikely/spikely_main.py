@@ -4,15 +4,15 @@ import pkg_resources
 import PyQt5.QtWidgets as qw
 import PyQt5.QtGui as qg
 
-from .operation_view import OperationView
-from .pipeline_view import PipelineView
-from .pipeline_model import PipelineModel
-from .parameter_view import ParameterView
-from .parameter_model import ParameterModel
-from . import file_menu
-from . import config as cfg
+from spikely.operation_view import OperationView
+from spikely.pipeline_view import PipelineView
+from spikely.pipeline_model import PipelineModel
+from spikely.parameter_view import ParameterView
+from spikely.parameter_model import ParameterModel
+from spikely import file_menu
+from spikely import config as cfg
 
-from .version import __version__
+from spikely.version import __version__
 
 
 class SpikelyMainWindow(qw.QMainWindow):
@@ -47,13 +47,6 @@ class SpikelyMainWindow(qw.QMainWindow):
         menu = file_menu.create_file_menu(self, self._pipeline_model)
         menu_bar.addMenu(menu)
 
-        # tool_menu = menu_bar.addMenu(qw.QMenu('Tools', self))
-        # dir_action = qw.QAction('Pick Directory', self)
-        # dir_action.setShortcut('Ctrl+D')
-        # dir_action.setStatusTip('Copy directory path to clipboard')
-        # dir_action.triggered.connect(self.do_dir_action)
-        # tool_menu.addAction(dir_action)
-
         main_frame = qw.QFrame()
         self.setCentralWidget(main_frame)
         main_frame.setLayout(qw.QVBoxLayout())
@@ -73,21 +66,6 @@ class SpikelyMainWindow(qw.QMainWindow):
             self._pipeline_model, self._parameter_model))
 
         main_frame.layout().addStretch(1)  # Pushes app window widgets up
-
-    # def do_dir_action(self):
-    #     dlg = qw.QFileDialog(self)
-    #     dlg.setFileMode(dlg.Directory)
-    #     dlg.setViewMode(dlg.List)
-    #     dlg.setDirectory('.')
-    #     dlg.setOption(dlg.DontUseNativeDialog, True)
-    #     # dlg.setOption(dlg.ShowDirsOnly, True)
-    #     dlg.setOption(dlg.ReadOnly, True)
-    #     dlg.setOption(dlg.HideNameFilterDetails, True)
-
-    #     if (dlg.exec_()):
-    #         file_names = dlg.selectedFiles()
-    #         cb = qw.QApplication.clipboard()
-    #         cb.setText(file_names[0])
 
 
 def launch_spikely():

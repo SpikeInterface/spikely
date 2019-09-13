@@ -1,29 +1,51 @@
 import PyQt5.QtWidgets as qw
 import json
 
-from .extractor import Extractor
-from .preprocessor import Preprocessor
-from .sorter import Sorter
-from .curator import Curator
+from spikely.extractor import Extractor
+from spikely.preprocessor import Preprocessor
+from spikely.sorter import Sorter
+from spikely.curator import Curator
+from spikely.spike_element import SpikeElement
 
 import spikeextractors as se
 import spiketoolkit as st
 import spikesorters as ss
 
-from . import config as cfg
+from spikely import config as cfg
 
 
+# Provides access to pipeline elements
 _pipeline_model = None
 
 
+# Menu and Menu Action construction methods
+
 def create_file_menu(main_window, pipeline_model):
     global _pipeline_model
+
     _pipeline_model = pipeline_model
+
     file_menu = qw.QMenu('&File', main_window)
     file_menu.addAction(_create_load_action(main_window))
     file_menu.addAction(_create_save_action(main_window))
     file_menu.addAction(_create_exit_action(main_window))
     return file_menu
+
+
+def _create_load_action(main_window):
+    load_action = qw.QAction('Load Pipeline', main_window)
+    load_action.setShortcut('Ctrl+L')
+    load_action.setStatusTip('Load pipeline from JSON file.')
+    load_action.triggered.connect(_perform_load_action)
+    return load_action
+
+
+def _create_save_action(main_window):
+    save_action = qw.QAction('Save Pipeline', main_window)
+    save_action.setShortcut('Ctrl+S')
+    save_action.setStatusTip('Save pipeline to JSON file.')
+    save_action.triggered.connect(_perform_save_action)
+    return save_action
 
 
 def _create_exit_action(main_window):
@@ -34,13 +56,7 @@ def _create_exit_action(main_window):
     return exit_action
 
 
-def _create_load_action(main_window):
-    load_action = qw.QAction('Open Pipeline', main_window)
-    load_action.setShortcut('Ctrl+O')
-    load_action.setStatusTip('Open saved pipeline.')
-    load_action.triggered.connect(_perform_load_action)
-    return load_action
-
+# Menu Action execution methods
 
 def _perform_load_action():
     global _pipeline_model
@@ -60,6 +76,8 @@ def _perform_load_action():
             element_id = element_dict['element_id']
             element_class = _element_class_from_name(
                 element_dict['class_name'], element_id)
+            assert element_class.installed, \
+                element_dict['class_name'] + " not installed."
 
             if element_id == cfg.EXTRACTOR:
                 spike_element = Extractor(element_class, cfg.EXTRACTOR)
@@ -72,14 +90,6 @@ def _perform_load_action():
 
             spike_element.params = element_dict['params']
             _pipeline_model.add_element(spike_element)
-
-
-def _create_save_action(main_window):
-    save_action = qw.QAction('Save Pipeline', main_window)
-    save_action.setShortcut('Ctrl+S')
-    save_action.setStatusTip('Save current pipeline.')
-    save_action.triggered.connect(_perform_save_action)
-    return save_action
 
 
 def _perform_save_action():
@@ -102,7 +112,7 @@ def _perform_save_action():
                 json.dump(element_dict_list, json_file)
 
 
-def _cvt_element_to_dict(element):
+def _cvt_element_to_dict(element: SpikeElement):
     element_dict = {
         "class_name": element.name,
         "element_id": element.interface_id,
@@ -118,5 +128,4 @@ def _element_class_from_name(class_name, element_id):
         cfg.SORTER: ss.sorter_dict,
         cfg.CURATOR: st.curation.curation_dict
     }
-    element_dict = element_dicts[element_id]
-    return element_dict[class_name]
+    return element_dicts[element_id][class_name]
