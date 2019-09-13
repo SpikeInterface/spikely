@@ -17,6 +17,10 @@ Once installed, spikely can be launched from the command line:
 ```
 spikely
 ```
+
+## Documentation 
+All documentation for spikely can be found here: https://spikely.readthedocs.io/en/latest/.
+
 ## Screenshot
 
 ![gui](./spikely/resources/spikely_gui.png)
