@@ -150,9 +150,12 @@ class ParameterModel(qc.QAbstractTableModel):
 
             elif type_str in ['str', 'file', 'folder', 'file_or_folder']:
                 cvt_value = value
-
+                
             elif type_str == 'int':
-                cvt_value = int(value)
+                if value == 'inf':
+                    cvt_value = float(value)
+                else: 
+                    cvt_value = int(value)
 
             elif type_str == 'float':
                 cvt_value = float(value)

@@ -18,7 +18,7 @@ class PipelineModel(qc.QAbstractListModel):
         # Underlying data structure proxied by model
         self._elements = []
 
-        self._decorations = [None, None, None, None]
+        self._decorations = [None, None, None, None, None]
         fn = pkg_resources.resource_filename(
             'spikely.resources', 'EXTRACTOR.png')
         self._decorations[cfg.EXTRACTOR] = qg.QIcon(fn)
@@ -34,6 +34,11 @@ class PipelineModel(qc.QAbstractListModel):
         fn = pkg_resources.resource_filename(
             'spikely.resources', 'CURATOR.png')
         self._decorations[cfg.CURATOR] = qg.QIcon(fn)
+
+        fn = pkg_resources.resource_filename(
+            'spikely.resources', 'spikely_small.png')
+        self._decorations[cfg.EXPORTER] = qg.QIcon(fn)
+        
 
     #
     # Overloaded methods from QAbstractListModel
@@ -96,7 +101,8 @@ class PipelineModel(qc.QAbstractListModel):
     def add_element(self, element):
         # Only allow one Extractor or Sorter
         if (element.interface_id == cfg.EXTRACTOR or
-                element.interface_id == cfg.SORTER):
+                element.interface_id == cfg.SORTER or
+                    element.interface_id == cfg.EXPORTER):
             if self._has_instance(element.interface_id):
                 cfg.status_bar.showMessage(
                     "Only one instance of that element type allowed",

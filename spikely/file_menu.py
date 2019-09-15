@@ -5,6 +5,8 @@ from spikely.extractor import Extractor
 from spikely.preprocessor import Preprocessor
 from spikely.sorter import Sorter
 from spikely.curator import Curator
+from spikely.exporter import Exporter
+from .exporterlist import sorting_exporter_dict
 from spikely.spike_element import SpikeElement
 
 import spikeextractors as se
@@ -87,6 +89,8 @@ def _perform_load_action():
                 spike_element = Sorter(element_class, cfg.SORTER)
             elif element_id == cfg.CURATOR:
                 spike_element = Curator(element_class, cfg.CURATOR)
+            elif element_id == cfg.EXPORTER:
+                spike_element = Exporter(element_class, cfg.EXPORTER)
 
             spike_element.params = element_dict['params']
             _pipeline_model.add_element(spike_element)
@@ -126,6 +130,7 @@ def _element_class_from_name(class_name, element_id):
         cfg.EXTRACTOR: se.extractorlist.recording_extractor_dict,
         cfg.PRE_PROCESSOR: st.preprocessing.preprocesser_dict,
         cfg.SORTER: ss.sorter_dict,
-        cfg.CURATOR: st.curation.curation_dict
+        cfg.CURATOR: st.curation.curation_dict,
+        cfg.EXPORTER: sorting_exporter_dict
     }
     return element_dicts[element_id][class_name]

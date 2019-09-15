@@ -25,10 +25,10 @@ class Curator(SpikeElement):
         for i, sorting in enumerate(sorting_list):
             params_dict = {}
             params_dict['sorting'] = sorting
-            if 'sampling_frequency' in inspect.getargspec(self._interface_class).args:
-                params_dict['sampling_frequency'] = recording.get_sampling_frequency()
             if 'recording' in inspect.getargspec(self._interface_class).args:
                 params_dict['recording'] = recording
+            elif 'sampling_frequency' in inspect.getargspec(self._interface_class).args:
+                params_dict['sampling_frequency'] = recording.get_sampling_frequency()
             params = self._params
             for param in params:
                 param_name = param['name']

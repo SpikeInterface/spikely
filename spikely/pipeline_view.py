@@ -11,6 +11,8 @@ from .extractor import Extractor
 from .preprocessor import Preprocessor
 from .sorter import Sorter
 from .curator import Curator
+from .exporter import Exporter
+from .exporterlist import exporters_list
 
 from . import config as cfg
 
@@ -91,6 +93,7 @@ class PipelineView(qw.QGroupBox):
         stage_cbx.addItem('Pre-Processors', cfg.PRE_PROCESSOR)
         stage_cbx.addItem('Sorters', cfg.SORTER)
         stage_cbx.addItem('Curators', cfg.CURATOR)
+        stage_cbx.addItem('Exporters', cfg.EXPORTER)
 
         # Layout after stage_cbx, but declared first as fwd reference
         ui_frame.layout().addWidget(ele_cbx)
@@ -205,4 +208,9 @@ class PipelineView(qw.QGroupBox):
         for curator_class in curator_list:
             self._available_elements.append(
                 Curator(curator_class, cfg.CURATOR)
+            )
+
+        for exporter_class in exporters_list:
+            self._available_elements.append(
+                Exporter(exporter_class, cfg.EXPORTER)
             )
