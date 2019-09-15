@@ -82,15 +82,20 @@ def _perform_load_action():
                 element_dict['class_name'] + " not installed."
 
             if element_id == cfg.EXTRACTOR:
-                spike_element = Extractor(element_class, cfg.EXTRACTOR)
+                spike_element = sl.Extractor(element_class, cfg.EXTRACTOR)
             elif element_id == cfg.PRE_PROCESSOR:
-                spike_element = Preprocessor(element_class, cfg.PRE_PROCESSOR)
+                spike_element = sl.Preprocessor(
+                    element_class, cfg.PRE_PROCESSOR)
             elif element_id == cfg.SORTER:
-                spike_element = Sorter(element_class, cfg.SORTER)
+                spike_element = sl.Sorter(element_class, cfg.SORTER)
             elif element_id == cfg.CURATOR:
+<<<<<<< Updated upstream
                 spike_element = Curator(element_class, cfg.CURATOR)
             elif element_id == cfg.EXPORTER:
                 spike_element = Exporter(element_class, cfg.EXPORTER)
+=======
+                spike_element = sl.Curator(element_class, cfg.CURATOR)
+>>>>>>> Stashed changes
 
             spike_element.params = element_dict['params']
             _pipeline_model.add_element(spike_element)
@@ -116,7 +121,7 @@ def _perform_save_action():
                 json.dump(element_dict_list, json_file)
 
 
-def _cvt_element_to_dict(element: SpikeElement):
+def _cvt_element_to_dict(element: sl.SpikeElement):
     element_dict = {
         "class_name": element.name,
         "element_id": element.interface_id,

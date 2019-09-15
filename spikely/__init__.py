@@ -3,3 +3,8 @@ from .pipeline_view import PipelineView
 from .pipeline_model import PipelineModel
 from .parameter_view import ParameterView
 from .parameter_model import ParameterModel
+from .extractor import Extractor
+from .curator import Curator
+from .sorter import Sorter
+from .preprocessor import Preprocessor
+from .spike_element import SpikeElement

@@ -12,7 +12,7 @@ from spikely.version import __version__
 
 
 class SpikelyMainWindow(qw.QMainWindow):
-# Parent UI for application delegates to subwindow views/models
+    # Parent UI for application delegates to subwindow views/models
     def __init__(self):
         super().__init__()
 
