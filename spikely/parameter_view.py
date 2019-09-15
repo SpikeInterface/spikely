@@ -6,7 +6,7 @@ from .config import PARAM_COL, TYPE_COL, VALUE_COL
 class ParameterView(qw.QGroupBox):
 
     def __init__(self, pipeline_model, parameter_model):
-        super().__init__("Configure Elements")
+        super().__init__("Configure Parameters")
         self._pipeline_model = pipeline_model
         self._parameter_model = parameter_model
 
