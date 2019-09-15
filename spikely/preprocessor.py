@@ -1,5 +1,5 @@
 from .spike_element import SpikeElement
-
+import copy
 
 class Preprocessor(SpikeElement):
     """Preprocessor class"""
@@ -7,6 +7,7 @@ class Preprocessor(SpikeElement):
     def __init__(self, interface_class, interface_id):
         SpikeElement.__init__(self, interface_id, interface_class,
                               interface_class.preprocessor_name)
+        self._params = copy.deepcopy(interface_class.preprocessor_gui_params)
 
     def run(self, input_payload, next_element):
         params_dict = {}
@@ -14,8 +15,6 @@ class Preprocessor(SpikeElement):
         params = self._params
         for param in params:
             param_name = param['name']
-            # param_type = param['type']
-            # param_title = param['title']
             param_value = param['value']
             params_dict[param_name] = param_value
         pp = self._interface_class(**params_dict)
