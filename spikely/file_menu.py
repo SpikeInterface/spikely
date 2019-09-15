@@ -93,6 +93,7 @@ def _perform_load_action():
             elif element_id == cfg.EXPORTER:
                 spike_element = Exporter(element_class, cfg.EXPORTER)
 
+
             spike_element.params = element_dict['params']
             _pipeline_model.add_element(spike_element)
 
