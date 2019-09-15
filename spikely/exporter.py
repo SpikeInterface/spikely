@@ -25,9 +25,9 @@ class Exporter(SpikeElement):
         for i, sorting in enumerate(sorting_list):
             params_dict = {}
             params_dict['sorting'] = sorting
-            if 'recording' in inspect.getargspec(self._interface_class.write_sorting).args:
+            if 'recording' in inspect.signature(self._interface_class.write_sorting).parameters:
                 params_dict['recording'] = recording
-            elif 'sampling_frequency' in inspect.getargspec(self._interface_class.write_sorting).args:
+            elif 'sampling_frequency' in inspect.signature(self._interface_class.write_sorting).parameters:
                 params_dict['sampling_frequency'] = recording.get_sampling_frequency()
             params = self._params
             for param in params:
@@ -37,7 +37,8 @@ class Exporter(SpikeElement):
                     if(len(sorting_list) == 1):
                         param_value = param_value
                     else:
-                        param_value = param_value + str(i)
+                        path, file_name = os.path.split(param_value)
+                        param_value = path + str(i) + '_' + file_name
                 if param_name == 'identifier':
                     nwbfile_kwargs[param_name] = param_value
                 if param_name == 'session_description':
@@ -45,5 +46,6 @@ class Exporter(SpikeElement):
                 params_dict[param_name] = param_value
             if self.name == 'NwbSortingExporter':
                 params_dict['nwbfile_kwargs'] = nwbfile_kwargs
+            print("Exporting to " + params_dict['save_path'])
             self._interface_class.write_sorting(**params_dict)
-            print("Done Exporting!")
+        print("Job done!")
