@@ -85,12 +85,12 @@ class ParameterModel(qc.QAbstractTableModel):
                     result = 'list of integers'
                 elif type_str == 'str':
                     result = 'text string'
-                elif type_str == 'dir':
-                    result = 'directory name'
                 elif type_str == 'file':
-                    result = 'file name'
-                elif type_str == 'path':
-                    result = 'path name'
+                    result = 'pathname of file'
+                elif type_str == 'folder':
+                    result = 'pathname of folder'
+                elif type_str == 'file_or_folder':
+                    result = 'pathname of file or folder'
                 elif type_str == 'int_list_list':
                     result = 'list of a int_lists'
                 elif type_str == 'dtype':
@@ -148,7 +148,7 @@ class ParameterModel(qc.QAbstractTableModel):
             if value == 'None':
                 cvt_value = None
 
-            elif type_str in ['str', 'dir', 'file', 'path']:
+            elif type_str in ['str', 'file', 'folder', 'file_or_folder']:
                 cvt_value = value
 
             elif type_str == 'int':

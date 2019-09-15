@@ -1,5 +1,5 @@
 from .spike_element import SpikeElement
-
+import copy
 
 class Sorter(SpikeElement):
     """Preprocessor class"""
@@ -7,7 +7,7 @@ class Sorter(SpikeElement):
     def __init__(self, interface_class, interface_id):
         SpikeElement.__init__(self, interface_id, interface_class,
                               interface_class.sorter_name)
-
+        self._params = copy.deepcopy(interface_class.sorter_gui_params)
     def run(self, input_payload, next_element):
         base_sorter_param_dict = {}
         sub_sorter_param_dict = {}

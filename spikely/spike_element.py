@@ -8,7 +8,6 @@ class SpikeElement:
         self._interface_id = interface_id
         self._interface_class = interface_class
         self._name = interface_name
-        self._params = copy.deepcopy(interface_class.gui_params())
 
     @property
     def interface_id(self):
