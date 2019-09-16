@@ -5,10 +5,8 @@ import PyQt5.QtWidgets as qw
 import PyQt5.QtGui as qg
 
 import spikely as sl
-from spikely import file_menu
-from spikely import config as cfg
-
-from spikely.version import __version__
+import spikely.config as cfg
+import spikely.file_menu as fm
 
 
 class SpikelyMainWindow(qw.QMainWindow):
@@ -31,10 +29,10 @@ class SpikelyMainWindow(qw.QMainWindow):
 
         self.setWindowIcon(qg.QIcon(spikely_png_path))
         self.statusBar().addPermanentWidget(
-            qw.QLabel("Version " + __version__))
+            qw.QLabel("Version " + sl.__version__))
 
         menu_bar = self.menuBar()
-        menu = file_menu.create_file_menu(self, self._pipeline_model)
+        menu = fm.create_file_menu(self, self._pipeline_model)
         menu_bar.addMenu(menu)
 
         main_frame = qw.QFrame()
