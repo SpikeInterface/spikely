@@ -1,9 +1,9 @@
 ===================================
-Spikely
+spikely
 ===================================
 
-A simple extracellur data processing application based on SpikeInterface
-========================================================================
+Extracellular data processing made simple
+=========================================
 
 Spikely is an application built on top of SpikeInterface designed to create and
 run extracellular data processing pipelines. Spikely supports loading,
