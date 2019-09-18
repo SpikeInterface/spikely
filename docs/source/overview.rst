@@ -23,9 +23,9 @@ spikely requires an understanding of a few key concepts specific to it:
   Exporters.  Elements are selected by users from drop down menus in spikely.
 * **Parameter** - Most elements have one or more parameters associated with
   them that can be edited by the user in spikely to customize the behavior of
-  that Element.
-* **Pipeline** - The user organizes Elements in spikely into a pipeline where
-  extracelluar data "flows" from the first Element in the Pipeline to the last
+  that element.
+* **Pipeline** - The user organizes elements in spikely into a series where
+  extracelluar data "flows" from the first element in the Pipeline to the last
   when the pipeline is run.  Pipelines, and their associated parameterized
   elements, can be saved for future use therby enabling greater efficiency and
   repeatability.
@@ -33,13 +33,24 @@ spikely requires an understanding of a few key concepts specific to it:
 Workflow
 --------
 
-With a solid grounding in SpikeInterface_, and a grasp of spikely's Element,
-Parameter, and Pipeline abstractions, the last piece of the puzzle to unlocking
+With a solid grounding in SpikeInterface_, and a grasp of spikely's element,
+parameter, and pipeline abstractions, the last piece of the puzzle to unlocking
 spikely's potential is understanding its workflow and associated UI layout.
 
 .. image:: ../images/gui_annotated.png
 
+1. **Constructing the Pipeline** - The user constructs a pipeline in spikely by
+choosing the element category (e.g., *Extractors*), choosing one of the
+installed elements within that category (e.g., *MdaRecordingExtractor*) and
+then adding that element to the pipeline using the "Add Element" button.
+Individual elements added to the pipeline can be moved up, moved down, or
+deleted as part of pipeline construction process.  Note, there are pipeline
+policies enforced by spikely related to ordering and singularity that limit
+certain pipeline permutations.
 
+2. **Configuring Element Parameters** - When an element is selected in the
+*Construct Pipeline* part of the UI that element's parameters are displayed in
+the *Configure Elements* part of the UI.
 
 Related projects
 -----------------
