@@ -23,11 +23,6 @@ Extractor and transformed by the other elements in the pipeline flow.
    policies enforced by spikely related to ordering and singularity that limit
    certain pipeline permutations.
 
-   .. note::
-    Note: The pipeline creation and parameter configuration steps can be
-    shortened by saving and loading complete pipelines to/from files using the
-    corresponding actions from spikely's *File Menu.*
-
 2. **Configuring Element Parameters** - When an element is selected in the
    *Construct Pipeline* part of the UI that element's parameters are displayed
    in the *Configure Elements* part of the UI. Element parameters are specific
@@ -46,3 +41,8 @@ Extractor and transformed by the other elements in the pipeline flow.
    magic happens, instantiating the pipeline and transforming the
    extracellular data as it flows from the source element (Extractor) to the
    sink element (Sorter or Exporter).
+
+.. note::
+    Note: The pipeline creation and parameter configuration steps can be
+    shortcut by saving and loading complete pipelines to/from files using the
+    corresponding actions from spikely's *File Menu.*
