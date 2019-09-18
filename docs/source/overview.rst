@@ -30,22 +30,31 @@ spikely requires an understanding of a few key concepts specific to it:
     * *Pre-Processors* - Pre-Processors transform data sourced into the
       pipeline by the Extractor prior to those data flowing to the Sorter.
       Pre-processors are optional. Spikely supports multiple Pre-Preprocessors
-      per pipeline.
+      per pipeline betwween the Extractor and the Sorter.
 
     * *Sorters* - Spike sorting is a big part of SpikeInterface_, and spikely's
       Sorters correspond closely to spike sorting nodes in SpikeInterface_.
-      Spikely requires the addition of one, and only one, Sorter in the
-      pipeline.  Spikely requires one, and only one, Sorter per pipeline.
+      Spikely requires the presence of one, and only one, Sorter in the
+      pipeline.  Sorters often write their results out to a file allowing a
+      Sorter to act as a terminating sink in a spikely pipeline.
 
-    * *Curators* -
+    * *Curators* - Curators, also known as post-processors, transform sorted
+      data produced by the Sorter and output them downstream to either another
+      Curator or to a pipeline terminating Exporter.  Curators are optional.
+      Spikely supports multiple Curators per pipeline.
 
-    * *Exporters*
+    * *Exporters* - Exporters act as data sinks, and transform sorted,
+      optionally optionally curated, data to a formatted output file.
+      Exporters are optional, and spikely only supports a single Exporter per
+      pipeline.
 
 * **Parameter** - Most elements have one or more parameters associated with
   them that can be edited by the user in spikely to customize the behavior of
-  that element.
+  that element during the execution of a pipeline. Parameters are element
+  specific, and some familiarity with the proxied node in SpikeInterface_ is
+  required to correctly configure an element.
 
-* **Pipeline** - The user organizes elements in spikely into a series where
+* **Pipeline** - The user organizes elements in spikely in a series where
   extracelluar data "flows" from the first element in the Pipeline to the last
   when the pipeline is run.  Pipelines, and their associated parameterized
   elements, can be saved for future use therby enabling greater efficiency and
