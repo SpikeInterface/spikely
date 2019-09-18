@@ -12,6 +12,7 @@ SpikeInterface compatible file formats.
 
 .. image:: ../images/gui.png
 
+
 .. toctree::
   :maxdepth: 1
   :caption: Contents:
