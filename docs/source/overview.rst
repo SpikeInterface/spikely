@@ -8,7 +8,7 @@ versed in Python programming, working directly with SpikeInterface is the way
 to go.
 
 Spikely, on the other hand, is intended for users who want to take advantage of
-SpikeInterface's data processing capabilities, without directly working in
+SpikeInterface's data processing capabilities without directly working in
 Python.  Instead, Spikely provides a graphical user interface on top of
 SpikeInterface optimized for the pipelining of extracelluar data.
 
@@ -23,7 +23,7 @@ key concepts:
   behavior of the associated Element.
 - **Pipeline** - Spikely organizes Elements into a pipeline
   where the extracelluar data "flows" from the first Element in the Pipeline
-  to the last.
+  to the last when the pipeline is run.
 
 Organization
 ------------

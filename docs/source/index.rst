@@ -1,5 +1,5 @@
 ===================================
-spikely
+Spikely
 ===================================
 
 A simple extracellur data processing application based on SpikeInterface
