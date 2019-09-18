@@ -12,11 +12,6 @@ configuring the parameters associated with those elements, and finally, running
 the pipeline to cause extracellular data to be brought into the pipeline by the
 Extractor and transformed by the other elements in the pipeline flow.
 
-.. note::
-    Note: The pipeline creation and parameter configuration steps can be
-    shortened by saving and loading complete pipelines to/from files using the
-    corresponding actions from spikely's *File Menu.*
-
 .. image:: ../images/gui_annotated.png
 
 1. **Constructing the Pipeline** - The user constructs a pipeline in spikely by
@@ -27,6 +22,11 @@ Extractor and transformed by the other elements in the pipeline flow.
    deleted as part of pipeline construction process.  Note, there are pipeline
    policies enforced by spikely related to ordering and singularity that limit
    certain pipeline permutations.
+
+.. note::
+    Note: The pipeline creation and parameter configuration steps can be
+    shortened by saving and loading complete pipelines to/from files using the
+    corresponding actions from spikely's *File Menu.*
 
 2. **Configuring Element Parameters** - When an element is selected in the
    *Construct Pipeline* part of the UI that element's parameters are displayed
