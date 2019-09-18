@@ -20,6 +20,7 @@ Contents
    :maxdepth: 1
 
    overview
+   workflow
 
 Indices and tables
 ==================
