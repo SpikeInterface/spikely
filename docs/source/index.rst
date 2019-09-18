@@ -12,16 +12,15 @@ SpikeInterface compatible file formats.
 
 .. image:: ../images/gui.png
 
+Contents
+========
+  .. toctree::
+     :maxdepth: 1
 
-.. toctree::
-  :maxdepth: 1
-  :caption: Contents:
-
-  overview
+     overview
 
 Indices and tables
 ==================
-
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
