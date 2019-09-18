@@ -10,9 +10,12 @@ spikely's potential is understanding its workflow and associated UI layout.
 At a high level spikely's workflow consists of creating a pipeline of elements,
 configuring the parameters associated with those elements, and finally, running
 the pipeline to cause extracellular data to be brought into the pipeline by the
-Extractor and transformed by the other elements in the pipeline clow.  The
-pipeline creation and parameter configuration steps can be shortened by saving
-and loading complete pipelines to/from files.
+Extractor and transformed by the other elements in the pipeline flow.
+
+.. note::
+    Note: The pipeline creation and parameter configuration steps can be
+    shortened by saving and loading complete pipelines to/from files using the
+    corresponding actions from spikely's *File Menu.*
 
 .. image:: ../images/gui_annotated.png
 
@@ -40,5 +43,6 @@ and loading complete pipelines to/from files.
    Currently, two operations are supported: *Run*, and *Clear*.  *Clear*
    deletes all the elements in the pipeline enabling the user to quickly tear
    down the current pipeline before building up a new one.  *Run* is where the
-   magic happens, instantiating the pipeline and moving extracellular data from
-   element to element.
+   magic happens, instantiating the pipeline and transforming the
+   extracellular data as it flows from the source element (Extractor) to the
+   sink element (Sorter or Exporter).
