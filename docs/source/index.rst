@@ -8,8 +8,9 @@ Extracellular data processing made simple
 
 Spikely is an application built on top of SpikeInterface_ designed to simplify
 the process of creating and running extracellular data processing pipelines.
-Spikely supports loading, preprocessing, sorting, and curating extracellular
-datasets that are stored in SpikeInterface_ compatible file formats.
+Spikely supports loading, preprocessing, sorting, curating, and exporting
+extracellular datasets that are stored in SpikeInterface_ compatible file
+formats.
 
 .. image:: ../images/gui.png
 

@@ -22,36 +22,33 @@ spikely requires an understanding of a few key concepts specific to it:
   data processing nodes in SpikeInterface.  Specifically, spikely elements
   consist of:
 
-    * Extractors - Extractors read raw extracelluar data from files, and make
+    * *Extractors* - Extractors read raw extracelluar data from files, and make
       those data available to downstream elements in the pipeline. Extractor
       names correspond to the raw extracellular data format they support.
       Unlike SpikeInterface_, spikely only supports one Extractor per pipeline.
 
-    * Pre-Processors - Pre-Processors transform data sourced into the pipeline
-      by the Extractor prior to those data flowing to the Sorter.
+    * *Pre-Processors* - Pre-Processors transform data sourced into the
+      pipeline by the Extractor prior to those data flowing to the Sorter.
       Pre-processors are optional. Spikely supports multiple Pre-Preprocessors
       per pipeline.
 
-    * Sorters - Spike sorting is a big part of SpikeInterface_, and spikely's
+    * *Sorters* - Spike sorting is a big part of SpikeInterface_, and spikely's
       Sorters correspond closely to spike sorting nodes in SpikeInterface_.
       Spikely requires the addition of one, and only one, Sorter in the
       pipeline.
 
-    * Curators
+    * *Curators*
 
-    * Exporters
+    * *Exporters*
 
-  Elements are selected by
-  users from drop down menus in spikely.
+  Elements are selected by users from drop down menus in spikely.
+
 * **Parameter** - Most elements have one or more parameters associated with
   them that can be edited by the user in spikely to customize the behavior of
   that element.
+
 * **Pipeline** - The user organizes elements in spikely into a series where
   extracelluar data "flows" from the first element in the Pipeline to the last
   when the pipeline is run.  Pipelines, and their associated parameterized
   elements, can be saved for future use therby enabling greater efficiency and
   repeatability.
-
-
-Related projects
------------------
