@@ -54,6 +54,7 @@ spikely requires an understanding of a few key concepts specific to it:
   specific, and some familiarity with the proxied node in SpikeInterface_ is
   required to correctly configure an element.
 
+
 * **Pipeline** - The user organizes elements in spikely in a series where
   extracelluar data "flows" from the first element in the Pipeline to the last
   when the pipeline is run.  Pipelines, and their associated parameterized
