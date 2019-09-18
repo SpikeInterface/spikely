@@ -25,7 +25,7 @@ spikely requires an understanding of a few key concepts specific to it:
     * *Extractors* - Extractors read raw extracelluar data from files, and make
       those data available to downstream elements in the pipeline. Extractor
       names correspond to the raw extracellular data format they support.
-      Unlike SpikeInterface_, spikely only supports one Extractor per pipeline.
+      Spikely requires one, and only one, Extractor per pipeline.
 
     * *Pre-Processors* - Pre-Processors transform data sourced into the
       pipeline by the Extractor prior to those data flowing to the Sorter.
@@ -35,13 +35,11 @@ spikely requires an understanding of a few key concepts specific to it:
     * *Sorters* - Spike sorting is a big part of SpikeInterface_, and spikely's
       Sorters correspond closely to spike sorting nodes in SpikeInterface_.
       Spikely requires the addition of one, and only one, Sorter in the
-      pipeline.
+      pipeline.  Spikely requires one, and only one, Sorter per pipeline.
 
-    * *Curators*
+    * *Curators* -
 
     * *Exporters*
-
-  Elements are selected by users from drop down menus in spikely.
 
 * **Parameter** - Most elements have one or more parameters associated with
   them that can be edited by the user in spikely to customize the behavior of
