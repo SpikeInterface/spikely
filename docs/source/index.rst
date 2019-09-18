@@ -1,9 +1,8 @@
-===================================
 spikely
-===================================
+=======
 
 Extracellular data processing made simple
-=========================================
+-----------------------------------------
 
 .. _SpikeInterface: https://github.com/SpikeInterface
 
@@ -15,7 +14,7 @@ datasets that are stored in SpikeInterface_ compatible file formats.
 .. image:: ../images/gui.png
 
 Contents
-========
+--------
 .. toctree::
    :maxdepth: 1
 
@@ -23,7 +22,7 @@ Contents
    workflow
 
 Indices and tables
-==================
+------------------
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
