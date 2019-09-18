@@ -14,10 +14,10 @@ SpikeInterface compatible file formats.
 
 Contents
 ========
-  .. toctree::
-    :maxdepth: 1
+.. toctree::
+   :maxdepth: 1
 
-    overview
+   overview
 
 Indices and tables
 ==================
