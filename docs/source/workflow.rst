@@ -23,7 +23,7 @@ Extractor and transformed by the other elements in the pipeline flow.
    policies enforced by spikely related to ordering and singularity that limit
    certain pipeline permutations.
 
-.. note::
+   .. note::
     Note: The pipeline creation and parameter configuration steps can be
     shortened by saving and loading complete pipelines to/from files using the
     corresponding actions from spikely's *File Menu.*
