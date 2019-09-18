@@ -9,9 +9,9 @@ framework supporting a broad range of features and functions.  For those well
 versed in Python programming and needing full control over the extracellular
 data processing process, working directly with SpikeInterface is the way to go.
 
-Spikely, on the other hand, is for users who want to take advantage of some of
+Spikely, on the other hand, is for users who want to take advantage of a subset
 SpikeInterface's processing power without having to program in Python. Instead,
-Spikely provides a GUI on top of SpikeInterface_ optimized for a particular use
+Spikely provides a GUI on top of SpikeInterface_ optimized for a specific use
 case: pipelining extracelluar data from a source to a sink while enabling one
 or more data transformations along the way.
 
@@ -19,20 +19,27 @@ In addition to being familiar with SpikeInterface_, taking full advantage of
 spikely requires an understanding of a few key concepts specific to it:
 
 * **Element** - An element in Spikely corresponds to capabilites exposed by the
-  data the processing nodes in SpikeInterface.  Specifically, spikely elements
+  data processing nodes in SpikeInterface.  Specifically, spikely elements
   consist of:
 
-  * Pre-Processors - Blah, blah, blah, blah, blah, blah, blah, blah, blah,
-    blah,  blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah,
-    blah, blah, blah, blah, blah
+    * Extractors - Extractors read raw extracelluar data from files, and make
+      those data available to downstream elements in the pipeline. Extractor
+      names correspond to the raw extracellular data format they support.
+      Unlike SpikeInterface_, spikely only supports one Extractor per pipeline.
 
-  * Sorters - blah,  blah, blah, blah, blah, blah, blah, blah, blah, blah,
-    blah, blah, blah,  blah, blah, blah, blah, blah, blah, blah, blah, blah,
-    blah, blah
+    * Pre-Processors - Pre-Processors transform data sourced into the pipeline
+      by the Extractor prior to those data flowing to the Sorter.
+      Pre-processors are optional. Spikely supports multiple Pre-Preprocessors
+      per pipeline.
 
-  * Curators
+    * Sorters - Spike sorting is a big part of SpikeInterface_, and spikely's
+      Sorters correspond closely to spike sorting nodes in SpikeInterface_.
+      Spikely requires the addition of one, and only one, Sorter in the
+      pipeline.
 
-  * Exporters
+    * Curators
+
+    * Exporters
 
   Elements are selected by
   users from drop down menus in spikely.
