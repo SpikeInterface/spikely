@@ -1,6 +1,7 @@
 from .spike_element import SpikeElement
 import copy
 
+
 class Preprocessor(SpikeElement):
     """Preprocessor class"""
 

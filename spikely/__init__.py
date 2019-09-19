@@ -1,4 +1,6 @@
 from .curator import Curator                    # noqa: F401
+from .exporter import Exporter                  # noqa: F401
+from .exporterlist import exporters_list        # noqa: F401
 from .extractor import Extractor                # noqa: F401
 from .operation_view import OperationView       # noqa: F401
 from .parameter_model import ParameterModel     # noqa: F401

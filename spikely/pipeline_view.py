@@ -1,24 +1,18 @@
 """The view-control widget set for constructing the active pipeline.
 
 The Construct Pipeline view-control consists of widgets responsible for
-constructing the active pipeline by inserting, deleting, or moving elements
+constructing the active pipeline by adding, deleting, or moving elements
 within the active pipeline.
 """
 
 import PyQt5.QtWidgets as qw
 
-from .extractor import Extractor
-from .preprocessor import Preprocessor
-from .sorter import Sorter
-from .curator import Curator
-from .exporter import Exporter
-from .exporterlist import exporters_list
-
-from . import config as cfg
-
+import spikely as sly
 import spikeextractors as se
 import spiketoolkit as st
 import spikesorters as ss
+
+from spikely import config as cfg
 
 
 class PipelineView(qw.QGroupBox):
@@ -44,22 +38,17 @@ class PipelineView(qw.QGroupBox):
         """Assembles the individual widgets into the widget-set.
 
         The PipelineView consists of three separate UI assemblies
-        stacked top to bottom: element selection, pipeline element list view,
-        and pipeline element manipulation controls (move up, delete, move down)
+        stacked top to bottom: element selection, pipeline element list,
+        and pipeline element commands (move up, delete, move down)
         """
         # Lay out view from top to bottom of group box
         self.setLayout(qw.QVBoxLayout())
 
-        self.layout().addWidget(self._element_insertion())
+        self.layout().addWidget(self._element_selection())
         self.layout().addWidget(self._pipeline_list())
         self.layout().addWidget(self._pipeline_commands())
 
-        """This funky bit of code is an example of how a class method
-        with a specific signature can be bound to an instance of that class
-        using a type index, in this case QModelIndex"""
-        # treeView.clicked[QModelIndex].connect(self.clicked)
-
-    def _element_insertion(self):
+    def _element_selection(self):
         """Select for and insert elements into pipeline."""
 
         ui_frame = qw.QFrame()
@@ -67,13 +56,6 @@ class PipelineView(qw.QGroupBox):
 
         # Out of order declaration needed as forward reference
         ele_cbx = qw.QComboBox(self)
-
-        """
-        # Indicates user selection of combobox entry
-        def _ele_cbx_activated(index):
-            print('_ele_cbx activated')
-        ele_cbx.activated.connect(_ele_cbx_activated)
-        """
 
         stage_cbx = qw.QComboBox()
         ui_frame.layout().addWidget(stage_cbx)
@@ -189,28 +171,28 @@ class PipelineView(qw.QGroupBox):
         extractor_list = se.extractorlist.installed_recording_extractor_list
         for extractor_class in extractor_list:
             self._available_elements.append(
-                Extractor(extractor_class, cfg.EXTRACTOR))
+                sly.Extractor(extractor_class, cfg.EXTRACTOR))
 
         preprocessor_list = st.preprocessing.preprocessinglist. \
             installed_preprocessers_list
         for preprocessor_class in preprocessor_list:
             self._available_elements.append(
-                Preprocessor(preprocessor_class, cfg.PRE_PROCESSOR)
+                sly.Preprocessor(preprocessor_class, cfg.PRE_PROCESSOR)
             )
 
         sorter_list = ss.installed_sorter_list
         for sorter_class in sorter_list:
             self._available_elements.append(
-                Sorter(sorter_class, cfg.SORTER)
+                sly.Sorter(sorter_class, cfg.SORTER)
             )
 
         curator_list = st.curation.installed_curation_list
         for curator_class in curator_list:
             self._available_elements.append(
-                Curator(curator_class, cfg.CURATOR)
+                sly.Curator(curator_class, cfg.CURATOR)
             )
 
-        for exporter_class in exporters_list:
+        for exporter_class in sly.exporters_list:
             self._available_elements.append(
-                Exporter(exporter_class, cfg.EXPORTER)
+                sly.Exporter(exporter_class, cfg.EXPORTER)
             )
