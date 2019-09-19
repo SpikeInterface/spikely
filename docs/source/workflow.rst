@@ -42,7 +42,7 @@ Extractor and transformed by the other elements in the pipeline flow.
    extracellular data as it flows from the source element (Extractor) to the
    sink element (Sorter or Exporter).
 
-.. note::
-    Note: The pipeline creation and parameter configuration steps can be
-    shortcut by saving and loading complete pipelines to/from files using the
-    corresponding actions from spikely's *File Menu.*
+.. tip::
+   The pipeline creation and parameter configuration steps can be
+   shortcut by saving and loading complete pipelines to/from files using the
+   corresponding actions from spikely's *File Menu.*
