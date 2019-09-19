@@ -67,7 +67,7 @@ class PipelineModel(qc.QAbstractListModel):
         bad_count = self._bad_param_count()
         if bad_count:
             qw.QMessageBox.warning(
-                cfg.main_window, 'Run Failure',
+                qw.QApplication.activeWindow(), 'Run Failure',
                 f'Missing {self._bad_param_count()} required ' +
                 ('parameter' if bad_count == 1 else 'parameters'))
         else:

@@ -60,9 +60,9 @@ class SpikelyMainWindow(qw.QMainWindow):
 
 def launch_spikely():
     app = qw.QApplication(sys.argv)
-    cfg.main_window = SpikelyMainWindow()
-    cfg.status_bar = cfg.main_window.statusBar()
-    cfg.main_window.show()
+    main_window = SpikelyMainWindow()
+    cfg.status_bar = main_window.statusBar()
+    main_window.show()
     sys.exit(app.exec_())
 
 

@@ -66,7 +66,7 @@ def _perform_load_action():
     options = qw.QFileDialog.Options()
     options |= qw.QFileDialog.DontUseNativeDialog
     file_name, _filter = qw.QFileDialog.getOpenFileName(
-            parent=cfg.main_window, caption='Open File',
+            parent=qw.QApplication.activeWindow(), caption='Open File',
             filter='JSON (*.json)', options=options)
 
     if file_name:
@@ -92,7 +92,6 @@ def _perform_load_action():
                 spike_element = Curator(element_class, cfg.CURATOR)
             elif element_id == cfg.EXPORTER:
                 spike_element = Exporter(element_class, cfg.EXPORTER)
-
 
             spike_element.params = element_dict['params']
             _pipeline_model.add_element(spike_element)
