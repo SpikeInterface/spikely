@@ -5,7 +5,6 @@ import PyQt5.QtWidgets as qw
 import PyQt5.QtGui as qg
 
 import spikely as sl
-import spikely.config as cfg
 import spikely.file_menu as fm
 
 
@@ -60,9 +59,8 @@ class SpikelyMainWindow(qw.QMainWindow):
 
 def launch_spikely():
     app = qw.QApplication(sys.argv)
-    main_window = SpikelyMainWindow()
-    cfg.status_bar = main_window.statusBar()
-    main_window.show()
+    win = SpikelyMainWindow()
+    win.show()
     sys.exit(app.exec_())
 
 
