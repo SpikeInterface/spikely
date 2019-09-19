@@ -72,7 +72,7 @@ class PipelineModel(qc.QAbstractListModel):
                 ('parameter' if bad_count == 1 else 'parameters'))
         else:
             """Call SpikeInterface APIs on elements in pipeline"""
-            cfg.status_bar.showMessage(
+            qw.QApplication.activeWindow().statusBar().showMessage(
                 'Running pipeline', cfg.STATUS_MSG_TIMEOUT)
             p = mp.Process(target=self.async_run)
             p.start()
@@ -94,7 +94,7 @@ class PipelineModel(qc.QAbstractListModel):
             self._elements.clear()
             self.endResetModel()
         else:
-            cfg.status_bar.showMessage(
+            qw.QApplication.activeWindow().statusBar().showMessage(
                 'Nothing to clear', cfg.STATUS_MSG_TIMEOUT)
 
     def add_element(self, element):
@@ -103,7 +103,7 @@ class PipelineModel(qc.QAbstractListModel):
                 element.interface_id == cfg.SORTER or
                 element.interface_id == cfg.EXPORTER):
             if self._has_instance(element.interface_id):
-                cfg.status_bar.showMessage(
+                qw.QApplication.activeWindow().statusBar().showMessage(
                     "Only one instance of that element type allowed",
                     cfg.STATUS_MSG_TIMEOUT)
                 return
@@ -126,7 +126,7 @@ class PipelineModel(qc.QAbstractListModel):
             self._swap(self._elements, i, i-1)
             self.endMoveRows()
         else:
-            cfg.status_bar.showMessage(
+            qw.QApplication.activeWindow().statusBar().showMessage(
                 "Cannot move element any higher", cfg.STATUS_MSG_TIMEOUT)
 
     def move_down(self, element):
@@ -140,7 +140,7 @@ class PipelineModel(qc.QAbstractListModel):
             self._swap(self._elements, i, i+1)
             self.endMoveRows()
         else:
-            cfg.status_bar.showMessage(
+            qw.QApplication.activeWindow().statusBar().showMessage(
                 "Cannot move element any lower", cfg.STATUS_MSG_TIMEOUT)
 
     def delete(self, element):

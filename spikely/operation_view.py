@@ -45,14 +45,14 @@ class OperationView(qw.QGroupBox):
 
     def _queue_clicked(self):
         # Pipeline model should be responsible for this
-        cfg.status_bar.showMessage(
+        qw.QApplication.activeWindow().statusBar().showMessage(
             "Queue not implemented", cfg.STATUS_MSG_TIMEOUT)
 
     def _run_clicked(self):
         if self._pipeline_model.rowCount():
             self._pipeline_model.run()
         else:
-            cfg.status_bar.showMessage(
+            qw.QApplication.activeWindow().statusBar().showMessage(
                 "Elements required before pipeline can be run.",
                 cfg.STATUS_MSG_TIMEOUT)
     '''

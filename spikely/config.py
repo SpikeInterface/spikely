@@ -1,9 +1,5 @@
 """Constants and gloabals used by other spikely modules."""
 
-# Application status bar for user messages.  Set in spikely_main.py
-# Usage: config.status_bar.showMessage('message', config.TIMEOUT)
-status_bar = None
-
 # Duration in milliseconds of timeout for temporary status messages
 STATUS_MSG_TIMEOUT = 3500
 
