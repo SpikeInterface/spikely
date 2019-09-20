@@ -67,8 +67,8 @@ class PipelineView(qw.QGroupBox):
             ele_cbx.clear()
 
             element_cls = stage_cbx.itemData(index)
-            for spikeinter_cls in element_cls.spikeinter_hook_list():
-                ele_cbx.addItem(spikeinter_cls.__name__, spikeinter_cls)
+            for spif_cls in element_cls.get_installed_spif_classes():
+                ele_cbx.addItem(spif_cls.__name__, spif_cls)
         stage_cbx.currentIndexChanged.connect(_stage_cbx_changed)
 
         # Must come after currentIndexChanged.connect to invoke callback

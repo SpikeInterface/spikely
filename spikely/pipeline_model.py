@@ -2,7 +2,6 @@ import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
 
-import copy
 import multiprocessing as mp
 import pkg_resources
 
@@ -98,24 +97,22 @@ class PipelineModel(qc.QAbstractListModel):
                 'Nothing to clear', cfg.STATUS_MSG_TIMEOUT)
 
     def add_element(self, element):
-        # Only allow one Extractor or Sorter
-        if (element.interface_id == cfg.EXTRACTOR or
-                element.interface_id == cfg.SORTER or
-                element.interface_id == cfg.EXPORTER):
-            if self._has_instance(element.interface_id):
-                qw.QApplication.activeWindow().statusBar().showMessage(
-                    "Only one instance of that element type allowed",
-                    cfg.STATUS_MSG_TIMEOUT)
-                return
-        # A kludge since it assumes order of interface_id constants
-        i = 0
-        while (i < len(self._elements) and
-                element.interface_id >= self._elements[i].interface_id):
-            i += 1
-        self.beginInsertRows(qc.QModelIndex(), i, i)
-        # Need a deep copy of element to support multi-instance element use
-        self._elements.insert(i, copy.deepcopy(element))
-        self.endInsertRows()
+
+        insert_row = -1
+        if not self._elements:
+            insert_row = 0
+        else:
+            for row in range(len(self._elements)):
+                upstream = None if row == 0 else row - 1
+                downstream = None if row == len(self._elements) else row
+                if element.fits_between(upstream, downstream):
+                    insert_row = row
+                    break
+
+        if insert_row >= 0:
+            self.beginInsertRows(qc.QModelIndex(), insert_row, insert_row)
+            self._elements.insert(insert_row, element)
+            self.endInsertRows()
 
     def move_up(self, element):
         i = self._elements.index(element)

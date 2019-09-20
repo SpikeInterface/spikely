@@ -1,14 +1,15 @@
-from abc import ABC, abstractmethod, abstractclassmethod
+from abc import ABC, abstractmethod
 
 
 class SpikeElement2(ABC):
 
-    @abstractclassmethod
-    def spikeinter_hook_list(cls):
+    @staticmethod
+    @abstractmethod
+    def get_installed_spif_classes():
         pass
 
-    def __init__(self, spikeinter_hook):
-        self._spikeinter_hook = spikeinter_hook
+    def __init__(self, spif_class):
+        self._spif_class = spif_class
         self._parameters = None
 
     @abstractmethod
@@ -20,8 +21,8 @@ class SpikeElement2(ABC):
         pass
 
     @property
-    def spikeinter_hook(self):
-        return self._spikeinter_hook
+    def spif_class(self):
+        return self._spif_class
 
     @property
     def parameters(self):
@@ -33,7 +34,7 @@ class SpikeElement2(ABC):
 
 
 class SpikeElement:
-    """Base class for SpikeInterface elements"""
+    """Base class for spifface elements"""
 
     def __init__(self, interface_id, interface_class, interface_name):
         self._interface_id = interface_id

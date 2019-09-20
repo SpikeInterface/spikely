@@ -5,18 +5,19 @@ import copy
 
 
 class Extractor2(SpikeElement2):
-    @classmethod
-    def spikeinter_hook_list(cls):
+    @staticmethod
+    def get_installed_spif_classes():
         return se.installed_recording_extractor_list
 
-    def __init__(self, spikeinter_hook):
-        super().__init__(spikeinter_hook)
+    def __init__(self, spif_class):
+        super().__init__(spif_class)
 
     def fits_between(self, upstream, downstream):
         return not upstream and not isinstance(downstream, Extractor2)
 
     def run(self, payload, downstream):
         pass
+
 
 class Extractor(SpikeElement):
     """Extractor class"""
