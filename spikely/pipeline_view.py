@@ -13,6 +13,7 @@ import spiketoolkit as st
 import spikesorters as ss
 
 from spikely import config as cfg
+from spikely.spike_element import SpikeElement2
 
 
 class PipelineView(qw.QGroupBox):
@@ -62,20 +63,17 @@ class PipelineView(qw.QGroupBox):
 
         # Change ele_cbx contents when user makes stage_cbx selection
         def _stage_cbx_changed(index):
+
             ele_cbx.clear()
-            for element in self._available_elements:
-                # stage_cbx items store type ID associated w/ name
-                if element.interface_id == stage_cbx.itemData(index):
-                    # ele_cbx items store element object w/ name
-                    ele_cbx.addItem(element.name, element)
+
+            element_cls = stage_cbx.itemData(index)
+            for spikeinter_cls in element_cls.spikeinter_hook_list():
+                ele_cbx.addItem(spikeinter_cls.__name__, spikeinter_cls)
         stage_cbx.currentIndexChanged.connect(_stage_cbx_changed)
 
         # Must come after currentIndexChanged.connect to invoke callback
-        stage_cbx.addItem('Extractors', cfg.EXTRACTOR)
-        stage_cbx.addItem('Pre-Processors', cfg.PRE_PROCESSOR)
-        stage_cbx.addItem('Sorters', cfg.SORTER)
-        stage_cbx.addItem('Curators', cfg.CURATOR)
-        stage_cbx.addItem('Exporters', cfg.EXPORTER)
+        for cls in SpikeElement2.__subclasses__():
+            stage_cbx.addItem(cls.__name__ + 's', cls)
 
         # Layout after stage_cbx, but declared first as fwd reference
         ui_frame.layout().addWidget(ele_cbx)

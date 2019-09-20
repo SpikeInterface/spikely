@@ -1,8 +1,22 @@
-from .spike_element import SpikeElement
+from .spike_element import SpikeElement, SpikeElement2
 import spikeextractors as se
 import numpy as np
 import copy
 
+
+class Extractor2(SpikeElement2):
+    @classmethod
+    def spikeinter_hook_list(cls):
+        return se.installed_recording_extractor_list
+
+    def __init__(self, spikeinter_hook):
+        super().__init__(spikeinter_hook)
+
+    def fits_between(self, upstream, downstream):
+        return not upstream and not isinstance(downstream, Extractor2)
+
+    def run(self, payload, downstream):
+        pass
 
 class Extractor(SpikeElement):
     """Extractor class"""

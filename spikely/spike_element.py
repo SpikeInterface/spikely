@@ -1,3 +1,35 @@
+from abc import ABC, abstractmethod, abstractclassmethod
+
+
+class SpikeElement2(ABC):
+
+    @abstractclassmethod
+    def spikeinter_hook_list(cls):
+        pass
+
+    def __init__(self, spikeinter_hook):
+        self._spikeinter_hook = spikeinter_hook
+        self._parameters = None
+
+    @abstractmethod
+    def fits_between(self, upstream, downstream):
+        pass
+
+    @abstractmethod
+    def run(self, payload, downstream):
+        pass
+
+    @property
+    def spikeinter_hook(self):
+        return self._spikeinter_hook
+
+    @property
+    def parameters(self):
+        return self._parameters
+
+    @parameters.setter
+    def parameters(self, p):
+        self._parameters = p
 
 
 class SpikeElement:
