@@ -22,6 +22,7 @@ Requirements
 The following Python packages are required for running spikely.
 They are installed when using the pip installer for :code:`spikeinterface`.
 
+- PyQt5
 - spikeextractors
 - spiketoolkit
 - spikesorters
