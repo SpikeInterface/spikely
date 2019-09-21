@@ -17,26 +17,6 @@ class PipelineModel(qc.QAbstractListModel):
         # Underlying data structure proxied by model
         self._elements = []
 
-        self._decorations = [None, None, None, None, None]
-        fn = pkg_resources.resource_filename(
-            'spikely.resources', 'EXTRACTOR.png')
-        self._decorations[cfg.EXTRACTOR] = qg.QIcon(fn)
-
-        fn = pkg_resources.resource_filename(
-            'spikely.resources', 'PRE_PROCESSOR.png')
-        self._decorations[cfg.PRE_PROCESSOR] = qg.QIcon(fn)
-
-        fn = pkg_resources.resource_filename(
-            'spikely.resources', 'SORTER.png')
-        self._decorations[cfg.SORTER] = qg.QIcon(fn)
-
-        fn = pkg_resources.resource_filename(
-            'spikely.resources', 'CURATOR.png')
-        self._decorations[cfg.CURATOR] = qg.QIcon(fn)
-
-        fn = pkg_resources.resource_filename(
-            'spikely.resources', 'EXPORTER.png')
-        self._decorations[cfg.EXPORTER] = qg.QIcon(fn)
 
     #
     # Overloaded methods from QAbstractListModel
@@ -50,9 +30,9 @@ class PipelineModel(qc.QAbstractListModel):
         if mod_index.isValid() and mod_index.row() < len(self._elements):
             element = self._elements[mod_index.row()]
             if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
-                result = element.name
+                result = element.display_name
             elif role == qc.Qt.DecorationRole:
-                result = self._decorations[element.interface_id]
+                result = element.display_icon
             # Custom role for spikely callers to access pipeline elements
             elif role == cfg.ELEMENT_ROLE:
                 result = element

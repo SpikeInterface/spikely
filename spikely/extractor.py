@@ -2,6 +2,8 @@ from .spike_element import SpikeElement, SpikeElement2
 import spikeextractors as se
 import numpy as np
 import copy
+import PyQt5.QtGui as qg
+import pkg_resources
 
 
 class Extractor2(SpikeElement2):
@@ -11,12 +13,24 @@ class Extractor2(SpikeElement2):
 
     def __init__(self, spif_class):
         super().__init__(spif_class)
+        self._display_name = spif_class.__name__
+        self._display_icon = qg.QIcon(
+            pkg_resources.resource_filename(
+                'spikely.resources', 'extractor.png'))
 
     def fits_between(self, upstream, downstream):
         return not upstream and not isinstance(downstream, Extractor2)
 
     def run(self, payload, downstream):
         pass
+
+    @property
+    def display_name(self):
+        return self._display_name
+
+    @property
+    def display_icon(self):
+        return self._display_icon
 
 
 class Extractor(SpikeElement):

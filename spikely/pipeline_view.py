@@ -63,9 +63,7 @@ class PipelineView(qw.QGroupBox):
 
         # Change ele_cbx contents when user makes stage_cbx selection
         def _stage_cbx_changed(index):
-
             ele_cbx.clear()
-
             element_cls = stage_cbx.itemData(index)
             for spif_cls in element_cls.get_installed_spif_classes():
                 ele_cbx.addItem(spif_cls.__name__, spif_cls)
@@ -82,8 +80,11 @@ class PipelineView(qw.QGroupBox):
 
         def _add_element_clicked():
             if ele_cbx.currentIndex() > -1:
+                spif_class = ele_cbx.currentData()
+                element_class = stage_cbx.currentData()
+                element = element_class(spif_class)
                 # Takes advantage of actual element reference stored in ele_cbx
-                self._pipeline_model.add_element(ele_cbx.currentData())
+                self._pipeline_model.add_element(element)
         add_button.clicked.connect(_add_element_clicked)
 
         ui_frame.layout().addWidget(add_button)

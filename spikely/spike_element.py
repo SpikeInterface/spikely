@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+# TODO: needs icon and display_name properties
+
 
 class SpikeElement2(ABC):
 
@@ -8,16 +10,21 @@ class SpikeElement2(ABC):
     def get_installed_spif_classes():
         pass
 
-    def __init__(self, spif_class):
-        self._spif_class = spif_class
-        self._parameters = None
-
     @abstractmethod
     def fits_between(self, upstream, downstream):
         pass
 
     @abstractmethod
     def run(self, payload, downstream):
+        pass
+
+    def __init__(self, spif_class):
+        self._spif_class = spif_class
+        self._parameters = None
+
+    @property
+    @abstractmethod
+    def display_name(self):
         pass
 
     @property
