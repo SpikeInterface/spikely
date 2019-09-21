@@ -9,4 +9,4 @@ Below are the authors of spikely:
 1. Independent Developer, Portland, Oregon, USA
 2. The Institute for Adaptive and Neural Computation (ANC), University of Edinburgh, Edinburgh, Scotland.
 
-For any inquiries, please email rogerhurwitz@gmail.com.
+For any inquiries, please email rogerhurwitz@gmail.com or just leave an issue!
