@@ -26,6 +26,7 @@ class Extractor(SpikeElement):
             'name': 'probe_path', 'type': 'file',
             'title': 'Path to probe file (.csv or .prb)'}
         if spif_class.has_default_locations:
+            probe_path_dict['value'] = None
             probe_path_dict['default'] = None
         self._params.append(probe_path_dict)
 
