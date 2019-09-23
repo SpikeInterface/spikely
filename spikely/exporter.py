@@ -8,7 +8,7 @@ import shutil
 import copy
 
 
-class Exporter(SpikeElement):
+class Exporter():
     """Exporter class"""
 
     def __init__(self, interface_class, interface_id):

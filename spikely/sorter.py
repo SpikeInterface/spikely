@@ -1,7 +1,7 @@
 from .spike_element import SpikeElement
 import copy
 
-class Sorter(SpikeElement):
+class Sorter():
     """Preprocessor class"""
 
     def __init__(self, interface_class, interface_id):

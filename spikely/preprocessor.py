@@ -2,7 +2,7 @@ from .spike_element import SpikeElement
 import copy
 
 
-class Preprocessor(SpikeElement):
+class Preprocessor():
     """Preprocessor class"""
 
     def __init__(self, interface_class, interface_id):

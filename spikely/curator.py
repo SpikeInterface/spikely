@@ -8,7 +8,7 @@ import shutil
 import copy
 
 
-class Curator(SpikeElement):
+class Curator():
     """Curator class"""
 
     def __init__(self, interface_class, interface_id):

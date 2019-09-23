@@ -1,9 +1,7 @@
 import PyQt5.QtCore as qc
-import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
 
 import multiprocessing as mp
-import pkg_resources
 
 from spikely import config as cfg
 
@@ -17,10 +15,7 @@ class PipelineModel(qc.QAbstractListModel):
         # Underlying data structure proxied by model
         self._elements = []
 
-
-    #
     # Overloaded methods from QAbstractListModel
-    #
     def rowCount(self, parent=None):
         return len(self._elements)
 
@@ -38,9 +33,8 @@ class PipelineModel(qc.QAbstractListModel):
                 result = element
 
         return result
-    #
+
     # Methods called by app to manipulate and operate pipeline
-    #
     def run(self):
 
         bad_count = self._bad_param_count()
@@ -126,9 +120,7 @@ class PipelineModel(qc.QAbstractListModel):
         self._elements.pop(index)
         self.endRemoveRows()
 
-    #
     # Convenience methods used only within class
-    #
     def _has_instance(self, interface_id):
         # Checks if element instance already in pipeline
         for element in self._elements:

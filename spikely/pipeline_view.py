@@ -1,33 +1,23 @@
-"""The view-control widget set for constructing the active pipeline.
+# The view-control widget set for constructing the active pipeline.
 
-The Construct Pipeline view-control consists of widgets responsible for
-constructing the active pipeline by adding, deleting, or moving elements
-within the active pipeline.
-"""
+# The Construct Pipeline view-control consists of widgets responsible for
+# constructing the active pipeline by adding, deleting, or moving elements
+# within the active pipeline.
 
 import PyQt5.QtWidgets as qw
 
-import spikely as sly
-import spikeextractors as se
-import spiketoolkit as st
-import spikesorters as ss
-
 from spikely import config as cfg
-from spikely.spike_element import SpikeElement2
+from spikely.spike_element import SpikeElement
 
 
 class PipelineView(qw.QGroupBox):
-    """QGroupBox containing the view-control widget set
+    # QGroupBox containing the view-control widget set
 
-    No public methods other than constructor.  All other activites
-    of object are triggered by user interaction with sub widgets.
-    """
+    # No public methods other than constructor.  All other object
+    # behaviors are triggered by user interaction with sub widgets.
 
     def __init__(self, pipeline_model, parameter_model):
         super().__init__("Construct Pipeline")
-
-        self._available_elements = []
-        self._get_available_elements()
 
         self._pipeline_model = pipeline_model
         self._pipeline_view = qw.QListView(self)
@@ -36,12 +26,12 @@ class PipelineView(qw.QGroupBox):
         self._init_ui()
 
     def _init_ui(self):
-        """Assembles the individual widgets into the widget-set.
+        # Assembles the individual widgets into the widget-set.
 
-        The PipelineView consists of three separate UI assemblies
-        stacked top to bottom: element selection, pipeline element list,
-        and pipeline element commands (move up, delete, move down)
-        """
+        # The PipelineView consists of three separate UI assemblies
+        # stacked top to bottom: element selection, pipeline element list,
+        # and pipeline element commands (move up, delete, move down)
+
         # Lay out view from top to bottom of group box
         self.setLayout(qw.QVBoxLayout())
 
@@ -50,40 +40,48 @@ class PipelineView(qw.QGroupBox):
         self.layout().addWidget(self._pipeline_commands())
 
     def _element_selection(self):
-        """Select for and insert elements into pipeline."""
+        # UI to select for and add elements to pipeline.
+
+        # The UI for element selection combines a combo box for the stages
+        # (e.g., Extractor) and one for the corresponding SpikeInterface
+        # classes (e.g., MEArecRecordingExtractor) - the two pieces of
+        # information required to instantiate the SpikeElement inserted into
+        # the pipeline.
 
         ui_frame = qw.QFrame()
         ui_frame.setLayout(qw.QHBoxLayout())
 
         # Out of order declaration needed as forward reference
-        ele_cbx = qw.QComboBox(self)
+        spif_cbx = qw.QComboBox(self)
 
         stage_cbx = qw.QComboBox()
         ui_frame.layout().addWidget(stage_cbx)
 
-        # Change ele_cbx contents when user makes stage_cbx selection
+        # Change spif_cbx contents when user makes stage_cbx selection
         def _stage_cbx_changed(index):
-            ele_cbx.clear()
+            spif_cbx.clear()
             element_cls = stage_cbx.itemData(index)
+            # SpikeElement subclasses tasked w/ generating spif class lists
             for spif_cls in element_cls.get_installed_spif_classes():
-                ele_cbx.addItem(spif_cls.__name__, spif_cls)
+                spif_cbx.addItem(spif_cls.__name__, spif_cls)
         stage_cbx.currentIndexChanged.connect(_stage_cbx_changed)
 
-        # Must come after currentIndexChanged.connect to invoke callback
-        for cls in SpikeElement2.__subclasses__():
+        # Note: cbx instantiation order matters for initial m/v signalling
+
+        # A subtle bit of introspection that will probably come back to bite
+        for cls in SpikeElement.__subclasses__():
             stage_cbx.addItem(cls.__name__ + 's', cls)
 
-        # Layout after stage_cbx, but declared first as fwd reference
-        ui_frame.layout().addWidget(ele_cbx)
+        ui_frame.layout().addWidget(spif_cbx)
 
         add_button = qw.QPushButton("Add Element")
 
         def _add_element_clicked():
-            if ele_cbx.currentIndex() > -1:
-                spif_class = ele_cbx.currentData()
+            if spif_cbx.currentIndex() > -1:
+                # Classes stored as cbx user data enables object creation
+                spif_class = spif_cbx.currentData()
                 element_class = stage_cbx.currentData()
                 element = element_class(spif_class)
-                # Takes advantage of actual element reference stored in ele_cbx
                 self._pipeline_model.add_element(element)
         add_button.clicked.connect(_add_element_clicked)
 
@@ -113,6 +111,7 @@ class PipelineView(qw.QGroupBox):
         return self._pipeline_view
 
     def _pipeline_commands(self):
+        # Operations applied to the pipeline as a whole (Run, Clear, Queue)
         ui_frame = qw.QFrame()
         ui_frame.setLayout(qw.QHBoxLayout())
 
@@ -158,40 +157,10 @@ class PipelineView(qw.QGroupBox):
         return ui_frame
 
     def _get_selected_element(self):
-        """ Convenience function to retrieve selected element in pipe view"""
+        # Convenience function to retrieve selected element in pipe view
         element = None
         model = self._pipeline_view.selectionModel()
         if model.hasSelection():
             index = model.selectedIndexes()[0]
             element = self._pipeline_model.data(index, cfg.ELEMENT_ROLE)
         return element
-
-    def _get_available_elements(self):
-        extractor_list = se.extractorlist.installed_recording_extractor_list
-        for extractor_class in extractor_list:
-            self._available_elements.append(
-                sly.Extractor(extractor_class, cfg.EXTRACTOR))
-
-        preprocessor_list = st.preprocessing.preprocessinglist. \
-            installed_preprocessers_list
-        for preprocessor_class in preprocessor_list:
-            self._available_elements.append(
-                sly.Preprocessor(preprocessor_class, cfg.PRE_PROCESSOR)
-            )
-
-        sorter_list = ss.installed_sorter_list
-        for sorter_class in sorter_list:
-            self._available_elements.append(
-                sly.Sorter(sorter_class, cfg.SORTER)
-            )
-
-        curator_list = st.curation.installed_curation_list
-        for curator_class in curator_list:
-            self._available_elements.append(
-                sly.Curator(curator_class, cfg.CURATOR)
-            )
-
-        for exporter_class in sly.exporters_list:
-            self._available_elements.append(
-                sly.Exporter(exporter_class, cfg.EXPORTER)
-            )
