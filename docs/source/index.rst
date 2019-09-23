@@ -9,8 +9,8 @@ Spike sorting made simple
 Spikely is an application built on top of SpikeInterface_ designed to simplify
 the process of creating and running spike sorting pipelines.
 Spikely supports loading, preprocessing, sorting, curating, and exporting
-of extracellular datasets that are stored in SpikeInterface_ compatible file
-formats (https://spikeinterface.readthedocs.io/en/latest/supported.html).
+of extracellular datasets that are stored in `SpikeInterface compatible file
+formats <https://spikeinterface.readthedocs.io/en/latest/supported.html>`_.
 
 .. image:: ../images/gui.png
 
