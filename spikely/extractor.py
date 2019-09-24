@@ -40,6 +40,9 @@ class Extractor(SpikeElement):
             underlying channels. If None, then no groups given."})
 
     def fits_between(self, upstream, downstream):
+        print(upstream)
+        print(downstream)
+        print('=====')
         return not upstream and not isinstance(downstream, Extractor)
 
     @property

@@ -94,11 +94,11 @@ def _perform_save_action():
 
 
 def _cvt_elem_to_dict(element):
-    element_dict = {
+    elem_dict = {
         "element_cls_name": element.__class__.__name__,
         "element_mod_name": element.__module__,
         "spif_cls_name": element.spif_class.__name__,
         "spif_mod_name": element.spif_class.__module__,
         "params": element.params
     }
-    return element_dict
+    return elem_dict

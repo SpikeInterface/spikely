@@ -75,11 +75,17 @@ class PipelineModel(qc.QAbstractListModel):
         if not self._elements:
             insert_row = 0
         else:
-            for row in range(len(self._elements)):
-                upstream = None if row == 0 else row - 1
-                downstream = None if row == len(self._elements) else row
+            for test_row in range(len(self._elements)):
+
+                upstream = (
+                    None if test_row == 0 else self._elements[test_row - 1])
+
+                downstream = (
+                    None if test_row == len(self._elements) - 1 else
+                    self._elements[test_row])
+
                 if element.fits_between(upstream, downstream):
-                    insert_row = row
+                    insert_row = test_row
                     break
 
         if insert_row >= 0:
