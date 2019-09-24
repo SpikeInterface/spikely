@@ -59,7 +59,10 @@ class Extractor(SpikeElement):
         channel_map = self._params.pop('channel_map', None)
         channel_groups = self._params.pop('channel_groups', None)
 
-        recording = self._spif_class(**self._params)
+        spif_params = {}
+        for params in self._params:
+            spif_params[params['name']] = params['value']
+        recording = self._spif_class(**spif_params)
 
         if probe_file:
             recording = recording.load_probe_file(
