@@ -1,20 +1,7 @@
 import PyQt5.QtWidgets as qw
 import json
-
-from spikely.extractor import Extractor
-from spikely.preprocessor import Preprocessor
-from spikely.sorter import Sorter
-from spikely.curator import Curator
-from spikely.exporter import Exporter
-from .exporterlist import sorting_exporter_dict
-from spikely.spike_element import SpikeElement
-
-import spikeextractors as se
-import spiketoolkit as st
-import spikesorters as ss
-
-from spikely import config as cfg
-
+import importlib
+import spikely.config as cfg
 
 # Provides access to pipeline elements
 _pipeline_model = None
@@ -66,35 +53,24 @@ def _perform_load_action():
     options = qw.QFileDialog.Options()
     options |= qw.QFileDialog.DontUseNativeDialog
     file_name, _filter = qw.QFileDialog.getOpenFileName(
-            parent=qw.QApplication.activeWindow(), caption='Open File',
+            parent=cfg.find_main_window(), caption='Open File',
             filter='JSON (*.json)', options=options)
 
     if file_name:
         _pipeline_model.clear()
         with open(file_name, 'r') as json_file:
-            element_dict_list = json.load(json_file)
+            elem_dict_list = json.load(json_file)
 
-        for element_dict in element_dict_list:
-            element_id = element_dict['element_id']
-            element_class = _element_class_from_name(
-                element_dict['class_name'], element_id)
-            assert element_class.installed, \
-                element_dict['class_name'] + " not installed."
+        for elem_dict in elem_dict_list:
+            elem_mod = importlib.import_module(elem_dict['element_mod_name'])
+            elem_cls = getattr(elem_mod, elem_dict['element_cls_name'])
+            spif_mod = importlib.import_module(elem_dict['spif_mod_name'])
+            spif_cls = getattr(spif_mod, elem_dict['spif_cls_name'])
 
-            if element_id == cfg.EXTRACTOR:
-                spike_element = Extractor(element_class, cfg.EXTRACTOR)
-            elif element_id == cfg.PRE_PROCESSOR:
-                spike_element = Preprocessor(
-                    element_class, cfg.PRE_PROCESSOR)
-            elif element_id == cfg.SORTER:
-                spike_element = Sorter(element_class, cfg.SORTER)
-            elif element_id == cfg.CURATOR:
-                spike_element = Curator(element_class, cfg.CURATOR)
-            elif element_id == cfg.EXPORTER:
-                spike_element = Exporter(element_class, cfg.EXPORTER)
+            element = elem_cls(spif_cls)
+            element.params = elem_dict['params']
 
-            spike_element.params = element_dict['params']
-            _pipeline_model.add_element(spike_element)
+            _pipeline_model.add_element(element)
 
 
 def _perform_save_action():
@@ -106,32 +82,23 @@ def _perform_save_action():
         options = qw.QFileDialog.Options()
         options |= qw.QFileDialog.DontUseNativeDialog
         file_name, _filter = qw.QFileDialog.getSaveFileName(
-            parent=cfg.main_window, caption='Save File',
+            parent=cfg.find_main_window(), caption='Save File',
             filter='JSON (*.json)', options=options)
 
         if file_name:
-            element_dict_list = [
-                _cvt_element_to_dict(element) for element in elements]
+            elem_dict_list = [
+                _cvt_elem_to_dict(element) for element in elements]
 
             with open(file_name, 'w') as json_file:
-                json.dump(element_dict_list, json_file)
+                json.dump(elem_dict_list, json_file)
 
 
-def _cvt_element_to_dict(element: SpikeElement):
+def _cvt_elem_to_dict(element):
     element_dict = {
-        "class_name": element.name,
-        "element_id": element.interface_id,
+        "element_cls_name": element.__class__.__name__,
+        "element_mod_name": element.__module__,
+        "spif_cls_name": element.spif_class.__name__,
+        "spif_mod_name": element.spif_class.__module__,
         "params": element.params
     }
     return element_dict
-
-
-def _element_class_from_name(class_name, element_id):
-    element_dicts = {
-        cfg.EXTRACTOR: se.extractorlist.recording_extractor_dict,
-        cfg.PRE_PROCESSOR: st.preprocessing.preprocesser_dict,
-        cfg.SORTER: ss.sorter_dict,
-        cfg.CURATOR: st.curation.curation_dict,
-        cfg.EXPORTER: sorting_exporter_dict
-    }
-    return element_dicts[element_id][class_name]

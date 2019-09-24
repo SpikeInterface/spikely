@@ -39,12 +39,12 @@ class PipelineModel(qc.QAbstractListModel):
         bad_count = self._bad_param_count()
         if bad_count:
             qw.QMessageBox.warning(
-                qw.QApplication.activeWindow(), 'Run Failure',
+                cfg.find_main_window(), 'Run Failure',
                 f'Missing {self._bad_param_count()} required ' +
                 ('parameter' if bad_count == 1 else 'parameters'))
         else:
             """Call SpikeInterface APIs on elements in pipeline"""
-            qw.QApplication.activeWindow().statusBar().showMessage(
+            cfg.find_main_window().statusBar().showMessage(
                 'Running pipeline', cfg.STATUS_MSG_TIMEOUT)
             p = mp.Process(target=self.async_run)
             p.start()
@@ -66,7 +66,7 @@ class PipelineModel(qc.QAbstractListModel):
             self._elements.clear()
             self.endResetModel()
         else:
-            qw.QApplication.activeWindow().statusBar().showMessage(
+            cfg.find_main_window().statusBar().showMessage(
                 'Nothing to clear', cfg.STATUS_MSG_TIMEOUT)
 
     def add_element(self, element):
@@ -96,7 +96,7 @@ class PipelineModel(qc.QAbstractListModel):
             self._swap(self._elements, i, i-1)
             self.endMoveRows()
         else:
-            qw.QApplication.activeWindow().statusBar().showMessage(
+            cfg.find_main_window().statusBar().showMessage(
                 "Cannot move element any higher", cfg.STATUS_MSG_TIMEOUT)
 
     def move_down(self, element):
@@ -110,7 +110,7 @@ class PipelineModel(qc.QAbstractListModel):
             self._swap(self._elements, i, i+1)
             self.endMoveRows()
         else:
-            qw.QApplication.activeWindow().statusBar().showMessage(
+            cfg.find_main_window().statusBar().showMessage(
                 "Cannot move element any lower", cfg.STATUS_MSG_TIMEOUT)
 
     def delete(self, element):
