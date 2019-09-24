@@ -51,7 +51,6 @@ class Extractor(SpikeElement):
         return self._display_icon
 
     def run(self, payload, downstream):
-
         probe_file = self._params.pop('probe_path', None)
         channel_map = self._params.pop('channel_map', None)
         channel_groups = self._params.pop('channel_groups', None)

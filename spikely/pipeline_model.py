@@ -73,21 +73,21 @@ class PipelineModel(qc.QAbstractListModel):
     def add_element(self, element: SpikeElement) -> None:
 
         insert_row = -1
+        # Assume element fits if element list is empty
         if not self._elements:
             insert_row = 0
         else:
-            for test_row in range(len(self._elements)):
-
-                upstream = (
-                    None if test_row == 0 else self._elements[test_row - 1])
-
-                downstream = (
-                    None if test_row == len(self._elements) - 1 else
-                    self._elements[test_row])
-
-                if element.fits_between(upstream, downstream):
-                    insert_row = test_row
-                    break
+            # Does element fit at the top of the list?
+            if element.fits_between(None, self._elements[0]):
+                insert_row = 0
+            else:
+                for test_row in range(len(self._elements)):
+                    downstream = None if test_row + 1 == len(
+                        self._elements) else self._elements[test_row + 1]
+                    if element.fits_between(
+                            self._elements[test_row], downstream):
+                        insert_row = test_row
+                        break
 
         if insert_row >= 0:
             self.beginInsertRows(qc.QModelIndex(), insert_row, insert_row)
