@@ -26,8 +26,7 @@ class Extractor(SpikeElement):
             'name': 'probe_path', 'type': 'file',
             'title': 'Path to probe file (.csv or .prb)'}
         if spif_class.has_default_locations:
-            probe_path_dict['value'] = None
-            probe_path_dict['default'] = None
+            probe_path_dict['default'] = probe_path_dict['value'] = None
         self._params.append(probe_path_dict)
 
         self._params.append({
@@ -52,21 +51,12 @@ class Extractor(SpikeElement):
         return self._display_icon
 
     def run(self, payload, downstream):
-        params_dict = {}
-        probe_file = None
-        for param in self._params:
-            param_name = param['name']
-            param_value = param['value']
-            if param_name == 'probe_path':
-                probe_file = param_value
-            elif param_name == 'channel_map':
-                channel_map = param_value
-            elif param_name == 'channel_groups':
-                channel_groups = param_value
-            else:
-                params_dict[param_name] = param_value
 
-        recording = self._spif_class(**params_dict)
+        probe_file = self._params.pop('probe_path', None)
+        channel_map = self._params.pop('channel_map', None)
+        channel_groups = self._params.pop('channel_groups', None)
+
+        recording = self._spif_class(**self._params)
 
         if probe_file:
             recording = recording.load_probe_file(
@@ -75,12 +65,10 @@ class Extractor(SpikeElement):
             if channel_map:
                 assert np.all([
                     chan in channel_map for chan in
-                    recording.get_channel_ids()]), \
-                    "all channel_ids in 'channel_map' must be in the  " \
-                    "original recording channel ids"
+                    recording.get_channel_ids()]), "all channel_ids in " \
+                        "'channel_map' must be in recording channel ids"
                 recording = se.SubRecordingExtractor(
                     recording, channel_ids=channel_map)
-
             if channel_groups:
                 recording.set_channel_groups(
                     recording.get_channel_ids(), channel_groups)

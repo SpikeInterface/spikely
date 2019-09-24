@@ -9,7 +9,6 @@ from spikely import config as cfg
 class PipelineModel(qc.QAbstractListModel):
 
     def __init__(self, parameter_model):
-        """TBD."""
         super().__init__()
 
         # Underlying data structure proxied by model
