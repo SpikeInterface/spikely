@@ -40,9 +40,6 @@ class Extractor(SpikeElement):
             underlying channels. If None, then no groups given."})
 
     def fits_between(self, upstream, downstream):
-        print(upstream)
-        print(downstream)
-        print('=====')
         return not upstream and not isinstance(downstream, Extractor)
 
     @property
@@ -59,9 +56,7 @@ class Extractor(SpikeElement):
         channel_map = self._params.pop('channel_map', None)
         channel_groups = self._params.pop('channel_groups', None)
 
-        spif_params = {}
-        for params in self._params:
-            spif_params[params['name']] = params['value']
+        spif_params = {param['name']: param['value'] for param in self._params}
         recording = self._spif_class(**spif_params)
 
         if probe_file:

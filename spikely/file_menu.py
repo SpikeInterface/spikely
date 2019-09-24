@@ -2,6 +2,7 @@ import PyQt5.QtWidgets as qw
 import json
 import importlib
 import spikely.config as cfg
+import spikely as sly
 
 # Provides access to pipeline elements
 _pipeline_model = None
@@ -9,7 +10,8 @@ _pipeline_model = None
 
 # Menu and Menu Action construction methods
 
-def create_file_menu(main_window, pipeline_model):
+def create_file_menu(main_window: qw.QMainWindow,
+                     pipeline_model: sly.PipelineModel) -> qw.QMenu:
     global _pipeline_model
 
     _pipeline_model = pipeline_model
@@ -21,7 +23,7 @@ def create_file_menu(main_window, pipeline_model):
     return file_menu
 
 
-def _create_load_action(main_window):
+def _create_load_action(main_window: qw.QMainWindow) -> qw.QAction:
     load_action = qw.QAction('Load Pipeline', main_window)
     load_action.setShortcut('Ctrl+L')
     load_action.setStatusTip('Load pipeline from JSON file.')
@@ -29,7 +31,7 @@ def _create_load_action(main_window):
     return load_action
 
 
-def _create_save_action(main_window):
+def _create_save_action(main_window: qw.QMainWindow) -> qw.QAction:
     save_action = qw.QAction('Save Pipeline', main_window)
     save_action.setShortcut('Ctrl+S')
     save_action.setStatusTip('Save pipeline to JSON file.')
@@ -37,7 +39,7 @@ def _create_save_action(main_window):
     return save_action
 
 
-def _create_exit_action(main_window):
+def _create_exit_action(main_window: qw.QMainWindow) -> qw.QAction:
     exit_action = qw.QAction('Exit', main_window)
     exit_action.setShortcut('Ctrl+Q')
     exit_action.setStatusTip('Terminate the application')
@@ -47,7 +49,7 @@ def _create_exit_action(main_window):
 
 # Menu Action execution methods
 
-def _perform_load_action():
+def _perform_load_action() -> None:
     global _pipeline_model
 
     options = qw.QFileDialog.Options()
@@ -73,7 +75,7 @@ def _perform_load_action():
             _pipeline_model.add_element(element)
 
 
-def _perform_save_action():
+def _perform_save_action() -> None:
     global _pipeline_model
 
     elements = _pipeline_model._elements
@@ -93,7 +95,7 @@ def _perform_save_action():
                 json.dump(elem_dict_list, json_file)
 
 
-def _cvt_elem_to_dict(element):
+def _cvt_elem_to_dict(element: sly.SpikeElement) -> dict:
     elem_dict = {
         "element_cls_name": element.__class__.__name__,
         "element_mod_name": element.__module__,

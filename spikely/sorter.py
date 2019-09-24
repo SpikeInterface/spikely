@@ -1,8 +1,11 @@
-from .spike_element import SpikeElement
+from spike_element import SpikeElement
 import copy
 
-class Sorter():
-    """Preprocessor class"""
+class Sorter(SpikeElement):
+    @staticmethod
+    def get_installed_spif_classes():
+        return se.installed_recording_extractor_list
+
 
     def __init__(self, interface_class, interface_id):
         SpikeElement.__init__(self, interface_id, interface_class,
