@@ -70,28 +70,25 @@ class PipelineModel(qc.QAbstractListModel):
             cfg.find_main_window().statusBar().showMessage(
                 'Nothing to clear', cfg.STATUS_MSG_TIMEOUT)
 
-    def add_element(self, element: SpikeElement) -> None:
-
+    def add_element(self, elem: SpikeElement) -> None:
         insert_row = -1
-        # Assume element fits if element list is empty
-        if not self._elements:
+        # Does it fit at the top of the pipeline?
+        if not self._elements or elem.fits_between(None, self._elements[0]):
             insert_row = 0
+        # Does it fit between the first and the last elements in the pipeline?
         else:
-            # Does element fit at the top of the list?
-            if element.fits_between(None, self._elements[0]):
-                insert_row = 0
-            else:
-                for test_row in range(len(self._elements)):
-                    downstream = None if test_row + 1 == len(
-                        self._elements) else self._elements[test_row + 1]
-                    if element.fits_between(
-                            self._elements[test_row], downstream):
-                        insert_row = test_row
-                        break
+            for row in range(len(self._elements) - 1):
+                if elem.fits_between(self._elements[row],
+                                     self._elements[row + 1]):
+                    insert_row = row + 1
+                    break
+        # Last chance - does it fit at the end of the pipeline?
+        if insert_row == -1 and elem.fits_between(self._elements[-1], None):
+            insert_row = len(self._elements)
 
         if insert_row >= 0:
             self.beginInsertRows(qc.QModelIndex(), insert_row, insert_row)
-            self._elements.insert(insert_row, element)
+            self._elements.insert(insert_row, elem)
             self.endInsertRows()
 
     def move_up(self, element: SpikeElement) -> None:
@@ -99,6 +96,7 @@ class PipelineModel(qc.QAbstractListModel):
         # Elements confined to their stage
         if (i > 0 and self._elements[i].interface_id
                 == self._elements[i-1].interface_id):
+
             self.beginMoveRows(qc.QModelIndex(), i, i, qc.QModelIndex(), i-1)
             self._swap(self._elements, i, i-1)
             self.endMoveRows()

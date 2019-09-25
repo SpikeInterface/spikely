@@ -1,4 +1,5 @@
-from spike_element import SpikeElement
+from spikely.spike_element import SpikeElement
+import spikely as sly
 import spikesorters as ss
 
 import PyQt5.QtGui as qg
@@ -21,8 +22,11 @@ class Sorter(SpikeElement):
                 'spikely.resources', 'sorter.png'))
         self._params = copy.deepcopy(spif_class.sorter_gui_params)
 
-    def fits_between(self, upstream, downstream):
-        return not upstream and not isinstance(downstream, Sorter)
+    def fits_between(
+            self, above: SpikeElement, below: SpikeElement) -> bool:
+        ok_above = [None.__class__, sly.Extractor]
+        ok_below = [None.__class__]
+        return above.__class__ in ok_above and below.__class__ in ok_below
 
     @property
     def display_name(self):

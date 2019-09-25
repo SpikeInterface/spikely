@@ -11,7 +11,7 @@ class SpikeElement(ABC):
         pass
 
     @abstractmethod
-    def fits_between(self, upstream, downstream):
+    def fits_between(self, above, below):
         pass
 
     @abstractmethod

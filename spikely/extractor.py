@@ -1,5 +1,6 @@
 from spikely.spike_element import SpikeElement
 import spikeextractors as se
+import spikely as sly
 
 import PyQt5.QtGui as qg
 import pkg_resources
@@ -39,8 +40,10 @@ class Extractor(SpikeElement):
             'default': None, 'title': "List of channel groups of the \
             underlying channels. If None, then no groups given."})
 
-    def fits_between(self, upstream, downstream):
-        return not upstream and not isinstance(downstream, Extractor)
+    def fits_between(self, above, below):
+        ok_above = [None.__class__]
+        ok_below = [None.__class__, sly.Sorter]
+        return above.__class__ in ok_above and below.__class__ in ok_below
 
     @property
     def display_name(self):
