@@ -42,7 +42,7 @@ class Extractor(SpikeElement):
 
     def fits_between(self, above, below):
         ok_above = [None.__class__]
-        ok_below = [None.__class__, sly.Sorter]
+        ok_below = [None.__class__, sly.Sorter, sly.Preprocessor]
         return above.__class__ in ok_above and below.__class__ in ok_below
 
     @property

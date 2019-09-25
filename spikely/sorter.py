@@ -24,7 +24,7 @@ class Sorter(SpikeElement):
 
     def fits_between(
             self, above: SpikeElement, below: SpikeElement) -> bool:
-        ok_above = [None.__class__, sly.Extractor]
+        ok_above = [None.__class__, sly.Extractor, sly.Preprocessor]
         ok_below = [None.__class__]
         return above.__class__ in ok_above and below.__class__ in ok_below
 

@@ -21,7 +21,6 @@ class PipelineModel(qc.QAbstractListModel):
 
     def data(self, mod_index, role=qc.Qt.DisplayRole):
         result = None
-
         if mod_index.isValid() and mod_index.row() < len(self._elements):
             element = self._elements[mod_index.row()]
             if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
@@ -96,7 +95,7 @@ class PipelineModel(qc.QAbstractListModel):
         elem_moved = False
         if elem_row:
             up = None if elem_row == 1 else self._elements[elem_row - 2]
-            dn = self._elements = [elem_row - 1]
+            dn = self._elements[elem_row - 1]
 
             if element.fits_between(up, dn):
                 elem_moved = True
@@ -114,8 +113,8 @@ class PipelineModel(qc.QAbstractListModel):
         elem_moved = False
         if elem_row != len(self._elements) - 1:
             up = self._elements[elem_row + 1]
-            dn = None if elem_row == len(self._elements) - 1 \
-                else [elem_row + 2]
+            dn = None if elem_row == len(self._elements) - 2 \
+                else self._elements[elem_row + 2]
             if element.fits_between(up, dn):
                 elem_moved = True
                 self.beginMoveRows(qc.QModelIndex(), elem_row + 1,

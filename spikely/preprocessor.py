@@ -1,22 +1,43 @@
-from .spike_element import SpikeElement
+from spikely.spike_element import SpikeElement
+import spiketoolkit as st
+import spikely as sly
+
+import PyQt5.QtGui as qg
+import pkg_resources
+
 import copy
 
 
-class Preprocessor():
-    """Preprocessor class"""
+class Preprocessor(SpikeElement):
+    @staticmethod
+    def get_installed_spif_classes():
+        return st.preprocessing.preprocessinglist. \
+            installed_preprocessers_list
 
-    def __init__(self, interface_class, interface_id):
-        SpikeElement.__init__(self, interface_id, interface_class,
-                              interface_class.preprocessor_name)
-        self._params = copy.deepcopy(interface_class.preprocessor_gui_params)
+    def __init__(self, spif_class):
+        super().__init__(spif_class)
 
-    def run(self, input_payload, next_element):
-        params_dict = {}
-        params_dict['recording'] = input_payload
-        params = self._params
-        for param in params:
-            param_name = param['name']
-            param_value = param['value']
-            params_dict[param_name] = param_value
-        pp = self._interface_class(**params_dict)
+        self._display_name = spif_class.__name__
+        self._display_icon = qg.QIcon(
+            pkg_resources.resource_filename(
+                'spikely.resources', 'preprocessor.png'))
+        self._params = copy.deepcopy(spif_class.preprocessor_gui_params)
+
+    def fits_between(self, above, below):
+        ok_above = [None.__class__, sly.Extractor, Preprocessor]
+        ok_below = [None.__class__, sly.Sorter, Preprocessor]
+        return above.__class__ in ok_above and below.__class__ in ok_below
+
+    @property
+    def display_name(self):
+        return self._display_name
+
+    @property
+    def display_icon(self):
+        return self._display_icon
+
+    def run(self, payload, downstream):
+        spif_params = {param['name']: param['value'] for param in self._params}
+        spif_params['recording'] = payload
+        pp = self._spif_class(**spif_params)
         return pp
