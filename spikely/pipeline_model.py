@@ -4,6 +4,7 @@ import PyQt5.QtWidgets as qw
 import multiprocessing as mp
 
 from spikely import config as cfg
+from spikely.spike_element import SpikeElement
 
 
 class PipelineModel(qc.QAbstractListModel):
@@ -69,19 +70,22 @@ class PipelineModel(qc.QAbstractListModel):
             cfg.find_main_window().statusBar().showMessage(
                 'Nothing to clear', cfg.STATUS_MSG_TIMEOUT)
 
-    def add_element(self, element):
+    def add_element(self, element: SpikeElement) -> None:
 
         insert_row = -1
-        if not self._elements or element.fits_between(None, self_elements[0]):
+        # Assume element fits if element list is empty
+        if not self._elements:
             insert_row = 0
         else:
-            for test_row in range(len(self._elements)):
-                downstream = (
-                    None if test_row == len(self._elements) - 1 else
-                    self._elements[test_row])
-
-                if element.fits_between(
-                    self._elements[test_row], downstream):
+            # Does element fit at the top of the list?
+            if element.fits_between(None, self._elements[0]):
+                insert_row = 0
+            else:
+                for test_row in range(len(self._elements)):
+                    downstream = None if test_row + 1 == len(
+                        self._elements) else self._elements[test_row + 1]
+                    if element.fits_between(
+                            self._elements[test_row], downstream):
                         insert_row = test_row
                         break
 
@@ -90,7 +94,7 @@ class PipelineModel(qc.QAbstractListModel):
             self._elements.insert(insert_row, element)
             self.endInsertRows()
 
-    def move_up(self, element):
+    def move_up(self, element: SpikeElement) -> None:
         i = self._elements.index(element)
         # Elements confined to their stage
         if (i > 0 and self._elements[i].interface_id
@@ -102,7 +106,7 @@ class PipelineModel(qc.QAbstractListModel):
             cfg.find_main_window().statusBar().showMessage(
                 "Cannot move element any higher", cfg.STATUS_MSG_TIMEOUT)
 
-    def move_down(self, element):
+    def move_down(self, element: SpikeElement) -> None:
         i = self._elements.index(element)
         # Elements confined to their stage
         if (i < (len(self._elements) - 1) and
@@ -116,27 +120,16 @@ class PipelineModel(qc.QAbstractListModel):
             cfg.find_main_window().statusBar().showMessage(
                 "Cannot move element any lower", cfg.STATUS_MSG_TIMEOUT)
 
-    def delete(self, element):
+    def delete(self, element: SpikeElement) -> None:
         index = self._elements.index(element)
         self.beginRemoveRows(qc.QModelIndex(), index, index)
         self._elements.pop(index)
         self.endRemoveRows()
 
-    # Convenience methods used only within class
-    def _has_instance(self, interface_id):
-        # Checks if element instance already in pipeline
-        for element in self._elements:
-            if element.interface_id == interface_id:
-                return True
-
-        # Generator expression equivalent for future reference
-        # return sum(1 for ele in self._elements if
-        # ele.interface_id == interface_id)
-
     def _swap(self, list, pos1, pos2):
         list[pos1], list[pos2] = list[pos2], list[pos1]
 
-    def _bad_param_count(self):
+    def _bad_param_count(self) -> int:
         # Counts incomplete mandatory parameters in pipeline
         count = 0
         for element in self._elements:
