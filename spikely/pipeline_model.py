@@ -92,29 +92,37 @@ class PipelineModel(qc.QAbstractListModel):
             self.endInsertRows()
 
     def move_up(self, element: SpikeElement) -> None:
-        i = self._elements.index(element)
-        # Elements confined to their stage
-        if (i > 0 and self._elements[i].interface_id
-                == self._elements[i-1].interface_id):
+        elem_row = self._elements.index(element)
+        elem_moved = False
+        if elem_row:
+            up = None if elem_row == 1 else self._elements[elem_row - 2]
+            dn = self._elements = [elem_row - 1]
 
-            self.beginMoveRows(qc.QModelIndex(), i, i, qc.QModelIndex(), i-1)
-            self._swap(self._elements, i, i-1)
-            self.endMoveRows()
-        else:
+            if element.fits_between(up, dn):
+                elem_moved = True
+                self.beginMoveRows(qc.QModelIndex(), elem_row,
+                    elem_row, qc.QModelIndex(), elem_row - 1)  # noqa: E128
+                self._swap(self._elements, elem_row, elem_row - 1)
+                self.endMoveRows()
+
+        if not elem_moved:
             cfg.find_main_window().statusBar().showMessage(
                 "Cannot move element any higher", cfg.STATUS_MSG_TIMEOUT)
 
     def move_down(self, element: SpikeElement) -> None:
-        i = self._elements.index(element)
-        # Elements confined to their stage
-        if (i < (len(self._elements) - 1) and
-                self._elements[i].interface_id
-                == self._elements[i+1].interface_id):
-            # beginMoveRows behavior is fubar if move down from source to dest
-            self.beginMoveRows(qc.QModelIndex(), i+1, i+1, qc.QModelIndex(), i)
-            self._swap(self._elements, i, i+1)
-            self.endMoveRows()
-        else:
+        elem_row = self._elements.index(element)
+        elem_moved = False
+        if elem_row != len(self._elements) - 1:
+            up = self._elements[elem_row + 1]
+            dn = None if elem_row == len(self._elements) - 1 \
+                else [elem_row + 2]
+            if element.fits_between(up, dn):
+                elem_moved = True
+                self.beginMoveRows(qc.QModelIndex(), elem_row + 1,
+                    elem_row + 1, qc.QModelIndex(), elem_row)   # noqa: E128
+                self._swap(self._elements, elem_row, elem_row + 1)
+                self.endMoveRows()
+        if not elem_moved:
             cfg.find_main_window().statusBar().showMessage(
                 "Cannot move element any lower", cfg.STATUS_MSG_TIMEOUT)
 
