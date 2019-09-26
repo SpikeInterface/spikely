@@ -1,14 +1,17 @@
-from spikely import SpikeElement, Sorter, Preprocessor
-import spikeextractors as se
-
-import PyQt5.QtGui as qg
-import pkg_resources
-
+# Python
 import numpy as np
 import copy
+# PyQt
+import PyQt5.QtGui as qg
+import pkg_resources
+# spikely
+from . import spike_element as sp_spe
+from . import sorter as sp_sor
+from . import preprocessor as sp_pre
+import spikeextractors as se
 
 
-class Extractor(SpikeElement):
+class Extractor(sp_spe.SpikeElement):
     @staticmethod
     def get_installed_spif_classes():
         return se.installed_recording_extractor_list
@@ -41,7 +44,7 @@ class Extractor(SpikeElement):
 
     def fits_between(self, above, below):
         ok_above = [None.__class__]
-        ok_below = [None.__class__, Sorter, Preprocessor]
+        ok_below = [None.__class__, sp_sor.Sorter, sp_pre.Preprocessor]
         return above.__class__ in ok_above and below.__class__ in ok_below
 
     @property

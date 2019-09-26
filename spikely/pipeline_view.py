@@ -6,8 +6,8 @@
 
 import PyQt5.QtWidgets as qw
 
-from spikely import config as cfg
-from spikely.spike_element import SpikeElement
+from . import config
+from . import spike_element as sp_spe
 
 
 class PipelineView(qw.QGroupBox):
@@ -69,7 +69,8 @@ class PipelineView(qw.QGroupBox):
         # Note: cbx instantiation order matters for initial m/v signalling
 
         # A subtle bit of introspection likely to come back and bite me
-        for cls in SpikeElement.__subclasses__():
+        print(sp_spe.SpikeElement.__subclasses__())
+        for cls in sp_spe.SpikeElement.__subclasses__():
             stage_cbx.addItem(cls.__name__ + 's', cls)
         stage_cbx.model().sort(0)
         stage_cbx.setCurrentIndex(0)
@@ -124,8 +125,8 @@ class PipelineView(qw.QGroupBox):
         def move_up_clicked():
             element = self._get_selected_element()
             if element is None:
-                cfg.find_main_window().statusBar().showMessage(
-                    "Nothing to move up", cfg.STATUS_MSG_TIMEOUT)
+                config.find_main_window().statusBar().showMessage(
+                    "Nothing to move up", config.STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.move_up(element)
         mu_btn.clicked.connect(move_up_clicked)
@@ -137,8 +138,8 @@ class PipelineView(qw.QGroupBox):
         def move_down_clicked():
             element = self._get_selected_element()
             if element is None:
-                cfg.find_main_window().statusBar().showMessage(
-                    "Nothing to move down", cfg.STATUS_MSG_TIMEOUT)
+                config.find_main_window().statusBar().showMessage(
+                    "Nothing to move down", config.STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.move_down(element)
         md_btn.clicked.connect(move_down_clicked)
@@ -150,8 +151,8 @@ class PipelineView(qw.QGroupBox):
         def delete_clicked():
             element = self._get_selected_element()
             if element is None:
-                cfg.find_main_window().statusBar().showMessage(
-                    "Nothing to delete", cfg.STATUS_MSG_TIMEOUT)
+                config.find_main_window().statusBar().showMessage(
+                    "Nothing to delete", config.STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.delete(element)
         de_btn.clicked.connect(delete_clicked)
@@ -164,5 +165,5 @@ class PipelineView(qw.QGroupBox):
         model = self._pipeline_view.selectionModel()
         if model.hasSelection():
             index = model.selectedIndexes()[0]
-            element = self._pipeline_model.data(index, cfg.ELEMENT_ROLE)
+            element = self._pipeline_model.data(index, config.ELEMENT_ROLE)
         return element

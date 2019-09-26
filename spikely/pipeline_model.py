@@ -3,8 +3,8 @@ import PyQt5.QtWidgets as qw
 
 import multiprocessing as mp
 
-from spikely import config as cfg
-from spikely.spike_element import SpikeElement
+from . import config
+from . import spike_element as sp_spe
 
 
 class PipelineModel(qc.QAbstractListModel):
@@ -28,7 +28,7 @@ class PipelineModel(qc.QAbstractListModel):
             elif role == qc.Qt.DecorationRole:
                 result = element.display_icon
             # Custom role for spikely callers to access pipeline elements
-            elif role == cfg.ELEMENT_ROLE:
+            elif role == config.ELEMENT_ROLE:
                 result = element
 
         return result
@@ -39,13 +39,13 @@ class PipelineModel(qc.QAbstractListModel):
         bad_count = self._bad_param_count()
         if bad_count:
             qw.QMessageBox.warning(
-                cfg.find_main_window(), 'Run Failure',
+                config.find_main_window(), 'Run Failure',
                 f'Missing {self._bad_param_count()} required ' +
                 ('parameter' if bad_count == 1 else 'parameters'))
         else:
             """Call SpikeInterface APIs on elements in pipeline"""
-            cfg.find_main_window().statusBar().showMessage(
-                'Running pipeline', cfg.STATUS_MSG_TIMEOUT)
+            config.find_main_window().statusBar().showMessage(
+                'Running pipeline', config.STATUS_MSG_TIMEOUT)
             p = mp.Process(target=self.async_run)
             p.start()
 
@@ -66,10 +66,10 @@ class PipelineModel(qc.QAbstractListModel):
             self._elements.clear()
             self.endResetModel()
         else:
-            cfg.find_main_window().statusBar().showMessage(
-                'Nothing to clear', cfg.STATUS_MSG_TIMEOUT)
+            config.find_main_window().statusBar().showMessage(
+                'Nothing to clear', config.STATUS_MSG_TIMEOUT)
 
-    def add_element(self, elem: SpikeElement) -> None:
+    def add_element(self, elem: sp_spe.SpikeElement) -> None:
         insert_row = -1
         # Does it fit at the top of the pipeline?
         if not self._elements or elem.fits_between(None, self._elements[0]):
@@ -90,7 +90,7 @@ class PipelineModel(qc.QAbstractListModel):
             self._elements.insert(insert_row, elem)
             self.endInsertRows()
 
-    def move_up(self, element: SpikeElement) -> None:
+    def move_up(self, element: sp_spe.SpikeElement) -> None:
         elem_row = self._elements.index(element)
         elem_moved = False
         if elem_row:
@@ -105,10 +105,10 @@ class PipelineModel(qc.QAbstractListModel):
                 self.endMoveRows()
 
         if not elem_moved:
-            cfg.find_main_window().statusBar().showMessage(
-                "Cannot move element any higher", cfg.STATUS_MSG_TIMEOUT)
+            config.find_main_window().statusBar().showMessage(
+                "Cannot move element any higher", config.STATUS_MSG_TIMEOUT)
 
-    def move_down(self, element: SpikeElement) -> None:
+    def move_down(self, element: sp_spe.SpikeElement) -> None:
         elem_row = self._elements.index(element)
         elem_moved = False
         if elem_row != len(self._elements) - 1:
@@ -122,10 +122,10 @@ class PipelineModel(qc.QAbstractListModel):
                 self._swap(self._elements, elem_row, elem_row + 1)
                 self.endMoveRows()
         if not elem_moved:
-            cfg.find_main_window().statusBar().showMessage(
-                "Cannot move element any lower", cfg.STATUS_MSG_TIMEOUT)
+            config.find_main_window().statusBar().showMessage(
+                "Cannot move element any lower", config.STATUS_MSG_TIMEOUT)
 
-    def delete(self, element: SpikeElement) -> None:
+    def delete(self, element: sp_spe.SpikeElement) -> None:
         index = self._elements.index(element)
         self.beginRemoveRows(qc.QModelIndex(), index, index)
         self._elements.pop(index)

@@ -1,14 +1,16 @@
-from spikely.spike_element import SpikeElement
-import spiketoolkit as st
-import spikely as sly
-
-import PyQt5.QtGui as qg
-import pkg_resources
-
+# Python
 import copy
+import pkg_resources
+# PyQt
+import PyQt5.QtGui as qg
+# spikely
+from . import spike_element as sp_spe
+import spiketoolkit as st
+from . import extractor as sp_ext
+from . import sorter as sp_sor
 
 
-class Preprocessor(SpikeElement):
+class Preprocessor(sp_spe.SpikeElement):
     @staticmethod
     def get_installed_spif_classes():
         return st.preprocessing.preprocessinglist. \
@@ -24,8 +26,8 @@ class Preprocessor(SpikeElement):
         self._params = copy.deepcopy(spif_class.preprocessor_gui_params)
 
     def fits_between(self, above, below):
-        ok_above = [None.__class__, sly.Extractor, Preprocessor]
-        ok_below = [None.__class__, sly.Sorter, Preprocessor]
+        ok_above = [None.__class__, sp_ext.Extractor, Preprocessor]
+        ok_below = [None.__class__, sp_sor.Sorter, Preprocessor]
         return above.__class__ in ok_above and below.__class__ in ok_below
 
     @property

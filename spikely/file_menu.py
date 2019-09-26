@@ -1,18 +1,20 @@
-import PyQt5.QtWidgets as qw
-import json
+# Python imports
 import importlib
-
+import json
+# PyQt imports
+import PyQt5.QtWidgets as qw
+# spikely imports
 from . import config
-from spikely import PipelineModel, SpikeElement
+from . import pipeline_model as sp_pim
+from . import spike_element as sp_spe
 
 # Provides access to pipeline elements
 _pipeline_model = None
 
 
 # Menu and Menu Action construction methods
-
 def create_file_menu(main_window: qw.QMainWindow,
-                     pipeline_model: PipelineModel) -> qw.QMenu:
+                     pipeline_model: sp_pim.PipelineModel) -> qw.QMenu:
     global _pipeline_model
 
     _pipeline_model = pipeline_model
@@ -96,7 +98,7 @@ def _perform_save_action() -> None:
                 json.dump(elem_dict_list, json_file)
 
 
-def _cvt_elem_to_dict(element: SpikeElement) -> dict:
+def _cvt_elem_to_dict(element: sp_spe.SpikeElement) -> dict:
     elem_dict = {
         "element_cls_name": element.__class__.__name__,
         "element_mod_name": element.__module__,

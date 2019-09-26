@@ -1,12 +1,17 @@
+# Python imports
 import sys
-
 import pkg_resources
+# PyQt imports
 import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
-
-from spikely import ParameterView, PipelineView, __version__, ParameterModel, \
-    PipelineModel, OperationView
+# spikely imports
 from . import file_menu
+from . import operation_view as sp_opv
+from . import parameter_model as sp_pam
+from . import parameter_view as sp_pav
+from . import pipeline_model as sp_pim
+from . import pipeline_view as sp_piv
+from . import version
 
 
 class SpikelyMainWindow(qw.QMainWindow):
@@ -15,8 +20,8 @@ class SpikelyMainWindow(qw.QMainWindow):
         super().__init__()
 
         # Subwindows Views need underlying Model references
-        self._parameter_model = ParameterModel()
-        self._pipeline_model = PipelineModel(
+        self._parameter_model = sp_pam.ParameterModel()
+        self._pipeline_model = sp_pim.PipelineModel(
             self._parameter_model)
         self._init_ui()
 
@@ -29,7 +34,7 @@ class SpikelyMainWindow(qw.QMainWindow):
 
         self.setWindowIcon(qg.QIcon(spikely_png_path))
         self.statusBar().addPermanentWidget(
-            qw.QLabel("Version " + __version__))
+            qw.QLabel("Version " + version.__version__))
 
         menu_bar = self.menuBar()
         menu = file_menu.create_file_menu(self, self._pipeline_model)
@@ -46,15 +51,15 @@ class SpikelyMainWindow(qw.QMainWindow):
         pipe_param_splitter.setChildrenCollapsible(False)
 
         # Subwindows for element pipeline and current element parameters
-        pipe_param_splitter.addWidget(PipelineView(
+        pipe_param_splitter.addWidget(sp_piv.PipelineView(
             self._pipeline_model, self._parameter_model))
-        pipe_param_splitter.addWidget(ParameterView(
+        pipe_param_splitter.addWidget(sp_pav.ParameterView(
             self._pipeline_model, self._parameter_model))
         pipe_param_splitter.setSizes([328, 640])
         main_frame.layout().addWidget(pipe_param_splitter)
 
         # Subwindow at bottom for pipeline operations (run, clear, queue)
-        main_frame.layout().addWidget(OperationView(
+        main_frame.layout().addWidget(sp_opv.OperationView(
             self._pipeline_model, self._parameter_model))
 
 
