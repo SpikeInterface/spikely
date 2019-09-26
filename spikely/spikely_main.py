@@ -1,18 +1,12 @@
 import sys
+
 import pkg_resources
-
-import PyQt5.QtWidgets as qw
 import PyQt5.QtGui as qg
+import PyQt5.QtWidgets as qw
 
-from parameter_model import ParameterModel
-from pipeline_model import PipelineModel
-from parameter_view import ParameterView
-from pipeline_view import PipelineView
-from operation_view import OperationView
-
-from version import __version__
-
-import file_menu as fm
+from spikely import ParameterView, PipelineView, __version__, ParameterModel, \
+    PipelineModel, OperationView
+from . import file_menu
 
 
 class SpikelyMainWindow(qw.QMainWindow):
@@ -38,7 +32,7 @@ class SpikelyMainWindow(qw.QMainWindow):
             qw.QLabel("Version " + __version__))
 
         menu_bar = self.menuBar()
-        menu = fm.create_file_menu(self, self._pipeline_model)
+        menu = file_menu.create_file_menu(self, self._pipeline_model)
         menu_bar.addMenu(menu)
 
         main_frame = qw.QFrame()

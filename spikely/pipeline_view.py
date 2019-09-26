@@ -68,9 +68,11 @@ class PipelineView(qw.QGroupBox):
 
         # Note: cbx instantiation order matters for initial m/v signalling
 
-        # A subtle bit of introspection that will probably come back to bite
+        # A subtle bit of introspection likely to come back and bite me
         for cls in SpikeElement.__subclasses__():
             stage_cbx.addItem(cls.__name__ + 's', cls)
+        stage_cbx.model().sort(0)
+        stage_cbx.setCurrentIndex(0)
 
         ui_frame.layout().addWidget(spif_cbx)
 

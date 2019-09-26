@@ -1,6 +1,5 @@
-from spikely.spike_element import SpikeElement
+from spikely import SpikeElement, Sorter, Preprocessor
 import spikeextractors as se
-import spikely as sly
 
 import PyQt5.QtGui as qg
 import pkg_resources
@@ -42,7 +41,7 @@ class Extractor(SpikeElement):
 
     def fits_between(self, above, below):
         ok_above = [None.__class__]
-        ok_below = [None.__class__, sly.Sorter, sly.Preprocessor]
+        ok_below = [None.__class__, Sorter, Preprocessor]
         return above.__class__ in ok_above and below.__class__ in ok_below
 
     @property

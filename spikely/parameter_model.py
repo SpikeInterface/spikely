@@ -5,7 +5,7 @@ import PyQt5.QtWidgets as qw
 import numpy as np
 import re
 
-from . import config as cfg
+from . import config
 
 
 # An MVC model representation of an element's parameters
@@ -45,9 +45,9 @@ class ParameterModel(qc.QAbstractTableModel):
         col = mod_index.column()
 
         # Parameter and Type column cells are read only
-        if col == cfg.PARAM_COL or col == cfg.TYPE_COL:
+        if col == config.PARAM_COL or col == config.TYPE_COL:
             column_flags ^= qc.Qt.ItemIsSelectable
-        elif col == cfg.VALUE_COL:
+        elif col == config.VALUE_COL:
             column_flags |= qc.Qt.ItemIsEditable
         return column_flags
 
@@ -60,20 +60,20 @@ class ParameterModel(qc.QAbstractTableModel):
         result = qc.QVariant()
 
         if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
-            if col == cfg.PARAM_COL:
+            if col == config.PARAM_COL:
                 result = param_dict['name']
-            elif col == cfg.TYPE_COL:
+            elif col == config.TYPE_COL:
                 result = param_dict['type']
-            elif col == cfg.VALUE_COL:
+            elif col == config.VALUE_COL:
                 if 'value' in param_dict.keys():
                     result = str(param_dict['value']).strip()
                     if not result and 'default' in param_dict.keys():
                         result = str(param_dict['default'])
 
         elif role == qc.Qt.ToolTipRole:
-            if col == cfg.PARAM_COL and 'title' in param_dict.keys():
+            if col == config.PARAM_COL and 'title' in param_dict.keys():
                 result = param_dict['title']
-            elif col == cfg.TYPE_COL:
+            elif col == config.TYPE_COL:
                 type_str = param_dict['type']
                 if type_str == 'int':
                     result = 'integer'
@@ -99,7 +99,7 @@ class ParameterModel(qc.QAbstractTableModel):
         # Paints cell red if mandatory parameter value is missing.
         # Mandatory parameters are those with no default keys
         elif role == qc.Qt.BackgroundRole:
-            if col == cfg.VALUE_COL:
+            if col == config.VALUE_COL:
                 if ('value' not in param_dict.keys() and
                         'default' not in param_dict.keys()):
                     result = qg.QBrush(qg.QColor(255, 192, 192))
@@ -188,7 +188,7 @@ class ParameterModel(qc.QAbstractTableModel):
 
         except (TypeError, ValueError) as err:
             qw.QMessageBox.warning(
-                cfg.main_window, 'Type Conversion Error', repr(err))
+                config.main_window, 'Type Conversion Error', repr(err))
             success = False
 
         return success, cvt_value

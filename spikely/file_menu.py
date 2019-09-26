@@ -1,8 +1,9 @@
 import PyQt5.QtWidgets as qw
 import json
 import importlib
-import spikely.config as cfg
-import spikely as sly
+
+from . import config
+from spikely import PipelineModel, SpikeElement
 
 # Provides access to pipeline elements
 _pipeline_model = None
@@ -11,7 +12,7 @@ _pipeline_model = None
 # Menu and Menu Action construction methods
 
 def create_file_menu(main_window: qw.QMainWindow,
-                     pipeline_model: sly.PipelineModel) -> qw.QMenu:
+                     pipeline_model: PipelineModel) -> qw.QMenu:
     global _pipeline_model
 
     _pipeline_model = pipeline_model
@@ -55,7 +56,7 @@ def _perform_load_action() -> None:
     options = qw.QFileDialog.Options()
     options |= qw.QFileDialog.DontUseNativeDialog
     file_name, _filter = qw.QFileDialog.getOpenFileName(
-            parent=cfg.find_main_window(), caption='Open File',
+            config.find_main_window(), caption='Open File',
             filter='JSON (*.json)', options=options)
 
     if file_name:
@@ -84,7 +85,7 @@ def _perform_save_action() -> None:
         options = qw.QFileDialog.Options()
         options |= qw.QFileDialog.DontUseNativeDialog
         file_name, _filter = qw.QFileDialog.getSaveFileName(
-            parent=cfg.find_main_window(), caption='Save File',
+            config.find_main_window(), caption='Save File',
             filter='JSON (*.json)', options=options)
 
         if file_name:
@@ -95,7 +96,7 @@ def _perform_save_action() -> None:
                 json.dump(elem_dict_list, json_file)
 
 
-def _cvt_elem_to_dict(element: sly.SpikeElement) -> dict:
+def _cvt_elem_to_dict(element: SpikeElement) -> dict:
     elem_dict = {
         "element_cls_name": element.__class__.__name__,
         "element_mod_name": element.__module__,

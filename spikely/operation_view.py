@@ -1,5 +1,5 @@
 import PyQt5.QtWidgets as qw
-from . import config as cfg
+from . import config
 
 
 # The collection of UI widgets assocated with pipeline operations
@@ -45,16 +45,16 @@ class OperationView(qw.QGroupBox):
 
     def _queue_clicked(self):
         # Pipeline model should be responsible for this
-        cfg.find_main_window().statusBar().showMessage(
-            "Queue not implemented", cfg.STATUS_MSG_TIMEOUT)
+        config.find_main_window().statusBar().showMessage(
+            "Queue not implemented", config.STATUS_MSG_TIMEOUT)
 
     def _run_clicked(self):
         if self._pipeline_model.rowCount():
             self._pipeline_model.run()
         else:
-            cfg.find_main_window().statusBar().showMessage(
+            config.find_main_window().statusBar().showMessage(
                 "Elements required before pipeline can be run.",
-                cfg.STATUS_MSG_TIMEOUT)
+                config.STATUS_MSG_TIMEOUT)
     '''
     def _pipeline_changed(self, parent=None, first=None, last=None):
         enabled = self._pipeline_model.rowCount(None) > 0
