@@ -40,12 +40,12 @@ class Sorter(sp_spe.SpikeElement):
     def run(self, payload, downstream):
 
         spif_params = {param['name']: param['value'] for param
-                       in self._params if not param.get('base_param')}
+                       in self._params if param.get('base_param')}
         spif_params['recording'] = payload
         sorter = self._spif_class(**spif_params)
 
         sub_params = {param['name']: param['value'] for param
-                      in self._params if param.get('base_param')}
+                      in self._params if not param.get('base_param')}
         sorter.set_params(**sub_params)
 
         sorter.run()
