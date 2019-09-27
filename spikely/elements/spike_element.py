@@ -7,15 +7,11 @@ class SpikeElement(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_installed_spif_classes():
+    def get_installed_spif_cls_list():
         pass
 
     @abstractmethod
-    def fits_between(self, above, below):
-        pass
-
-    @abstractmethod
-    def run(self, payload, downstream):
+    def run(self, payload, next_elem):
         pass
 
     @property

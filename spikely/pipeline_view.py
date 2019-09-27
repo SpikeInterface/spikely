@@ -64,7 +64,7 @@ class PipelineView(qw.QGroupBox):
             spif_cbx.clear()
             element_cls = stage_cbx.itemData(index)
             # SpikeElement subclasses tasked w/ generating spif class lists
-            for spif_cls in element_cls.get_installed_spif_classes():
+            for spif_cls in element_cls.get_installed_spif_cls_list():
                 spif_cbx.addItem(spif_cls.__name__, spif_cls)
         stage_cbx.currentIndexChanged.connect(_stage_cbx_changed)
 

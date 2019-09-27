@@ -1,6 +1,4 @@
 from . import spike_element as sp_spe
-from . import extractor as sp_ext
-from . import preprocessor as sp_pre
 import spikesorters as ss
 
 import PyQt5.QtGui as qg
@@ -11,7 +9,7 @@ import copy
 
 class Sorter(sp_spe.SpikeElement):
     @staticmethod
-    def get_installed_spif_classes():
+    def get_installed_spif_cls_list():
         return ss.installed_sorter_list
 
     def __init__(self, spif_class):
@@ -23,12 +21,6 @@ class Sorter(sp_spe.SpikeElement):
                 'spikely.resources', 'sorter.png'))
         self._params = copy.deepcopy(spif_class.sorter_gui_params)
 
-    def fits_between(self, above: sp_spe.SpikeElement, below:
-                     sp_spe.SpikeElement) -> bool:
-        ok_above = [None.__class__, sp_ext.Extractor, sp_pre.Preprocessor]
-        ok_below = [None.__class__]
-        return above.__class__ in ok_above and below.__class__ in ok_below
-
     @property
     def display_name(self):
         return self._display_name
@@ -37,7 +29,7 @@ class Sorter(sp_spe.SpikeElement):
     def display_icon(self):
         return self._display_icon
 
-    def run(self, payload, downstream):
+    def run(self, payload, next_elem):
 
         spif_params = {param['name']: param['value'] for param
                        in self._params if param.get('base_param')}

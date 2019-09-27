@@ -6,14 +6,12 @@ import PyQt5.QtGui as qg
 import pkg_resources
 # spikely
 from . import spike_element as sp_spe
-from . import sorter as sp_sor
-from . import preprocessor as sp_pre
 import spikeextractors as se
 
 
 class Extractor(sp_spe.SpikeElement):
     @staticmethod
-    def get_installed_spif_classes():
+    def get_installed_spif_cls_list():
         return se.installed_recording_extractor_list
 
     def __init__(self, spif_class):
@@ -42,11 +40,6 @@ class Extractor(sp_spe.SpikeElement):
             'default': None, 'title': "List of channel groups of the \
             underlying channels. If None, then no groups given."})
 
-    def fits_between(self, above, below):
-        ok_above = [None.__class__]
-        ok_below = [None.__class__, sp_sor.Sorter, sp_pre.Preprocessor]
-        return above.__class__ in ok_above and below.__class__ in ok_below
-
     @property
     def display_name(self):
         return self._display_name
@@ -55,7 +48,7 @@ class Extractor(sp_spe.SpikeElement):
     def display_icon(self):
         return self._display_icon
 
-    def run(self, payload, downstream):
+    def run(self, payload, next_elem):
         probe_file = self._params.pop('probe_path', None)
         channel_map = self._params.pop('channel_map', None)
         channel_groups = self._params.pop('channel_groups', None)
