@@ -5,6 +5,7 @@ import multiprocessing as mp
 
 from . import config
 from .elements import spike_element as sp_spe
+from .elements import std_element_policy as sp_ste
 
 
 class PipelineModel(qc.QAbstractListModel):
@@ -14,6 +15,15 @@ class PipelineModel(qc.QAbstractListModel):
 
         # Underlying data structure proxied by model
         self._elements = []
+
+        self._element_policy = sp_ste.StdElementPolicy()
+
+    def _elem_cls_count(self, elem_cls):
+        elem_cls_count = 0
+        for test_elem in self._elements:
+            if isinstance(test_elem, elem_cls):
+                elem_cls_count += 1
+        return elem_cls_count
 
     # Overloaded methods from QAbstractListModel
     def rowCount(self, parent=None):
@@ -36,18 +46,25 @@ class PipelineModel(qc.QAbstractListModel):
     # Methods called by app to manipulate and operate pipeline
     def run(self):
 
-        bad_count = self._bad_param_count()
-        if bad_count:
+        bad_param_count = self._bad_param_count()
+        if bad_param_count:
             qw.QMessageBox.warning(
                 config.find_main_window(), 'Run Failure',
-                f'Missing {self._bad_param_count()} required ' +
-                ('parameter' if bad_count == 1 else 'parameters'))
-        else:
-            """Call SpikeInterface APIs on elements in pipeline"""
-            config.find_main_window().statusBar().showMessage(
-                'Running pipeline', config.STATUS_MSG_TIMEOUT)
-            p = mp.Process(target=self.async_run)
-            p.start()
+                f'Missing parameter count: {bad_param_count}')
+            return
+
+        for cls in self._element_policy.required_cls_list:
+            if not self._elem_cls_count(cls):
+                qw.QMessageBox.warning(
+                    config.find_main_window(), 'Run Failure',
+                    f'Missing required element: {cls.__name__}')
+                return
+
+        """Call SpikeInterface APIs on elements in pipeline"""
+        config.find_main_window().statusBar().showMessage(
+            'Running pipeline', config.STATUS_MSG_TIMEOUT)
+        p = mp.Process(target=self.async_run)
+        p.start()
 
     def async_run(self):
         input_payload = None
@@ -69,59 +86,51 @@ class PipelineModel(qc.QAbstractListModel):
             config.find_main_window().statusBar().showMessage(
                 'Nothing to clear', config.STATUS_MSG_TIMEOUT)
 
-    def add_element(self, elem: sp_spe.SpikeElement) -> None:
-        insert_row = -1
-        # Does it fit at the top of the pipeline?
-        if not self._elements or elem.fits_between(None, self._elements[0]):
-            insert_row = 0
-        # Does it fit between the first and the last elements in the pipeline?
+    def add_element(self, add_elem: sp_spe.SpikeElement) -> None:
+
+        add_cls = type(add_elem)
+        if self._element_policy.is_cls_singleton(add_cls) and \
+                self._elem_cls_count(add_cls):
+            config.find_main_window().statusBar().showMessage(
+                'Only one element of that type allowed in pipeline',
+                config.STATUS_MSG_TIMEOUT)
+            return
+
+        rank = self._element_policy.cls_order_dict
+        add_row = 0
+        while add_row < len(self._elements) and \
+                rank[type(add_elem)] > rank[type(self._elements[add_row])]:
+            add_row += 1
+
+        self.beginInsertRows(qc.QModelIndex(), add_row, add_row)
+        self._elements.insert(add_row, add_elem)
+        self.endInsertRows()
+
+    def move_up(self, elem: sp_spe.SpikeElement) -> None:
+
+        rank = self._element_policy.cls_order_dict
+        row = self._elements.index(elem)
+
+        if row > 0 and rank[type(elem)] == rank[type(self._elements[row - 1])]:
+            self.beginMoveRows(qc.QModelIndex(), row,
+                row, qc.QModelIndex(), row - 1)  # noqa: E128
+            self._swap(self._elements, row, row - 1)
+            self.endMoveRows()
         else:
-            for row in range(len(self._elements) - 1):
-                if elem.fits_between(self._elements[row],
-                                     self._elements[row + 1]):
-                    insert_row = row + 1
-                    break
-        # Last chance - does it fit at the end of the pipeline?
-        if insert_row == -1 and elem.fits_between(self._elements[-1], None):
-            insert_row = len(self._elements)
-
-        if insert_row >= 0:
-            self.beginInsertRows(qc.QModelIndex(), insert_row, insert_row)
-            self._elements.insert(insert_row, elem)
-            self.endInsertRows()
-
-    def move_up(self, element: sp_spe.SpikeElement) -> None:
-        elem_row = self._elements.index(element)
-        elem_moved = False
-        if elem_row:
-            up = None if elem_row == 1 else self._elements[elem_row - 2]
-            dn = self._elements[elem_row - 1]
-
-            if element.fits_between(up, dn):
-                elem_moved = True
-                self.beginMoveRows(qc.QModelIndex(), elem_row,
-                    elem_row, qc.QModelIndex(), elem_row - 1)  # noqa: E128
-                self._swap(self._elements, elem_row, elem_row - 1)
-                self.endMoveRows()
-
-        if not elem_moved:
             config.find_main_window().statusBar().showMessage(
                 "Cannot move element any higher", config.STATUS_MSG_TIMEOUT)
 
-    def move_down(self, element: sp_spe.SpikeElement) -> None:
-        elem_row = self._elements.index(element)
-        elem_moved = False
-        if elem_row != len(self._elements) - 1:
-            up = self._elements[elem_row + 1]
-            dn = None if elem_row == len(self._elements) - 2 \
-                else self._elements[elem_row + 2]
-            if element.fits_between(up, dn):
-                elem_moved = True
-                self.beginMoveRows(qc.QModelIndex(), elem_row + 1,
-                    elem_row + 1, qc.QModelIndex(), elem_row)   # noqa: E128
-                self._swap(self._elements, elem_row, elem_row + 1)
-                self.endMoveRows()
-        if not elem_moved:
+    def move_down(self, elem: sp_spe.SpikeElement) -> None:
+        rank = self._element_policy.cls_order_dict
+        row = self._elements.index(elem)
+
+        if row < len(self._elements) - 1 and \
+                rank[type(elem)] == rank[type(self._elements[row + 1])]:
+            self.beginMoveRows(qc.QModelIndex(), row + 1,
+                row + 1, qc.QModelIndex(), row)   # noqa: E128
+            self._swap(self._elements, row, row + 1)
+            self.endMoveRows()
+        else:
             config.find_main_window().statusBar().showMessage(
                 "Cannot move element any lower", config.STATUS_MSG_TIMEOUT)
 

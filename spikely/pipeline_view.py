@@ -8,6 +8,7 @@ import PyQt5.QtWidgets as qw
 
 from . import config
 from .elements import spike_element as sp_spe
+from .elements import std_element_policy as sp_ste
 
 
 class PipelineView(qw.QGroupBox):
@@ -22,6 +23,7 @@ class PipelineView(qw.QGroupBox):
         self._pipeline_model = pipeline_model
         self._pipeline_view = qw.QListView(self)
         self._parameter_model = parameter_model
+        self._element_policy = sp_ste.StdElementPolicy()
 
         self._init_ui()
 
@@ -70,7 +72,8 @@ class PipelineView(qw.QGroupBox):
 
         # A subtle bit of introspection likely to come back and bite me
         for cls in sp_spe.SpikeElement.__subclasses__():
-            stage_cbx.addItem(cls.__name__ + 's', cls)
+            if self._element_policy.is_cls_selectable(cls):
+                stage_cbx.addItem(cls.__name__ + 's', cls)
         stage_cbx.model().sort(0)
         stage_cbx.setCurrentIndex(0)
 
