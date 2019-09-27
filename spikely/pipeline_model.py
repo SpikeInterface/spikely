@@ -86,8 +86,8 @@ class PipelineModel(qc.QAbstractListModel):
     def add_element(self, add_elem: sp_spe.SpikeElement) -> None:
 
         add_cls = type(add_elem)
-        if self._element_policy.is_cls_singleton(add_cls) and \
-                self._elem_cls_count(add_cls):
+        if self._element_policy.is_cls_singleton(add_cls) \
+                and self._elem_cls_count(add_cls):
             config.find_main_window().statusBar().showMessage(
                 'Only one element of that type allowed in pipeline',
                 config.STATUS_MSG_TIMEOUT)
@@ -95,8 +95,8 @@ class PipelineModel(qc.QAbstractListModel):
 
         rank = self._element_policy.cls_order_dict
         add_row = 0
-        while add_row < len(self._elements) and \
-                rank[type(add_elem)] > rank[type(self._elements[add_row])]:
+        while add_row < len(self._elements) \
+                and rank[type(add_elem)] > rank[type(self._elements[add_row])]:
             add_row += 1
 
         self.beginInsertRows(qc.QModelIndex(), add_row, add_row)
