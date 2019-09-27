@@ -18,12 +18,9 @@ class PipelineModel(qc.QAbstractListModel):
 
         self._element_policy = sp_ste.StdElementPolicy()
 
-    def _elem_cls_count(self, elem_cls):
-        elem_cls_count = 0
-        for test_elem in self._elements:
-            if isinstance(test_elem, elem_cls):
-                elem_cls_count += 1
-        return elem_cls_count
+    def _elem_cls_count(self, target_cls):
+        elem_cls_list = [type(elem) for elem in self._elements]
+        return elem_cls_list.count(target_cls)
 
     # Overloaded methods from QAbstractListModel
     def rowCount(self, parent=None):
