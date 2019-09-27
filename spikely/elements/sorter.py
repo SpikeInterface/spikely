@@ -19,7 +19,7 @@ class Sorter(sp_spe.SpikeElement):
         self._display_icon = qg.QIcon(
             pkg_resources.resource_filename(
                 'spikely.resources', 'sorter.png'))
-        self._params = copy.deepcopy(spif_class.sorter_gui_params)
+        self._param_list = copy.deepcopy(spif_class.sorter_gui_params)
 
     @property
     def display_name(self):
@@ -31,18 +31,18 @@ class Sorter(sp_spe.SpikeElement):
 
     def run(self, payload, next_elem):
 
-        spif_params = {param['name']: param['value'] for param
-                       in self._params if param.get('base_param')}
-        spif_params['recording'] = payload
-        sorter = self._spif_class(**spif_params)
+        spif_param_list = {param['name']: param['value'] for param
+                           in self._param_list if param.get('base_param')}
+        spif_param_list['recording'] = payload
+        sorter = self._spif_class(**spif_param_list)
 
-        sub_params = {param['name']: param['value'] for param
-                      in self._params if not param.get('base_param')}
-        sorter.set_params(**sub_params)
+        sub_param_list = {param['name']: param['value'] for param
+                          in self._param_list if not param.get('base_param')}
+        sorter.set_params(**sub_param_list)
 
         sorter.run()
 
-        output_folder_string = sub_params.get('output_folder')
+        output_folder_string = sub_param_list.get('output_folder')
         if output_folder_string is None:
             output_folder_string = 'tmp_' + sorter.sorter_name
 

@@ -144,7 +144,7 @@ class PipelineModel(qc.QAbstractListModel):
         # Counts incomplete mandatory parameters in pipeline
         count = 0
         for element in self._elements:
-            for param in element.params:
+            for param in element.param_list:
                 if 'value' not in param.keys():
                     count += 1
         return count

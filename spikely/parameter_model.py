@@ -33,7 +33,7 @@ class ParameterModel(qc.QAbstractTableModel):
 
     # Count of parameters associated with an element instance
     def rowCount(self, parent=qc.QModelIndex()):
-        return 0 if self._element is None else len(self._element.params)
+        return 0 if self._element is None else len(self._element.param_list)
 
     # Number of display columns: Parameter, Type, Value
     def columnCount(self, parent=qc.QModelIndex()):
@@ -54,7 +54,7 @@ class ParameterModel(qc.QAbstractTableModel):
     # Called by Views, get element parameter data based on index and role
     def data(self, mod_index, role=qc.Qt.DisplayRole):
         col, row = mod_index.column(), mod_index.row()
-        param_dict = self._element.params[row]
+        param_dict = self._element.param_list[row]
 
         # If no actual result return empty value indicator
         result = qc.QVariant()
@@ -117,7 +117,7 @@ class ParameterModel(qc.QAbstractTableModel):
     # Called after user edits parameter value to keep model in sync
     def setData(self, mod_index, value, role=qc.Qt.EditRole):
         row = mod_index.row()
-        param_dict = self._element.params[row]
+        param_dict = self._element.param_list[row]
         success = True
 
         # This is a little tricky - if user enters valid value assign it to

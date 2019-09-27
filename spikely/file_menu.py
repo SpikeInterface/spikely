@@ -73,7 +73,7 @@ def _perform_load_action() -> None:
             spif_cls = getattr(spif_mod, elem_dict['spif_cls_name'])
 
             element = elem_cls(spif_cls)
-            element.params = elem_dict['params']
+            element.param_list = elem_dict['param_list']
 
             _pipeline_model.add_element(element)
 
@@ -104,6 +104,6 @@ def _cvt_elem_to_dict(element: sp_spe.SpikeElement) -> dict:
         "element_mod_name": element.__module__,
         "spif_cls_name": element.spif_class.__name__,
         "spif_mod_name": element.spif_class.__module__,
-        "params": element.params
+        "param_list": element.param_list
     }
     return elem_dict

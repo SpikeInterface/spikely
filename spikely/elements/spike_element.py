@@ -27,16 +27,16 @@ class SpikeElement(ABC):
 
     def __init__(self, spif_class):
         self._spif_class = spif_class
-        self._params = None
+        self._param_list = None
 
     @property
     def spif_class(self):
         return self._spif_class
 
     @property
-    def params(self):
-        return self._params
+    def param_list(self):
+        return self._param_list
 
-    @params.setter
-    def params(self, p):
-        self._params = p
+    @param_list.setter
+    def param_list(self, param_list):
+        self._param_list = param_list

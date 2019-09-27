@@ -21,21 +21,22 @@ class Extractor(sp_spe.SpikeElement):
         self._display_icon = qg.QIcon(
             pkg_resources.resource_filename(
                 'spikely.resources', 'extractor.png'))
-        self._params = copy.deepcopy(spif_class.extractor_gui_params)
+
+        self._param_list = copy.deepcopy(spif_class.extractor_gui_params)
 
         probe_path_dict = {
             'name': 'probe_path', 'type': 'file',
             'title': 'Path to probe file (.csv or .prb)'}
         if spif_class.has_default_locations:
             probe_path_dict['default'] = probe_path_dict['value'] = None
-        self._params.append(probe_path_dict)
+        self._param_list.append(probe_path_dict)
 
-        self._params.append({
+        self._param_list.append({
             'name': 'channel_map', 'type': 'int_list', 'value': None,
             'default': None, 'title': "List of channel ids for underlying \
             channels to be be mapped. If None, then uses default ordering."})
 
-        self._params.append({
+        self._param_list.append({
             'name': 'channel_groups', 'type': 'int_list', 'value': None,
             'default': None, 'title': "List of channel groups of the \
             underlying channels. If None, then no groups given."})
@@ -49,12 +50,20 @@ class Extractor(sp_spe.SpikeElement):
         return self._display_icon
 
     def run(self, payload, next_elem):
-        probe_file = self._params.pop('probe_path', None)
-        channel_map = self._params.pop('channel_map', None)
-        channel_groups = self._params.pop('channel_groups', None)
+        spif_params_dict = {}
+        probe_file = None
+        for param in self.param_list:
+            print(param)
+            if param['name'] == 'probe_path':
+                probe_file = param['value']
+            elif param['name'] == 'channel_map':
+                channel_map = param['value']
+            elif param['name'] == 'channel_groups':
+                channel_groups = param['value']
+            else:
+                spif_params_dict[param['name']] = param['value']
 
-        spif_params = {param['name']: param['value'] for param in self._params}
-        recording = self._spif_class(**spif_params)
+        recording = self._spif_class(**spif_params_dict)
 
         if probe_file:
             recording = recording.load_probe_file(

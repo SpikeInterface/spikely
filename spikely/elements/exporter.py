@@ -21,7 +21,7 @@ class Exporter(sp_spe.SpikeElement):
         self._display_icon = qg.QIcon(
             pkg_resources.resource_filename(
                 'spikely.resources', 'exporter.png'))
-        self.params = copy.deepcopy(spif_class.exporter_gui_params)
+        self.param_list = copy.deepcopy(spif_class.exporter_gui_params)
 
     @property
     def display_name(self):
@@ -50,8 +50,7 @@ class Exporter(sp_spe.SpikeElement):
                 params_dict['sampling_frequency'] = \
                     recording.get_sampling_frequency()
 
-            params = self.params
-            for param in params:
+            for param in self.param_list:
                 param_name = param['name']
                 param_value = param['value']
 

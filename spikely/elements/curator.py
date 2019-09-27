@@ -25,7 +25,7 @@ class Curator(sp_spe.SpikeElement):
         self._display_icon = qg.QIcon(
             pkg_resources.resource_filename(
                 'spikely.resources', 'curator.png'))
-        self.params = copy.deepcopy(spif_class.curator_gui_params)
+        self.param_list = copy.deepcopy(spif_class.curator_gui_params)
 
     @property
     def display_name(self):
@@ -54,7 +54,7 @@ class Curator(sp_spe.SpikeElement):
                 params_dict['sampling_frequency'] = \
                     recording.get_sampling_frequency()
 
-            for param in self.params:
+            for param in self.param_list:
                 param_name = param['name']
                 param_value = param['value']
                 params_dict[param_name] = param_value
