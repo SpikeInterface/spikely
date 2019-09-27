@@ -21,7 +21,7 @@ class Preprocessor(sp_spe.SpikeElement):
         self._display_icon = qg.QIcon(
             pkg_resources.resource_filename(
                 'spikely.resources', 'preprocessor.png'))
-        self._params = copy.deepcopy(spif_class.preprocessor_gui_params)
+        self._param_list = copy.deepcopy(spif_class.preprocessor_gui_params)
 
     @property
     def display_name(self):
@@ -32,7 +32,8 @@ class Preprocessor(sp_spe.SpikeElement):
         return self._display_icon
 
     def run(self, payload, next_elem):
-        spif_params = {param['name']: param['value'] for param in self._params}
-        spif_params['recording'] = payload
-        pp = self._spif_class(**spif_params)
+        spif_param_dict = {
+            param['name']: param['value'] for param in self.param_list}
+        spif_param_dict['recording'] = payload
+        pp = self._spif_class(**spif_param_dict)
         return pp
