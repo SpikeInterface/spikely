@@ -7,7 +7,7 @@
 import PyQt5.QtWidgets as qw
 
 from . import config
-from . import spike_element as sp_spe
+from .elements import spike_element as sp_spe
 
 
 class PipelineView(qw.QGroupBox):

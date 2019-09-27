@@ -6,7 +6,7 @@ import PyQt5.QtWidgets as qw
 # spikely imports
 from . import config
 from . import pipeline_model as sp_pim
-from . import spike_element as sp_spe
+from .elements import spike_element as sp_spe
 
 # Provides access to pipeline elements
 _pipeline_model = None

@@ -4,7 +4,7 @@ import PyQt5.QtWidgets as qw
 import multiprocessing as mp
 
 from . import config
-from . import spike_element as sp_spe
+from .elements import spike_element as sp_spe
 
 
 class PipelineModel(qc.QAbstractListModel):
