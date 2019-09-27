@@ -35,7 +35,7 @@ class Exporter(sp_spe.SpikeElement):
         sorting_list = payload[0]
         recording = payload[2]
 
-        if self.name == 'NwbSortingExporter':
+        if self.display_name == 'NwbSortingExporter':
             nwbfile_kwargs = {}
 
         for i, sorting in enumerate(sorting_list):
@@ -69,7 +69,7 @@ class Exporter(sp_spe.SpikeElement):
                     nwbfile_kwargs[param_name] = param_value
                 params_dict[param_name] = param_value
 
-            if self.name == 'NwbSortingExporter':
+            if self.display_name == 'NwbSortingExporter':
                 params_dict['nwbfile_kwargs'] = nwbfile_kwargs
 
             print("Exporting to " + params_dict['save_path'])
