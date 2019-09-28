@@ -56,27 +56,30 @@ class PipelineView(qw.QGroupBox):
         # Out of order declaration needed as forward reference
         spif_cbx = qw.QComboBox(self)
 
-        stage_cbx = qw.QComboBox()
-        ui_frame.layout().addWidget(stage_cbx)
+        elem_cbx = qw.QComboBox()
+        ui_frame.layout().addWidget(elem_cbx)
 
-        # Change spif_cbx contents when user makes stage_cbx selection
-        def _stage_cbx_changed(index):
+        # Change spif_cbx contents when user makes elem_cbx selection
+        def _elem_cbx_changed(index):
             spif_cbx.clear()
-            element_cls = stage_cbx.itemData(index)
+            element_cls = elem_cbx.itemData(index)
             # SpikeElement subclasses tasked w/ generating spif class lists
             for spif_cls in element_cls.get_installed_spif_cls_list():
                 spif_cbx.addItem(spif_cls.__name__, spif_cls)
-        stage_cbx.currentIndexChanged.connect(_stage_cbx_changed)
+        elem_cbx.currentIndexChanged.connect(_elem_cbx_changed)
 
         # Note: cbx instantiation order matters for initial m/v signalling
 
-        # A subtle bit of introspection likely to come back and bite me
-        subclasses = sp_spe.SpikeElement.__subclasses__().copy()
-        subclasses.sort(key=lambda e: self._element_policy.cls_order_dict[e])
-        for cls in subclasses:
-            if self._element_policy.is_cls_selectable(cls):
-                stage_cbx.addItem(cls.__name__ + 's', cls)
-        stage_cbx.setCurrentIndex(0)
+        # All elements are subclasses of SpikeElement, but element policy
+        # determines which ones are available to the user
+        elem_classes = [cls for cls in sp_spe.SpikeElement.__subclasses__()
+                        if self._element_policy.is_cls_available(cls)]
+        # Element (subclass) order is arbitrary, so sort by policy order
+        elem_classes.sort(key=lambda e: self._element_policy.cls_order_dict[e])
+        # Now that elements are sorted and filtered, set the combo box
+        for cls in elem_classes:
+            elem_cbx.addItem(cls.__name__ + 's', cls)
+        elem_cbx.setCurrentIndex(0)
 
         ui_frame.layout().addWidget(spif_cbx)
 
@@ -86,7 +89,7 @@ class PipelineView(qw.QGroupBox):
             if spif_cbx.currentIndex() > -1:
                 # Classes stored as cbx user data enables object creation
                 spif_class = spif_cbx.currentData()
-                element_class = stage_cbx.currentData()
+                element_class = elem_cbx.currentData()
                 element = element_class(spif_class)
                 self._pipeline_model.add_element(element)
         add_button.clicked.connect(_add_element_clicked)

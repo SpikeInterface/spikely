@@ -8,7 +8,7 @@ class ElementPolicy(ABC):
         self._cls_order_dict = a_cls_order_dict
 
     @abstractmethod
-    def is_cls_selectable(self, cls):
+    def is_cls_available(self, cls):
         pass
 
     @abstractmethod

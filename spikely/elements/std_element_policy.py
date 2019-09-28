@@ -18,7 +18,7 @@ class StdElementPolicy(sp_elp.ElementPolicy):
 
         super().__init__(a_required_cls_list, a_cls_order_dict)
 
-    def is_cls_selectable(self, cls):
+    def is_cls_available(self, cls):
         return cls in [
             sp_ext.Extractor, sp_pre.Preprocessor, sp_sor.Sorter,
             sp_cur.Curator, sp_exp.Exporter]
