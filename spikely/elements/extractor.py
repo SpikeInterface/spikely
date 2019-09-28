@@ -53,7 +53,6 @@ class Extractor(sp_spe.SpikeElement):
         spif_params_dict = {}
         probe_file = None
         for param in self.param_list:
-            print(param)
             if param['name'] == 'probe_path':
                 probe_file = param['value']
             elif param['name'] == 'channel_map':

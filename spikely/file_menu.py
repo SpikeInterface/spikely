@@ -63,19 +63,26 @@ def _perform_load_action() -> None:
 
     if file_name:
         _pipeline_model.clear()
-        with open(file_name, 'r') as json_file:
-            elem_dict_list = json.load(json_file)
+        try:
+            with open(file_name, 'r') as json_file:
+                elem_dict_list = json.load(json_file)
 
-        for elem_dict in elem_dict_list:
-            elem_mod = importlib.import_module(elem_dict['element_mod_name'])
-            elem_cls = getattr(elem_mod, elem_dict['element_cls_name'])
-            spif_mod = importlib.import_module(elem_dict['spif_mod_name'])
-            spif_cls = getattr(spif_mod, elem_dict['spif_cls_name'])
+            for elem_dict in elem_dict_list:
+                elem_mod = importlib.import_module(
+                    elem_dict['element_mod_name'])
+                elem_cls = getattr(elem_mod, elem_dict['element_cls_name'])
+                spif_mod = importlib.import_module(elem_dict['spif_mod_name'])
+                spif_cls = getattr(spif_mod, elem_dict['spif_cls_name'])
 
-            element = elem_cls(spif_cls)
-            element.param_list = elem_dict['param_list']
+                element = elem_cls(spif_cls)
+                element.param_list = elem_dict['param_list']
 
-            _pipeline_model.add_element(element)
+                _pipeline_model.add_element(element)
+
+        except json.decoder.JSONDecodeError as e:
+            qw.QMessageBox.warning(
+                config.find_main_window(), 'JSON Decode Failure',
+                f'Failed to decode {file_name}: {str(e)}')
 
 
 def _perform_save_action() -> None:

@@ -31,10 +31,14 @@ class SpikelyMainWindow(qw.QMainWindow):
         self.setWindowTitle("spikely")
         self.setGeometry(100, 100, 1152, 472)
 
-        spikely_png_path = pkg_resources.resource_filename(
-            'spikely.resources', 'spikely.png')
+        try:
+            spikely_png_path = pkg_resources.resource_filename(
+                'spikely.resources', 'spikely.png')
+            self.setWindowIcon(qg.QIcon(spikely_png_path))
+        except KeyError:
+            print('<<spikely error: Failed to find spikely.png in resource '
+                  'directory>>', file=sys.stderr)
 
-        self.setWindowIcon(qg.QIcon(spikely_png_path))
         self.statusBar().addPermanentWidget(
             qw.QLabel("Version " + version.__version__))
 
