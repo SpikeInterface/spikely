@@ -11,3 +11,4 @@ results_phy/
 results_klusta/
 docs/source/_build/
 *.json
+tmp_klusta_curated/
