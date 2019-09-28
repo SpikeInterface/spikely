@@ -73,5 +73,3 @@ class Exporter(sp_spe.SpikeElement):
 
             print("Exporting to " + params_dict['save_path'])
             self.spif_class.write_sorting(**params_dict)
-
-        print("Job done!")

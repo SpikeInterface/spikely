@@ -41,6 +41,13 @@ class Curator(sp_spe.SpikeElement):
         output_folder_str = payload[1]
         recording = payload[2]
 
+        if not next_element:
+            output_folder_str_new = output_folder_str + '_curated'
+            output_folder = Path(output_folder_str_new).absolute()
+            if output_folder.is_dir():
+                shutil.rmtree(output_folder)
+            output_folder.mkdir()
+
         curated_sorting_list = []
         for i, sorting in enumerate(sorting_list):
             params_dict = {}
@@ -63,25 +70,14 @@ class Curator(sp_spe.SpikeElement):
             curated_sorting_list.append(curated_sorting)
 
             if not next_element:
-                print("No Exporter chosen. Defaulting to the .npz format.")
-                output_folder_str_new = output_folder_str + '_curated'
-                output_folder = Path(output_folder_str_new).absolute()
-
-                if output_folder.is_dir():
-                    shutil.rmtree(output_folder)
-                output_folder.mkdir()
-
+                print("No Exporter chosen. Defaulting to the .npz format.")   
                 if len(sorting_list) == 1:
-                    curated_output_folder = output_folder
+                    file_name = 'curated_output.npz'
                 else:
-                    curated_output_folder = output_folder / str(i)
-
-                if curated_output_folder.is_dir():
-                    shutil.rmtree(curated_output_folder)
-                os.makedirs(str(curated_output_folder))
+                    file_name = str(i) + '_curated_output.npz'
 
                 se.NpzSortingExtractor.write_sorting(curated_sorting,
-                    curated_output_folder / 'curated_output.npz')  # noqa: E128
-                print("Saved curated results to " + str(curated_output_folder))
+                    output_folder / file_name)  # noqa: E128
+                print("Saved curated results to " + str(output_folder))
 
         return curated_sorting_list, output_folder_str, recording
