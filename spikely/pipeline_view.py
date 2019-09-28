@@ -71,10 +71,11 @@ class PipelineView(qw.QGroupBox):
         # Note: cbx instantiation order matters for initial m/v signalling
 
         # A subtle bit of introspection likely to come back and bite me
-        for cls in sp_spe.SpikeElement.__subclasses__():
+        subclasses = sp_spe.SpikeElement.__subclasses__().copy()
+        subclasses.sort(key=lambda e: self._element_policy.cls_order_dict[e])
+        for cls in subclasses:
             if self._element_policy.is_cls_selectable(cls):
                 stage_cbx.addItem(cls.__name__ + 's', cls)
-        stage_cbx.model().sort(0)
         stage_cbx.setCurrentIndex(0)
 
         ui_frame.layout().addWidget(spif_cbx)
