@@ -47,7 +47,8 @@ class PipelineModel(qc.QAbstractListModel):
         if bad_param_count:
             qw.QMessageBox.warning(
                 config.find_main_window(), 'Run Failure',
-                f'Missing parameter count: {bad_param_count}')
+                f'Missing mandatory element parameters.  Missing parameter '
+                f'count: {bad_param_count}')
             return
 
         for cls in self._element_policy.required_cls_list:

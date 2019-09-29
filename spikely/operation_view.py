@@ -6,7 +6,7 @@ from . import config
 class OperationView(qw.QGroupBox):
 
     def __init__(self, pipeline_model, parameter_model):
-        super().__init__("Operate Pipeline")  # Group box label
+        super().__init__("Command Pipeline")  # Group box label
         self._pipeline_model = pipeline_model
         self._parameter_model = parameter_model
 
@@ -15,19 +15,23 @@ class OperationView(qw.QGroupBox):
     def _init_ui(self):
 
         # Removed pipeline state monitoring, but may want to put it back in
-        # self._pipeline_model.rowsInserted.connect(self._pipeline_changed)
-        # self._pipeline_model.rowsRemoved.connect(self._pipeline_changed)
-        # self._pipeline_model.modelReset.connect(self._pipeline_changed)
+        self._pipeline_model.rowsInserted.connect(self._pipeline_changed)
+        self._pipeline_model.rowsRemoved.connect(self._pipeline_changed)
+        self._pipeline_model.modelReset.connect(self._pipeline_changed)
 
         self.setLayout(qw.QHBoxLayout())
 
         self._run_btn = qw.QPushButton("Run")
-        # self._run_btn.setEnabled(False)
+        self._run_btn.setStatusTip('Command the pipeline to run - executes '
+            'from top to bottom')  # noqa: E128
+        self._run_btn.setEnabled(False)
         self._run_btn.clicked.connect(self._run_clicked)
         self.layout().addWidget(self._run_btn)
 
         self._clear_btn = qw.QPushButton("Clear")
-        # self._clear_btn.setEnabled(False)
+        self._clear_btn.setStatusTip('Command the pipeline to clear - '
+            'removes all elements')  # noqa: E128
+        self._clear_btn.setEnabled(False)
         self.layout().addWidget(self._clear_btn)
 
         def clear_clicked():
@@ -55,10 +59,9 @@ class OperationView(qw.QGroupBox):
             config.find_main_window().statusBar().showMessage(
                 "Elements required before pipeline can be run.",
                 config.STATUS_MSG_TIMEOUT)
-    '''
+
     def _pipeline_changed(self, parent=None, first=None, last=None):
         enabled = self._pipeline_model.rowCount(None) > 0
         self._run_btn.setEnabled(enabled)
         self._clear_btn.setEnabled(enabled)
-        self._queue_btn.setEnabled(enabled)
-    '''
+        # self._queue_btn.setEnabled(enabled)

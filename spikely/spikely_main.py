@@ -7,7 +7,8 @@ import PyQt5.QtCore as qc
 import PyQt5.QtWidgets as qw
 # spikely imports
 from . import file_menu
-from . import config
+from . import tool_bar
+from . import help_menu
 from . import operation_view as sp_opv
 from . import parameter_model as sp_pam
 from . import parameter_view as sp_pav
@@ -43,24 +44,12 @@ class SpikelyMainWindow(qw.QMainWindow):
             qw.QLabel("Version " + version.__version__))
 
         menu_bar = self.menuBar()
-        menu = file_menu.create_file_menu(self, self._pipeline_model)
-        menu_bar.addMenu(menu)
+        menu_bar.addMenu(file_menu.create_file_menu(self,
+                         self._pipeline_model))
+        menu_bar.addMenu(help_menu.create_help_menu(self))
 
-        tool_bar = qw.QToolBar(self)
-        tool_bar.setMovable(False)
-        tool_bar.setFloatable(False)
-
-        folder_act = qw.QAction(qw.QFileIconProvider().icon(
-            qw.QFileIconProvider.Folder), 'Select Folder', self)
-        folder_act.triggered.connect(_perform_folder_action)
-        tool_bar.addAction(folder_act)
-
-        file_act = qw.QAction(qw.QFileIconProvider().icon(
-            qw.QFileIconProvider.File), 'Select File', self)
-        file_act.triggered.connect(_perform_file_action)
-        tool_bar.addAction(file_act)
-
-        self.addToolBar(qc.Qt.RightToolBarArea, tool_bar)
+        bar = tool_bar.create_tool_bar(self)
+        self.addToolBar(qc.Qt.RightToolBarArea, bar)
 
         main_frame = qw.QFrame()
         self.setCentralWidget(main_frame)
@@ -83,32 +72,6 @@ class SpikelyMainWindow(qw.QMainWindow):
         # Subwindow at bottom for pipeline operations (run, clear, queue)
         main_frame.layout().addWidget(sp_opv.OperationView(
             self._pipeline_model, self._parameter_model))
-
-
-def _perform_file_action() -> None:
-    global _pipeline_model
-
-    options = qw.QFileDialog.Options()
-    options |= qw.QFileDialog.DontUseNativeDialog
-    file_name, _filter = qw.QFileDialog.getOpenFileName(
-            config.find_main_window(), caption='Copy File Name',
-            options=options)
-    clip = qw.QApplication.clipboard()
-    clip.setText('' if not file_name else file_name)
-
-
-def _perform_folder_action() -> None:
-    global _pipeline_model
-
-    options = qw.QFileDialog.Options()
-    options |= qw.QFileDialog.DontUseNativeDialog
-    options |= qw.QFileDialog.ShowDirsOnly
-    options |= qw.QFileDialog.DontResolveSymlinks
-    folder_name = qw.QFileDialog.getExistingDirectory(
-            config.find_main_window(), caption='Copy Folder Name',
-            options=options)
-    clip = qw.QApplication.clipboard()
-    clip.setText('' if not folder_name else folder_name)
 
 
 def launch_spikely():
