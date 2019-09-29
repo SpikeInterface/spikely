@@ -12,10 +12,6 @@ from .elements import std_element_policy as sp_ste
 
 
 class PipelineView(qw.QGroupBox):
-    # QGroupBox containing the view-control widget set
-
-    # No public methods other than constructor.  All other object
-    # behaviors are triggered by user interaction with sub widgets.
 
     def __init__(self, pipeline_model, parameter_model):
         super().__init__("Construct Pipeline")
@@ -182,6 +178,6 @@ class PipelineView(qw.QGroupBox):
         element = None
         model = self._pipeline_view.selectionModel()
         if model.hasSelection():
-            index = model.selectedIndexes()[0]
-            element = self._pipeline_model.data(index, config.ELEMENT_ROLE)
+            element = self._pipeline_model.data(
+                model.selectedIndexes()[0], config.ELEMENT_ROLE)
         return element

@@ -1,6 +1,8 @@
 import PyQt5.QtWidgets as qw
 from . import config
 
+# TODO: Implement instance (versus class) version of QFileDialog
+
 
 # Menu and Menu Action construction methods
 def create_tool_bar(main_win):

@@ -13,36 +13,35 @@ class PipelineModel(qc.QAbstractListModel):
     def __init__(self, parameter_model):
         super().__init__()
 
-        # Underlying data structure proxied by model
         self._elements = []
-
         self._element_policy = sp_ste.StdElementPolicy()
+        self._parameter_model = parameter_model
 
     def _elem_cls_count(self, target_cls):
         elem_cls_list = [type(elem) for elem in self._elements]
         return elem_cls_list.count(target_cls)
 
-    # Overloaded methods from QAbstractListModel
     def rowCount(self, parent=None):
+        # Subclassed from base: Count of elements in model
+
         return len(self._elements)
 
     def data(self, mod_index, role=qc.Qt.DisplayRole):
-        result = None
+        # Subclassed from base: Returns role specific data from elem at index
+
         if mod_index.isValid() and mod_index.row() < len(self._elements):
             element = self._elements[mod_index.row()]
-            if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
-                result = element.display_name
-            elif role == qc.Qt.DecorationRole:
-                result = element.display_icon
-            # Custom role for spikely callers to access pipeline elements
-            elif role == config.ELEMENT_ROLE:
-                result = element
+            data_dict = {
+                qc.Qt.DisplayRole:      element.display_name,
+                qc.Qt.EditRole:         element.display_name,
+                qc.Qt.DecorationRole:   element.display_icon,
+                config.ELEMENT_ROLE:    element}
 
-        return result
+        return None if not data_dict else data_dict.get(role)
 
     # Methods called by app to manipulate and operate pipeline
-    def run(self):
 
+    def run(self):
         bad_param_count = self._bad_param_count()
         if bad_param_count:
             qw.QMessageBox.warning(
@@ -58,9 +57,9 @@ class PipelineModel(qc.QAbstractListModel):
                     f'Missing required element: {cls.__name__}')
                 return
 
-        """Call SpikeInterface APIs on elements in pipeline"""
         config.find_main_window().statusBar().showMessage(
             'Running pipeline', config.STATUS_MSG_TIMEOUT)
+
         p = mp.Process(target=self.async_run)
         p.start()
 
@@ -76,16 +75,13 @@ class PipelineModel(qc.QAbstractListModel):
             )
 
     def clear(self):
-        if len(self._elements):
-            self.beginResetModel()
-            self._elements.clear()
-            self.endResetModel()
-        else:
-            config.find_main_window().statusBar().showMessage(
-                'Nothing to clear', config.STATUS_MSG_TIMEOUT)
+        self.beginResetModel()
+        self._elements.clear()
+        self.endResetModel()
+        # Synchronize parameter model and view
+        self._parameter_model.element = None
 
     def add_element(self, add_elem: sp_spe.SpikeElement) -> None:
-
         add_cls = type(add_elem)
         if self._element_policy.is_cls_singleton(add_cls) \
                 and self._elem_cls_count(add_cls):
@@ -105,7 +101,6 @@ class PipelineModel(qc.QAbstractListModel):
         self.endInsertRows()
 
     def move_up(self, elem: sp_spe.SpikeElement) -> None:
-
         rank = self._element_policy.cls_order_dict
         row = self._elements.index(elem)
 
@@ -138,14 +133,12 @@ class PipelineModel(qc.QAbstractListModel):
         self._elements.pop(index)
         self.endRemoveRows()
 
+    # Helper methods
+
     def _swap(self, list, pos1, pos2):
         list[pos1], list[pos2] = list[pos2], list[pos1]
 
     def _bad_param_count(self) -> int:
-        # Counts incomplete mandatory parameters in pipeline
-        count = 0
-        for element in self._elements:
-            for param in element.param_list:
-                if 'value' not in param.keys():
-                    count += 1
-        return count
+        bpc_list = [param for elem in self._elements for param in
+                    elem.param_list if 'value' not in param.keys()]
+        return len(bpc_list)

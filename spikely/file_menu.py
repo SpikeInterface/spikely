@@ -81,8 +81,8 @@ def _perform_load_action() -> None:
 
         except json.decoder.JSONDecodeError as e:
             qw.QMessageBox.warning(
-                config.find_main_window(), 'JSON Decode Failure',
-                f'Failed to decode {file_name}: {str(e)}')
+                config.find_main_window(), 'JSON File Load Failure',
+                f'Failed to load {file_name}: {str(e)}')
 
 
 def _perform_save_action() -> None:

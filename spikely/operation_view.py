@@ -14,7 +14,7 @@ class OperationView(qw.QGroupBox):
 
     def _init_ui(self):
 
-        # Removed pipeline state monitoring, but may want to put it back in
+        # Disable/Enable command buttons on empty/non-empty pipeline state
         self._pipeline_model.rowsInserted.connect(self._pipeline_changed)
         self._pipeline_model.rowsRemoved.connect(self._pipeline_changed)
         self._pipeline_model.modelReset.connect(self._pipeline_changed)
@@ -25,40 +25,26 @@ class OperationView(qw.QGroupBox):
         self._run_btn.setStatusTip('Command the pipeline to run - executes '
             'from top to bottom')  # noqa: E128
         self._run_btn.setEnabled(False)
-        self._run_btn.clicked.connect(self._run_clicked)
+        self._run_btn.clicked.connect(self._pipeline_model.run)
         self.layout().addWidget(self._run_btn)
 
         self._clear_btn = qw.QPushButton("Clear")
         self._clear_btn.setStatusTip('Command the pipeline to clear - '
             'removes all elements')  # noqa: E128
         self._clear_btn.setEnabled(False)
+        self._clear_btn.clicked.connect(self._pipeline_model.clear)
         self.layout().addWidget(self._clear_btn)
 
-        def clear_clicked():
-            self._pipeline_model.clear()
-            # Ensures synchronization with parameter view
-            self._parameter_model.element = None
-        self._clear_btn.clicked.connect(clear_clicked)
-
         self._queue_btn = qw.QPushButton("Queue")
+        self._queue_btn.setStatusTip('Adds pipeline to queue for '
+            'batch processing - not implemented')  # noqa: E128
         self._queue_btn.clicked.connect(self._queue_clicked)
         self.layout().addWidget(self._queue_btn)
-        # Disabled pending queue functionality
         self._queue_btn.setEnabled(False)
-        self._queue_btn.setToolTip('Pipeline queueing not implemented.')
 
     def _queue_clicked(self):
-        # Pipeline model should be responsible for this
         config.find_main_window().statusBar().showMessage(
             "Queue not implemented", config.STATUS_MSG_TIMEOUT)
-
-    def _run_clicked(self):
-        if self._pipeline_model.rowCount():
-            self._pipeline_model.run()
-        else:
-            config.find_main_window().statusBar().showMessage(
-                "Elements required before pipeline can be run.",
-                config.STATUS_MSG_TIMEOUT)
 
     def _pipeline_changed(self, parent=None, first=None, last=None):
         enabled = self._pipeline_model.rowCount(None) > 0

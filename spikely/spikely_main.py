@@ -1,20 +1,17 @@
-# Python imports
-import sys
 import pkg_resources
-# PyQt imports
-import PyQt5.QtGui as qg
+import sys
+
 import PyQt5.QtCore as qc
+import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
-# spikely imports
-from . import file_menu
-from . import tool_bar
-from . import help_menu
+
+from . import file_menu, help_menu
 from . import operation_view as sp_opv
 from . import parameter_model as sp_pam
 from . import parameter_view as sp_pav
 from . import pipeline_model as sp_pim
 from . import pipeline_view as sp_piv
-from . import version
+from . import tool_bar, version
 
 
 class SpikelyMainWindow(qw.QMainWindow):
