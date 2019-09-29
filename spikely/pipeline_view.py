@@ -12,10 +12,6 @@ from .elements import std_element_policy as sp_ste
 
 
 class PipelineView(qw.QGroupBox):
-    # QGroupBox containing the view-control widget set
-
-    # No public methods other than constructor.  All other object
-    # behaviors are triggered by user interaction with sub widgets.
 
     def __init__(self, pipeline_model, parameter_model):
         super().__init__("Construct Pipeline")
@@ -55,8 +51,13 @@ class PipelineView(qw.QGroupBox):
 
         # Out of order declaration needed as forward reference
         spif_cbx = qw.QComboBox(self)
+        spif_cbx.setStatusTip('Choose an element to be added to the '
+            'pipeline - listed for current element category')  # noqa: E128
 
         elem_cbx = qw.QComboBox()
+        elem_cbx.setStatusTip('Choose an element category to list the '
+            'specific elements available within that category')  # noqa: E128
+
         ui_frame.layout().addWidget(elem_cbx)
 
         # Change spif_cbx contents when user makes elem_cbx selection
@@ -84,6 +85,8 @@ class PipelineView(qw.QGroupBox):
         ui_frame.layout().addWidget(spif_cbx)
 
         add_button = qw.QPushButton("Add Element")
+        add_button.setStatusTip('Add selected element to the pipeline - '
+            'element will be inserted in category order')  # noqa: E128
 
         def _add_element_clicked():
             if spif_cbx.currentIndex() > -1:
@@ -126,6 +129,8 @@ class PipelineView(qw.QGroupBox):
 
         # Move Up element button and associated action
         mu_btn = qw.QPushButton("Move Up")
+        mu_btn.setStatusTip('Move selected element up one step in the '
+            'pipeline - cross element category moves barred')  # noqa: E128
         ui_frame.layout().addWidget(mu_btn)
 
         def move_up_clicked():
@@ -139,6 +144,8 @@ class PipelineView(qw.QGroupBox):
 
         # Move Down element button and associated action
         md_btn = qw.QPushButton("Move Down")
+        md_btn.setStatusTip('Move selected element down one step in the '
+            'pipeline - cross element category moves barred')  # noqa: E128
         ui_frame.layout().addWidget(md_btn)
 
         def move_down_clicked():
@@ -152,6 +159,7 @@ class PipelineView(qw.QGroupBox):
 
         # Delete element button and associated action
         de_btn = qw.QPushButton("Delete")
+        de_btn.setStatusTip('Delete the selected element in the pipeline')
         ui_frame.layout().addWidget(de_btn)
 
         def delete_clicked():
@@ -170,6 +178,6 @@ class PipelineView(qw.QGroupBox):
         element = None
         model = self._pipeline_view.selectionModel()
         if model.hasSelection():
-            index = model.selectedIndexes()[0]
-            element = self._pipeline_model.data(index, config.ELEMENT_ROLE)
+            element = self._pipeline_model.data(
+                model.selectedIndexes()[0], config.ELEMENT_ROLE)
         return element
