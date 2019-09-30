@@ -13,11 +13,15 @@ class Preprocessor(sp_spe.SpikeElement):
     def get_installed_spif_cls_list():
         return st.preprocessing.preprocessinglist. \
             installed_preprocessers_list
+    
+    @staticmethod
+    def get_display_name_from_spif_class(spif_class):
+        return spif_class.preprocessor_name
 
     def __init__(self, spif_class):
         super().__init__(spif_class)
 
-        self._display_name = spif_class.__name__
+        self._display_name = self.get_display_name_from_spif_class(spif_class)
         self._display_icon = qg.QIcon(
             pkg_resources.resource_filename(
                 'spikely.resources', 'preprocessor.png'))

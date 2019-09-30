@@ -10,6 +10,10 @@ class SpikeElement(ABC):
     def get_installed_spif_cls_list():
         pass
 
+    @staticmethod
+    def get_display_name_from_spif_class(spif_class):
+        pass
+
     @abstractmethod
     def run(self, payload, next_elem):
         pass
