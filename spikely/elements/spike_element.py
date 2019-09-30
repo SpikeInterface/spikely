@@ -11,6 +11,7 @@ class SpikeElement(ABC):
         pass
 
     @staticmethod
+    @abstractmethod
     def get_display_name_from_spif_class(spif_class):
         pass
 
@@ -25,7 +26,8 @@ class SpikeElement(ABC):
 
     @property
     @abstractmethod
-    def display_icon(self): pass
+    def display_icon(self):
+        pass
 
     # Concrete base class methods
 
