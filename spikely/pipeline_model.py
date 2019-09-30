@@ -1,81 +1,67 @@
 import PyQt5.QtCore as qc
-import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
 
-import copy
 import multiprocessing as mp
-import pkg_resources
 
-from spikely import config as cfg
+from . import config
+from .elements import spike_element as sp_spe
+from .elements import std_element_policy as sp_ste
 
 
 class PipelineModel(qc.QAbstractListModel):
 
     def __init__(self, parameter_model):
-        """TBD."""
         super().__init__()
 
-        # Underlying data structure proxied by model
         self._elements = []
+        self._element_policy = sp_ste.StdElementPolicy()
+        self._parameter_model = parameter_model
 
-        self._decorations = [None, None, None, None, None]
-        fn = pkg_resources.resource_filename(
-            'spikely.resources', 'EXTRACTOR.png')
-        self._decorations[cfg.EXTRACTOR] = qg.QIcon(fn)
+    def _elem_cls_count(self, target_cls):
+        elem_cls_list = [type(elem) for elem in self._elements]
+        return elem_cls_list.count(target_cls)
 
-        fn = pkg_resources.resource_filename(
-            'spikely.resources', 'PRE_PROCESSOR.png')
-        self._decorations[cfg.PRE_PROCESSOR] = qg.QIcon(fn)
-
-        fn = pkg_resources.resource_filename(
-            'spikely.resources', 'SORTER.png')
-        self._decorations[cfg.SORTER] = qg.QIcon(fn)
-
-        fn = pkg_resources.resource_filename(
-            'spikely.resources', 'CURATOR.png')
-        self._decorations[cfg.CURATOR] = qg.QIcon(fn)
-
-        fn = pkg_resources.resource_filename(
-            'spikely.resources', 'EXPORTER.png')
-        self._decorations[cfg.EXPORTER] = qg.QIcon(fn)
-
-    #
-    # Overloaded methods from QAbstractListModel
-    #
     def rowCount(self, parent=None):
+        # Subclassed from base: Count of elements in model
+
         return len(self._elements)
 
     def data(self, mod_index, role=qc.Qt.DisplayRole):
-        result = None
+        # Subclassed from base: Returns role specific data from elem at index
 
         if mod_index.isValid() and mod_index.row() < len(self._elements):
             element = self._elements[mod_index.row()]
-            if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
-                result = element.name
-            elif role == qc.Qt.DecorationRole:
-                result = self._decorations[element.interface_id]
-            # Custom role for spikely callers to access pipeline elements
-            elif role == cfg.ELEMENT_ROLE:
-                result = element
+            data_dict = {
+                qc.Qt.DisplayRole:      element.display_name,
+                qc.Qt.EditRole:         element.display_name,
+                qc.Qt.DecorationRole:   element.display_icon,
+                config.ELEMENT_ROLE:    element}
 
-        return result
-    #
+        return None if not data_dict else data_dict.get(role)
+
     # Methods called by app to manipulate and operate pipeline
-    #
-    def run(self):
 
-        bad_count = self._bad_param_count()
-        if bad_count:
+    def run(self):
+        bad_param_count = self._bad_param_count()
+        if bad_param_count:
             qw.QMessageBox.warning(
-                cfg.main_window, 'Run Failure',
-                f'Missing {self._bad_param_count()} required ' +
-                ('parameter' if bad_count == 1 else 'parameters'))
-        else:
-            """Call SpikeInterface APIs on elements in pipeline"""
-            cfg.status_bar.showMessage(
-                'Running pipeline', cfg.STATUS_MSG_TIMEOUT)
-            p = mp.Process(target=self.async_run)
-            p.start()
+                config.find_main_window(), 'Run Failure',
+                f'Missing mandatory element parameters.  Missing parameter '
+                f'count: {bad_param_count}')
+            return
+
+        for cls in self._element_policy.required_cls_list:
+            if not self._elem_cls_count(cls):
+                qw.QMessageBox.warning(
+                    config.find_main_window(), 'Run Failure',
+                    f'Missing required element: {cls.__name__}')
+                return
+
+        config.find_main_window().statusBar().showMessage(
+            'Running pipeline', config.STATUS_MSG_TIMEOUT)
+
+        p = mp.Process(target=self.async_run)
+        p.start()
 
     def async_run(self):
         input_payload = None
@@ -89,87 +75,70 @@ class PipelineModel(qc.QAbstractListModel):
             )
 
     def clear(self):
-        if len(self._elements):
-            self.beginResetModel()
-            self._elements.clear()
-            self.endResetModel()
-        else:
-            cfg.status_bar.showMessage(
-                'Nothing to clear', cfg.STATUS_MSG_TIMEOUT)
+        self.beginResetModel()
+        self._elements.clear()
+        self.endResetModel()
+        # Synchronize parameter model and view
+        self._parameter_model.element = None
 
-    def add_element(self, element):
-        # Only allow one Extractor or Sorter
-        if (element.interface_id == cfg.EXTRACTOR or
-                element.interface_id == cfg.SORTER or
-                element.interface_id == cfg.EXPORTER):
-            if self._has_instance(element.interface_id):
-                cfg.status_bar.showMessage(
-                    "Only one instance of that element type allowed",
-                    cfg.STATUS_MSG_TIMEOUT)
-                return
-        # A kludge since it assumes order of interface_id constants
-        i = 0
-        while (i < len(self._elements) and
-                element.interface_id >= self._elements[i].interface_id):
-            i += 1
-        self.beginInsertRows(qc.QModelIndex(), i, i)
-        # Need a deep copy of element to support multi-instance element use
-        self._elements.insert(i, copy.deepcopy(element))
+    def add_element(self, add_elem: sp_spe.SpikeElement) -> None:
+        add_cls = type(add_elem)
+        if self._element_policy.is_cls_singleton(add_cls) \
+                and self._elem_cls_count(add_cls):
+            config.find_main_window().statusBar().showMessage(
+                'Only one element of that type allowed in pipeline',
+                config.STATUS_MSG_TIMEOUT)
+            return
+
+        rank = self._element_policy.cls_order_dict
+        add_row = 0
+        while add_row < len(self._elements) \
+                and rank[type(add_elem)] > rank[type(self._elements[add_row])]:
+            add_row += 1
+
+        self.beginInsertRows(qc.QModelIndex(), add_row, add_row)
+        self._elements.insert(add_row, add_elem)
         self.endInsertRows()
 
-    def move_up(self, element):
-        i = self._elements.index(element)
-        # Elements confined to their stage
-        if (i > 0 and self._elements[i].interface_id
-                == self._elements[i-1].interface_id):
-            self.beginMoveRows(qc.QModelIndex(), i, i, qc.QModelIndex(), i-1)
-            self._swap(self._elements, i, i-1)
+    def move_up(self, elem: sp_spe.SpikeElement) -> None:
+        rank = self._element_policy.cls_order_dict
+        row = self._elements.index(elem)
+
+        if row > 0 and rank[type(elem)] == rank[type(self._elements[row - 1])]:
+            self.beginMoveRows(qc.QModelIndex(), row,
+                row, qc.QModelIndex(), row - 1)  # noqa: E128
+            self._swap(self._elements, row, row - 1)
             self.endMoveRows()
         else:
-            cfg.status_bar.showMessage(
-                "Cannot move element any higher", cfg.STATUS_MSG_TIMEOUT)
+            config.find_main_window().statusBar().showMessage(
+                "Cannot move element any higher", config.STATUS_MSG_TIMEOUT)
 
-    def move_down(self, element):
-        i = self._elements.index(element)
-        # Elements confined to their stage
-        if (i < (len(self._elements) - 1) and
-                self._elements[i].interface_id
-                == self._elements[i+1].interface_id):
-            # beginMoveRows behavior is fubar if move down from source to dest
-            self.beginMoveRows(qc.QModelIndex(), i+1, i+1, qc.QModelIndex(), i)
-            self._swap(self._elements, i, i+1)
+    def move_down(self, elem: sp_spe.SpikeElement) -> None:
+        rank = self._element_policy.cls_order_dict
+        row = self._elements.index(elem)
+
+        if row < len(self._elements) - 1 and \
+                rank[type(elem)] == rank[type(self._elements[row + 1])]:
+            self.beginMoveRows(qc.QModelIndex(), row + 1,
+                row + 1, qc.QModelIndex(), row)   # noqa: E128
+            self._swap(self._elements, row, row + 1)
             self.endMoveRows()
         else:
-            cfg.status_bar.showMessage(
-                "Cannot move element any lower", cfg.STATUS_MSG_TIMEOUT)
+            config.find_main_window().statusBar().showMessage(
+                "Cannot move element any lower", config.STATUS_MSG_TIMEOUT)
 
-    def delete(self, element):
+    def delete(self, element: sp_spe.SpikeElement) -> None:
         index = self._elements.index(element)
         self.beginRemoveRows(qc.QModelIndex(), index, index)
         self._elements.pop(index)
         self.endRemoveRows()
 
-    #
-    # Convenience methods used only within class
-    #
-    def _has_instance(self, interface_id):
-        # Checks if element instance already in pipeline
-        for element in self._elements:
-            if element.interface_id == interface_id:
-                return True
-
-        # Generator expression equivalent for future reference
-        # return sum(1 for ele in self._elements if
-        # ele.interface_id == interface_id)
+    # Helper methods
 
     def _swap(self, list, pos1, pos2):
         list[pos1], list[pos2] = list[pos2], list[pos1]
 
-    def _bad_param_count(self):
-        # Counts incomplete mandatory parameters in pipeline
-        count = 0
-        for element in self._elements:
-            for param in element.params:
-                if 'value' not in param.keys():
-                    count += 1
-        return count
+    def _bad_param_count(self) -> int:
+        bpc_list = [param for elem in self._elements for param in
+                    elem.param_list if 'value' not in param.keys()]
+        return len(bpc_list)

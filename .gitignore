@@ -7,3 +7,9 @@ mtn_sort_dataset/
 tmp_klusta/
 data_sets/
 klusta/
+results_phy/
+results_klusta/
+docs/source/_build/
+*.json
+tmp_klusta_curated/
+tmp_mountainsort4/

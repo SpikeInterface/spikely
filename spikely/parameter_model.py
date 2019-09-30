@@ -5,7 +5,7 @@ import PyQt5.QtWidgets as qw
 import numpy as np
 import re
 
-from . import config as cfg
+from . import config
 
 
 # An MVC model representation of an element's parameters
@@ -33,7 +33,7 @@ class ParameterModel(qc.QAbstractTableModel):
 
     # Count of parameters associated with an element instance
     def rowCount(self, parent=qc.QModelIndex()):
-        return 0 if self._element is None else len(self._element.params)
+        return 0 if self._element is None else len(self._element.param_list)
 
     # Number of display columns: Parameter, Type, Value
     def columnCount(self, parent=qc.QModelIndex()):
@@ -45,35 +45,35 @@ class ParameterModel(qc.QAbstractTableModel):
         col = mod_index.column()
 
         # Parameter and Type column cells are read only
-        if col == cfg.PARAM_COL or col == cfg.TYPE_COL:
+        if col == config.PARAM_COL or col == config.TYPE_COL:
             column_flags ^= qc.Qt.ItemIsSelectable
-        elif col == cfg.VALUE_COL:
+        elif col == config.VALUE_COL:
             column_flags |= qc.Qt.ItemIsEditable
         return column_flags
 
     # Called by Views, get element parameter data based on index and role
     def data(self, mod_index, role=qc.Qt.DisplayRole):
         col, row = mod_index.column(), mod_index.row()
-        param_dict = self._element.params[row]
+        param_dict = self._element.param_list[row]
 
         # If no actual result return empty value indicator
         result = qc.QVariant()
 
         if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
-            if col == cfg.PARAM_COL:
+            if col == config.PARAM_COL:
                 result = param_dict['name']
-            elif col == cfg.TYPE_COL:
+            elif col == config.TYPE_COL:
                 result = param_dict['type']
-            elif col == cfg.VALUE_COL:
+            elif col == config.VALUE_COL:
                 if 'value' in param_dict.keys():
                     result = str(param_dict['value']).strip()
                     if not result and 'default' in param_dict.keys():
                         result = str(param_dict['default'])
 
         elif role == qc.Qt.ToolTipRole:
-            if col == cfg.PARAM_COL and 'title' in param_dict.keys():
+            if col == config.PARAM_COL and 'title' in param_dict.keys():
                 result = param_dict['title']
-            elif col == cfg.TYPE_COL:
+            elif col == config.TYPE_COL:
                 type_str = param_dict['type']
                 if type_str == 'int':
                     result = 'integer'
@@ -99,7 +99,7 @@ class ParameterModel(qc.QAbstractTableModel):
         # Paints cell red if mandatory parameter value is missing.
         # Mandatory parameters are those with no default keys
         elif role == qc.Qt.BackgroundRole:
-            if col == cfg.VALUE_COL:
+            if col == config.VALUE_COL:
                 if ('value' not in param_dict.keys() and
                         'default' not in param_dict.keys()):
                     result = qg.QBrush(qg.QColor(255, 192, 192))
@@ -117,7 +117,7 @@ class ParameterModel(qc.QAbstractTableModel):
     # Called after user edits parameter value to keep model in sync
     def setData(self, mod_index, value, role=qc.Qt.EditRole):
         row = mod_index.row()
-        param_dict = self._element.params[row]
+        param_dict = self._element.param_list[row]
         success = True
 
         # This is a little tricky - if user enters valid value assign it to
@@ -150,11 +150,11 @@ class ParameterModel(qc.QAbstractTableModel):
 
             elif type_str in ['str', 'file', 'folder', 'file_or_folder']:
                 cvt_value = value
-                
+
             elif type_str == 'int':
                 if value == 'inf':
                     cvt_value = float(value)
-                else: 
+                else:
                     cvt_value = int(value)
 
             elif type_str == 'float':
@@ -188,7 +188,7 @@ class ParameterModel(qc.QAbstractTableModel):
 
         except (TypeError, ValueError) as err:
             qw.QMessageBox.warning(
-                cfg.main_window, 'Type Conversion Error', repr(err))
+                config.main_window, 'Type Conversion Error', repr(err))
             success = False
 
         return success, cvt_value

@@ -16,7 +16,8 @@ setup(
     install_requires=[
         'PyQt5',
         'spikeextractors',
-        'spiketoolkit'
+        'spiketoolkit',
+        'spikesorters'
     ],
     author='Roger Hurwitz',
     author_email='rogerhurwitz@gmail.com',

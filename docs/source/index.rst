@@ -1,25 +1,31 @@
-Welcome to spikely's documentation!
-===================================
+spikely
+=======
 
-spikely is an application built on top of SpikeInterface designed to create and
-run extracellular data processing pipelines within a GUI. Spikely currently
-supports loading, preprocessing, sorting, and curating extracellular datasets
-that are stored in SpikeInterface compatible file formats.
+Spike sorting made simple
+-------------------------
 
-- read many file formats
-- pre-process extracellular recordings
-- run several popular spike sorters
-- curate the spike sorting output
+.. _SpikeInterface: https://github.com/SpikeInterface
 
+Spikely is an application built on top of SpikeInterface_ designed to simplify
+the process of creating and running spike sorting pipelines.
+Spikely supports loading, preprocessing, sorting, curating, and exporting
+of extracellular datasets that are stored in `SpikeInterface compatible file
+formats <https://spikeinterface.readthedocs.io/en/latest/supported.html>`_.
+
+.. image:: ../images/gui.png
+
+Contents
+--------
 .. toctree::
-  :maxdepth: 1
-  :caption: Contents:
+   :maxdepth: 1
 
-  overview
+   overview
+   installation
+   workflow
+   contact
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. Indices and tables
+.. ------------------
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`

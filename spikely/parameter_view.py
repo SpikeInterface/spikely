@@ -26,16 +26,4 @@ class ParameterView(qw.QGroupBox):
         cfg_table.setColumnWidth(VALUE_COL, 200)
         cfg_table.horizontalHeader().setStretchLastSection(True)
 
-        # Not ready for prime time (not even close)
-        # cfg_table.keyPressEvent(self._kp_event_handler)
-        # def keyPressEvent(self, event):
-        #     clipboard = qw.QApplication.clipboard()
-        #     if event.matches(qg.QKeySequence.Copy):
-        #         print('Ctrl + C')
-        #         clipboard.setText("some text")
-        #     if event.matches(QKeySequence.Paste):
-        #         print(clipboard.text())
-        #         print('Ctrl + V')
-        #     QTableView.keyPressEvent(self, event)
-
         self.layout().addWidget(cfg_table)

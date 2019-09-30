@@ -1,28 +1,21 @@
-import PyQt5.QtWidgets as qw
+# Application file Menu construction and execution
+
+import importlib
 import json
 
-from spikely.extractor import Extractor
-from spikely.preprocessor import Preprocessor
-from spikely.sorter import Sorter
-from spikely.curator import Curator
-from spikely.exporter import Exporter
-from .exporterlist import sorting_exporter_dict
-from spikely.spike_element import SpikeElement
+import PyQt5.QtWidgets as qw
 
-import spikeextractors as se
-import spiketoolkit as st
-import spikesorters as ss
+from . import config
+from . import pipeline_model as sp_pim
+from .elements import spike_element as sp_spe
 
-from spikely import config as cfg
-
-
-# Provides access to pipeline elements
+# Enables access to element list for both input and output
 _pipeline_model = None
 
 
 # Menu and Menu Action construction methods
-
-def create_file_menu(main_window, pipeline_model):
+def create_file_menu(main_window: qw.QMainWindow,
+                     pipeline_model: sp_pim.PipelineModel) -> qw.QMenu:
     global _pipeline_model
 
     _pipeline_model = pipeline_model
@@ -34,7 +27,7 @@ def create_file_menu(main_window, pipeline_model):
     return file_menu
 
 
-def _create_load_action(main_window):
+def _create_load_action(main_window: qw.QMainWindow) -> qw.QAction:
     load_action = qw.QAction('Load Pipeline', main_window)
     load_action.setShortcut('Ctrl+L')
     load_action.setStatusTip('Load pipeline from JSON file.')
@@ -42,7 +35,7 @@ def _create_load_action(main_window):
     return load_action
 
 
-def _create_save_action(main_window):
+def _create_save_action(main_window: qw.QMainWindow) -> qw.QAction:
     save_action = qw.QAction('Save Pipeline', main_window)
     save_action.setShortcut('Ctrl+S')
     save_action.setStatusTip('Save pipeline to JSON file.')
@@ -50,7 +43,7 @@ def _create_save_action(main_window):
     return save_action
 
 
-def _create_exit_action(main_window):
+def _create_exit_action(main_window: qw.QMainWindow) -> qw.QAction:
     exit_action = qw.QAction('Exit', main_window)
     exit_action.setShortcut('Ctrl+Q')
     exit_action.setStatusTip('Terminate the application')
@@ -60,45 +53,40 @@ def _create_exit_action(main_window):
 
 # Menu Action execution methods
 
-def _perform_load_action():
+def _perform_load_action() -> None:
     global _pipeline_model
 
     options = qw.QFileDialog.Options()
     options |= qw.QFileDialog.DontUseNativeDialog
     file_name, _filter = qw.QFileDialog.getOpenFileName(
-            parent=cfg.main_window, caption='Open File',
+            config.find_main_window(), caption='Open File',
             filter='JSON (*.json)', options=options)
 
     if file_name:
         _pipeline_model.clear()
-        with open(file_name, 'r') as json_file:
-            element_dict_list = json.load(json_file)
+        try:
+            with open(file_name, 'r') as json_file:
+                elem_dict_list = json.load(json_file)
 
-        for element_dict in element_dict_list:
-            element_id = element_dict['element_id']
-            element_class = _element_class_from_name(
-                element_dict['class_name'], element_id)
-            assert element_class.installed, \
-                element_dict['class_name'] + " not installed."
+            for elem_dict in elem_dict_list:
+                elem_mod = importlib.import_module(
+                    elem_dict['element_mod_name'])
+                elem_cls = getattr(elem_mod, elem_dict['element_cls_name'])
+                spif_mod = importlib.import_module(elem_dict['spif_mod_name'])
+                spif_cls = getattr(spif_mod, elem_dict['spif_cls_name'])
 
-            if element_id == cfg.EXTRACTOR:
-                spike_element = Extractor(element_class, cfg.EXTRACTOR)
-            elif element_id == cfg.PRE_PROCESSOR:
-                spike_element = Preprocessor(
-                    element_class, cfg.PRE_PROCESSOR)
-            elif element_id == cfg.SORTER:
-                spike_element = Sorter(element_class, cfg.SORTER)
-            elif element_id == cfg.CURATOR:
-                spike_element = Curator(element_class, cfg.CURATOR)
-            elif element_id == cfg.EXPORTER:
-                spike_element = Exporter(element_class, cfg.EXPORTER)
+                element = elem_cls(spif_cls)
+                element.param_list = elem_dict['param_list']
 
+                _pipeline_model.add_element(element)
 
-            spike_element.params = element_dict['params']
-            _pipeline_model.add_element(spike_element)
+        except json.decoder.JSONDecodeError as e:
+            qw.QMessageBox.warning(
+                config.find_main_window(), 'JSON File Load Failure',
+                f'Failed to load {file_name}: {str(e)}')
 
 
-def _perform_save_action():
+def _perform_save_action() -> None:
     global _pipeline_model
 
     elements = _pipeline_model._elements
@@ -107,32 +95,23 @@ def _perform_save_action():
         options = qw.QFileDialog.Options()
         options |= qw.QFileDialog.DontUseNativeDialog
         file_name, _filter = qw.QFileDialog.getSaveFileName(
-            parent=cfg.main_window, caption='Save File',
+            config.find_main_window(), caption='Save File',
             filter='JSON (*.json)', options=options)
 
         if file_name:
-            element_dict_list = [
-                _cvt_element_to_dict(element) for element in elements]
+            elem_dict_list = [
+                _cvt_elem_to_dict(element) for element in elements]
 
             with open(file_name, 'w') as json_file:
-                json.dump(element_dict_list, json_file)
+                json.dump(elem_dict_list, json_file)
 
 
-def _cvt_element_to_dict(element: SpikeElement):
-    element_dict = {
-        "class_name": element.name,
-        "element_id": element.interface_id,
-        "params": element.params
+def _cvt_elem_to_dict(element: sp_spe.SpikeElement) -> dict:
+    elem_dict = {
+        "element_cls_name": element.__class__.__name__,
+        "element_mod_name": element.__module__,
+        "spif_cls_name": element.spif_class.__name__,
+        "spif_mod_name": element.spif_class.__module__,
+        "param_list": element.param_list
     }
-    return element_dict
-
-
-def _element_class_from_name(class_name, element_id):
-    element_dicts = {
-        cfg.EXTRACTOR: se.extractorlist.recording_extractor_dict,
-        cfg.PRE_PROCESSOR: st.preprocessing.preprocesser_dict,
-        cfg.SORTER: ss.sorter_dict,
-        cfg.CURATOR: st.curation.curation_dict,
-        cfg.EXPORTER: sorting_exporter_dict
-    }
-    return element_dicts[element_id][class_name]
+    return elem_dict
