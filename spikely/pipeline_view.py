@@ -1,9 +1,5 @@
 # The view-control widget set for constructing the active pipeline.
 
-# The Construct Pipeline view-control consists of widgets responsible for
-# constructing the active pipeline by adding, deleting, or moving elements
-# within the active pipeline.
-
 import PyQt5.QtWidgets as qw
 
 from . import config

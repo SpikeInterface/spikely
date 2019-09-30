@@ -1,14 +1,15 @@
-# Python imports
+# Application file Menu construction and execution
+
 import importlib
 import json
-# PyQt imports
+
 import PyQt5.QtWidgets as qw
-# spikely imports
+
 from . import config
 from . import pipeline_model as sp_pim
 from .elements import spike_element as sp_spe
 
-# Provides access to pipeline elements
+# Enables access to element list for both input and output
 _pipeline_model = None
 
 
