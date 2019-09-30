@@ -1,4 +1,5 @@
-"""Constants and helper functions used by other spikely modules."""
+# Constants and helper functions used by other spikely modules
+
 import PyQt5.QtWidgets as qw
 import sys
 
@@ -13,7 +14,7 @@ PARAM_COL, TYPE_COL, VALUE_COL = 0, 1, 2
 
 
 def find_main_window():
-    # Global function to find the (open) QMainWindow in application
+    # Avoids a global. Used to specify parent for qw.QMessageBox popups
     for widget in qw.QApplication.instance().topLevelWidgets():
         if isinstance(widget, qw.QMainWindow):
             return widget

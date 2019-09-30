@@ -1,10 +1,10 @@
-# Python imports
+# Application help menu construction and execution
+
 import webbrowser
-# PyQt imports
+
 import PyQt5.QtWidgets as qw
 
 
-# Menu and Menu Action construction methods
 def create_help_menu(main_window: qw.QMainWindow) -> qw.QMenu:
     help_menu = qw.QMenu('&Help', main_window)
     help_menu.addAction(_create_doc_action(main_window))

@@ -1,8 +1,9 @@
+# Implements MVC view associated with pipeline operations (run,clear, queue)
+
 import PyQt5.QtWidgets as qw
 from . import config
 
 
-# The collection of UI widgets assocated with pipeline operations
 class OperationView(qw.QGroupBox):
 
     def __init__(self, pipeline_model, parameter_model):

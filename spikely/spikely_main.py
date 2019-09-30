@@ -1,6 +1,6 @@
-import pkg_resources
 import sys
 
+import pkg_resources
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw

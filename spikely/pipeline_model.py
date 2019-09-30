@@ -1,7 +1,7 @@
+import multiprocessing as mp
+
 import PyQt5.QtCore as qc
 import PyQt5.QtWidgets as qw
-
-import multiprocessing as mp
 
 from . import config
 from .elements import spike_element as sp_spe
@@ -139,6 +139,6 @@ class PipelineModel(qc.QAbstractListModel):
         list[pos1], list[pos2] = list[pos2], list[pos1]
 
     def _bad_param_count(self) -> int:
-        bpc_list = [param for elem in self._elements for param in
+        bad_list = [param for elem in self._elements for param in
                     elem.param_list if 'value' not in param.keys()]
-        return len(bpc_list)
+        return len(bad_list)

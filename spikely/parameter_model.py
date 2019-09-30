@@ -1,9 +1,9 @@
+import re
+
+import numpy as np
 import PyQt5.QtCore as qc
 import PyQt5.QtGui as qg
 import PyQt5.QtWidgets as qw
-
-import numpy as np
-import re
 
 from . import config
 
