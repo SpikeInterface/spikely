@@ -66,21 +66,8 @@ class PipelineModel(qc.QAbstractListModel):
 
         elem_list_str = json.dumps(elem_jdict_list)
 
-        p = mp.Process(target=self.async_run, args=[elem_list_str])
+        p = mp.Process(target=config.async_run, args=[elem_list_str])
         p.start()
-
-    def async_run(self, elem_list_str):
-
-        elem_jdict_list = json.loads(elem_list_str)
-        elem_list = [config.cvt_dict_to_elem(elem_jdict)
-                     for elem_jdict in elem_jdict_list]
-
-        payload = None
-        last_elem_index = len(elem_list) - 1
-        for count, elem in enumerate(elem_list):
-            next_elem = elem_list[count + 1] \
-                if count < last_elem_index else None
-            payload = elem.run(payload, next_elem)
 
     def clear(self):
         self.beginResetModel()
