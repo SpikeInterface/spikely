@@ -1,15 +1,16 @@
 # Constants and helper functions used by other spikely modules
-
+import importlib
 import PyQt5.QtWidgets as qw
 import sys
+from .elements import spike_element as sp_spe
 
 # Duration in milliseconds of timeout for temporary status messages
 STATUS_MSG_TIMEOUT = 3500
 
-# Identifier to get element object from pipeline model data()
+# Identifier to get elem object from pipeline model data()
 ELEMENT_ROLE = 0x100
 
-# Column IDs used by QTableView to display element parameter data
+# Column IDs used by QTableView to display elem parameter data
 PARAM_COL, TYPE_COL, VALUE_COL = 0, 1, 2
 
 
@@ -23,3 +24,27 @@ def find_main_window():
     print('<<spikely fatal error: Failed to find QMainWindow.>>',
           file=sys.stderr)
     sys.exit()
+
+
+def cvt_elem_to_json_dict(elem: sp_spe.SpikeElement) -> dict:
+    elem_dict = {
+        "element_cls_name": elem.__class__.__name__,
+        "element_mod_name": elem.__module__,
+        "spif_cls_name": elem.spif_class.__name__,
+        "spif_mod_name": elem.spif_class.__module__,
+        "param_list": elem.param_list
+    }
+    return elem_dict
+
+
+def cvt_json_dict_to_elem(elem_dict):
+    elem_mod = importlib.import_module(
+        elem_dict['element_mod_name'])
+    elem_cls = getattr(elem_mod, elem_dict['element_cls_name'])
+    spif_mod = importlib.import_module(elem_dict['spif_mod_name'])
+    spif_cls = getattr(spif_mod, elem_dict['spif_cls_name'])
+
+    elem = elem_cls(spif_cls)
+    elem.param_list = elem_dict['param_list']
+
+    return elem

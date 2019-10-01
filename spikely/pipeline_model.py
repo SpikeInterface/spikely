@@ -6,6 +6,7 @@ import PyQt5.QtWidgets as qw
 from . import config
 from .elements import spike_element as sp_spe
 from .elements import std_element_policy as sp_ste
+import json
 
 
 class PipelineModel(qc.QAbstractListModel):
@@ -60,17 +61,29 @@ class PipelineModel(qc.QAbstractListModel):
         config.find_main_window().statusBar().showMessage(
             'Running pipeline', config.STATUS_MSG_TIMEOUT)
 
-        p = mp.Process(target=self.async_run)
+        elem_jdict_list = [config.cvt_elem_to_json_dict(element)
+                           for element in self._elements]
+
+        elem_list_str = json.dumps(elem_jdict_list)
+
+        p = mp.Process(target=self.async_run, args=[elem_list_str])
         p.start()
 
-    def async_run(self):
+    def async_run(self, elem_list_str):
+
         input_payload = None
-        element_count = len(self._elements)
+
+        elem_jdict_list = json.loads(elem_list_str)
+
+        elem_list = [config.cvt_json_dict_to_elem(elem_jdict)
+                     for elem_jdict in elem_jdict_list]
+
+        element_count = len(elem_list)
 
         for i in range(0, element_count):
-            next_element = self._elements[i+1] \
+            next_element = elem_list[i+1] \
                 if i < (element_count - 1) else None
-            input_payload = self._elements[i].run(
+            input_payload = elem_list[i].run(
                 input_payload, next_element
             )
 
