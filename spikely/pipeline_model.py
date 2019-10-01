@@ -88,7 +88,7 @@ class PipelineModel(qc.QAbstractListModel):
         rank = self._element_policy.cls_order_dict
         add_row = 0
         while add_row < len(self._elements) \
-                and rank[type(add_elem)] > rank[type(self._elements[add_row])]:
+                and rank[type(add_elem)] >= rank[type(self._elements[add_row])]:
             add_row += 1
 
         self.beginInsertRows(qc.QModelIndex(), add_row, add_row)
