@@ -75,7 +75,19 @@ def _perform_load_action() -> None:
                 spif_mod = importlib.import_module(elem_dict['spif_mod_name'])
                 spif_cls = getattr(spif_mod, elem_dict['spif_cls_name'])
 
+                if not spif_cls.installed:
+                    raise ValueError(
+                        f"Cannot create {elem_dict['spif_cls_name']} - "
+                        f" not installed on users's system")
+
                 element = elem_cls(spif_cls)
+
+                # if _param_list_mismatch(
+                #         element.param_list, elem_dict['param_list']):
+                #     raise ValueError(
+                #         f"Cannot create {elem_dict['spif_cls_name']} - "
+                #         f" parameters are not compatible")
+
                 element.param_list = elem_dict['param_list']
 
                 _pipeline_model.add_element(element)
@@ -84,6 +96,16 @@ def _perform_load_action() -> None:
             qw.QMessageBox.warning(
                 config.find_main_window(), 'JSON File Load Failure',
                 f'Failed to load {file_name}: {str(e)}')
+
+        except ValueError as e:
+            qw.QMessageBox.warning(
+                config.find_main_window(), 'JSON File Load Failure',
+                f'Failed to load {file_name}: {str(e)}')
+
+        except Exception as e:
+            qw.QMessageBox.warning(
+                config.find_main_window(), 'JSON File Load Failure',
+                f'Unspecified exception: {str(e)}')
 
 
 def _perform_save_action() -> None:
@@ -115,3 +137,6 @@ def _cvt_elem_to_dict(element: sp_spe.SpikeElement) -> dict:
         "param_list": element.param_list
     }
     return elem_dict
+
+
+# def _param_list_mismatch(new_param_list, old_param_list):

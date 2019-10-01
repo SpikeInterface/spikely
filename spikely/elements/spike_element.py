@@ -10,6 +10,11 @@ class SpikeElement(ABC):
     def get_installed_spif_cls_list():
         pass
 
+    @staticmethod
+    @abstractmethod
+    def get_display_name_from_spif_class(spif_class):
+        pass
+
     @abstractmethod
     def run(self, payload, next_elem):
         pass
@@ -21,7 +26,8 @@ class SpikeElement(ABC):
 
     @property
     @abstractmethod
-    def display_icon(self): pass
+    def display_icon(self):
+        pass
 
     # Concrete base class methods
 
