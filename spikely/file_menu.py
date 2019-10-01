@@ -109,7 +109,7 @@ def _perform_save_action() -> None:
             filter='JSON (*.json)', options=options)
 
         if file_name:
-            elem_dict_list = [config.cvt_dict_to_elem(element)
+            elem_dict_list = [config.cvt_elem_to_dict(element)
                               for element in element_list]
 
             with open(file_name, 'w') as json_file:
