@@ -26,20 +26,19 @@ def find_main_window():
     sys.exit()
 
 
-def cvt_elem_to_json_dict(elem: sp_spe.SpikeElement) -> dict:
+def cvt_elem_to_dict(elem: sp_spe.SpikeElement) -> dict:
     elem_dict = {
         "element_cls_name": elem.__class__.__name__,
         "element_mod_name": elem.__module__,
         "spif_cls_name": elem.spif_class.__name__,
         "spif_mod_name": elem.spif_class.__module__,
-        "param_list": elem.param_list
-    }
+        "param_list": elem.param_list}
+
     return elem_dict
 
 
-def cvt_json_dict_to_elem(elem_dict):
-    elem_mod = importlib.import_module(
-        elem_dict['element_mod_name'])
+def cvt_dict_to_elem(elem_dict: dict) -> sp_spe.SpikeElement:
+    elem_mod = importlib.import_module(elem_dict['element_mod_name'])
     elem_cls = getattr(elem_mod, elem_dict['element_cls_name'])
     spif_mod = importlib.import_module(elem_dict['spif_mod_name'])
     spif_cls = getattr(spif_mod, elem_dict['spif_cls_name'])

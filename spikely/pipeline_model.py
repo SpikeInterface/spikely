@@ -61,7 +61,7 @@ class PipelineModel(qc.QAbstractListModel):
         config.find_main_window().statusBar().showMessage(
             'Running pipeline', config.STATUS_MSG_TIMEOUT)
 
-        elem_jdict_list = [config.cvt_elem_to_json_dict(element)
+        elem_jdict_list = [config.cvt_elem_to_dict(element)
                            for element in self._elements]
 
         elem_list_str = json.dumps(elem_jdict_list)
@@ -71,21 +71,16 @@ class PipelineModel(qc.QAbstractListModel):
 
     def async_run(self, elem_list_str):
 
-        input_payload = None
-
         elem_jdict_list = json.loads(elem_list_str)
-
-        elem_list = [config.cvt_json_dict_to_elem(elem_jdict)
+        elem_list = [config.cvt_dict_to_elem(elem_jdict)
                      for elem_jdict in elem_jdict_list]
 
-        element_count = len(elem_list)
-
-        for i in range(0, element_count):
-            next_element = elem_list[i+1] \
-                if i < (element_count - 1) else None
-            input_payload = elem_list[i].run(
-                input_payload, next_element
-            )
+        payload = None
+        last_elem_index = len(elem_list) - 1
+        for count, elem in enumerate(elem_list):
+            next_elem = elem_list[count + 1] \
+                if count < last_elem_index else None
+            payload = elem.run(payload, next_elem)
 
     def clear(self):
         self.beginResetModel()

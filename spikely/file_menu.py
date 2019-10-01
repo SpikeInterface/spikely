@@ -1,13 +1,9 @@
 # Application file Menu construction and execution
 
-import importlib
 import json
-
 import PyQt5.QtWidgets as qw
-
 from . import config
 from . import pipeline_model as sp_pim
-from .elements import spike_element as sp_spe
 
 # Enables access to element list for both input and output
 _pipeline_model = None
@@ -69,18 +65,12 @@ def _perform_load_action() -> None:
                 elem_dict_list = json.load(json_file)
 
             for elem_dict in elem_dict_list:
-                elem_mod = importlib.import_module(
-                    elem_dict['element_mod_name'])
-                elem_cls = getattr(elem_mod, elem_dict['element_cls_name'])
-                spif_mod = importlib.import_module(elem_dict['spif_mod_name'])
-                spif_cls = getattr(spif_mod, elem_dict['spif_cls_name'])
+                elem = config.cvt_dict_to_elem(elem_dict)
 
-                if not spif_cls.installed:
+                if not elem.spif_class.installed:
                     raise ValueError(
                         f"Cannot create {elem_dict['spif_cls_name']} - "
                         f" not installed on users's system")
-
-                element = elem_cls(spif_cls)
 
                 # if _param_list_mismatch(
                 #         element.param_list, elem_dict['param_list']):
@@ -88,9 +78,7 @@ def _perform_load_action() -> None:
                 #         f"Cannot create {elem_dict['spif_cls_name']} - "
                 #         f" parameters are not compatible")
 
-                element.param_list = elem_dict['param_list']
-
-                _pipeline_model.add_element(element)
+                _pipeline_model.add_element(elem)
 
         except json.decoder.JSONDecodeError as e:
             qw.QMessageBox.warning(
@@ -111,9 +99,9 @@ def _perform_load_action() -> None:
 def _perform_save_action() -> None:
     global _pipeline_model
 
-    elements = _pipeline_model._elements
+    element_list = _pipeline_model._elements
 
-    if elements:
+    if element_list:
         options = qw.QFileDialog.Options()
         options |= qw.QFileDialog.DontUseNativeDialog
         file_name, _filter = qw.QFileDialog.getSaveFileName(
@@ -121,22 +109,11 @@ def _perform_save_action() -> None:
             filter='JSON (*.json)', options=options)
 
         if file_name:
-            elem_dict_list = [
-                _cvt_elem_to_dict(element) for element in elements]
+            elem_dict_list = [config.cvt_dict_to_elem(element)
+                              for element in element_list]
 
             with open(file_name, 'w') as json_file:
                 json.dump(elem_dict_list, json_file)
-
-
-def _cvt_elem_to_dict(element: sp_spe.SpikeElement) -> dict:
-    elem_dict = {
-        "element_cls_name": element.__class__.__name__,
-        "element_mod_name": element.__module__,
-        "spif_cls_name": element.spif_class.__name__,
-        "spif_mod_name": element.spif_class.__module__,
-        "param_list": element.param_list
-    }
-    return elem_dict
 
 
 # def _param_list_mismatch(new_param_list, old_param_list):
