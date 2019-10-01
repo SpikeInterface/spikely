@@ -25,7 +25,7 @@ class Sorter(sp_spe.SpikeElement):
         if qw.QApplication.instance():
             self._display_icon = qg.QIcon(
                 pkg_resources.resource_filename(
-                    'spikely.resources', 'exporter.png'))
+                    'spikely.resources', 'sorter.png'))
         else:
             self._display_icon = None
 
