@@ -1,11 +1,11 @@
 # Python
 import inspect
-import os
 import shutil
 import copy
 from pathlib import Path
 # PyQt
 import PyQt5.QtGui as qg
+import PyQt5.QtWidgets as qw
 import pkg_resources
 # spikely
 from . import spike_element as sp_spe
@@ -21,14 +21,19 @@ class Curator(sp_spe.SpikeElement):
     @staticmethod
     def get_display_name_from_spif_class(spif_class):
         return spif_class.curator_name
-        
+
     def __init__(self, spif_class):
         super().__init__(spif_class)
 
         self._display_name = self.get_display_name_from_spif_class(spif_class)
-        self._display_icon = qg.QIcon(
-            pkg_resources.resource_filename(
-                'spikely.resources', 'curator.png'))
+
+        if qw.QApplication.instance():
+            self._display_icon = qg.QIcon(
+                pkg_resources.resource_filename(
+                    'spikely.resources', 'curator.png'))
+        else:
+            self._display_icon = None
+
         self.param_list = copy.deepcopy(spif_class.curator_gui_params)
 
     @property
@@ -74,7 +79,7 @@ class Curator(sp_spe.SpikeElement):
             curated_sorting_list.append(curated_sorting)
 
             if not next_element:
-                print("No Exporter chosen. Defaulting to the .npz format.")   
+                print("No Exporter chosen. Defaulting to the .npz format.")
                 if len(sorting_list) == 1:
                     file_name = 'curated_output.npz'
                 else:

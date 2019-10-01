@@ -4,6 +4,7 @@ import copy
 # PyQt
 import PyQt5.QtGui as qg
 import pkg_resources
+import PyQt5.QtWidgets as qw
 # spikely
 from . import spike_element as sp_spe
 import spikeextractors as se
@@ -22,9 +23,13 @@ class Extractor(sp_spe.SpikeElement):
         super().__init__(spif_class)
 
         self._display_name = self.get_display_name_from_spif_class(spif_class)
-        self._display_icon = qg.QIcon(
-            pkg_resources.resource_filename(
-                'spikely.resources', 'extractor.png'))
+
+        if qw.QApplication.instance():
+            self._display_icon = qg.QIcon(
+                pkg_resources.resource_filename(
+                    'spikely.resources', 'extractor.png'))
+        else:
+            self._display_icon = None
 
         self._param_list = copy.deepcopy(spif_class.extractor_gui_params)
 
