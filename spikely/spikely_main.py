@@ -27,7 +27,7 @@ class SpikelyMainWindow(qw.QMainWindow):
 
     def _init_ui(self):
         self.setWindowTitle("spikely")
-        self.setGeometry(100, 100, 1152, 472)
+        self.setGeometry(100, 100, 1280, 512)
 
         try:
             spikely_png_path = pkg_resources.resource_filename(
@@ -53,7 +53,7 @@ class SpikelyMainWindow(qw.QMainWindow):
         main_frame.setLayout(qw.QVBoxLayout())
 
         # Push subwindows down - create negative space below menu bar
-        main_frame.layout().addStretch(1)
+        # main_frame.layout().addStretch(1)
 
         pipe_param_splitter = qw.QSplitter()
         pipe_param_splitter.setChildrenCollapsible(False)
@@ -63,7 +63,7 @@ class SpikelyMainWindow(qw.QMainWindow):
             self._pipeline_model, self._parameter_model))
         pipe_param_splitter.addWidget(sp_pav.ParameterView(
             self._pipeline_model, self._parameter_model))
-        pipe_param_splitter.setSizes([328, 640])
+        pipe_param_splitter.setSizes([256, 1024])
         main_frame.layout().addWidget(pipe_param_splitter)
 
         # Subwindow at bottom for pipeline operations (run, clear, queue)

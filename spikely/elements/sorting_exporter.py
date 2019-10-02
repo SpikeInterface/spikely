@@ -10,7 +10,7 @@ from . import exporterlist as sp_exl
 from . import spike_element as sp_spe
 
 
-class Exporter(sp_spe.SpikeElement):
+class SortingExporter(sp_spe.SpikeElement):
     @staticmethod
     def get_installed_spif_cls_list():
         return sp_exl.exporters_list
