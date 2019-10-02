@@ -67,33 +67,19 @@ def _perform_load_action() -> None:
             for elem_dict in elem_dict_list:
                 elem = config.cvt_dict_to_elem(elem_dict)
 
-                if not elem.spif_class.installed:
-                    raise ValueError(
-                        f"Cannot create {elem_dict['spif_cls_name']} - "
-                        f" not installed on users's system")
+            _pipeline_model.add_element(elem)
 
-                # if _param_list_mismatch(
-                #         element.param_list, elem_dict['param_list']):
-                #     raise ValueError(
-                #         f"Cannot create {elem_dict['spif_cls_name']} - "
-                #         f" parameters are not compatible")
-
-                _pipeline_model.add_element(elem)
-
-        except json.decoder.JSONDecodeError as e:
+        except (json.decoder.JSONDecodeError, ValueError) as e:
             qw.QMessageBox.warning(
                 config.find_main_window(), 'JSON File Load Failure',
                 f'Failed to load {file_name}: {str(e)}')
-
-        except ValueError as e:
-            qw.QMessageBox.warning(
-                config.find_main_window(), 'JSON File Load Failure',
-                f'Failed to load {file_name}: {str(e)}')
+            _pipeline_model.clear()
 
         except Exception as e:
             qw.QMessageBox.warning(
                 config.find_main_window(), 'JSON File Load Failure',
                 f'Unspecified exception: {str(e)}')
+            _pipeline_model.clear()
 
 
 def _perform_save_action() -> None:

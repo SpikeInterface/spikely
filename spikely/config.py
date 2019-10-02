@@ -44,7 +44,25 @@ def cvt_dict_to_elem(elem_dict: dict) -> sp_spe.SpikeElement:
     spif_mod = importlib.import_module(elem_dict['spif_mod_name'])
     spif_cls = getattr(spif_mod, elem_dict['spif_cls_name'])
 
+    if not spif_cls.installed:
+        # Abort if spif_class is no longer installed on system
+        raise ValueError(f"Cannot create {elem_dict['spif_cls_name']} - "
+                         f" not installed on users's system")
+
     elem = elem_cls(spif_cls)
+
+    elem_param_name_set = {
+        param['name'] for param in elem.param_list}
+
+    dict_param_name_set = {
+        param['name'] for param in elem_dict['param_list']}
+
+    if not dict_param_name_set.issubset(elem_param_name_set):
+        # Abort if the old param list is not a subset of new one
+        raise ValueError(
+            f"Cannot create {elem_dict['spif_cls_name']} - "
+            f" saved version incompatible with current version")
+
     elem.param_list = elem_dict['param_list']
 
     return elem
