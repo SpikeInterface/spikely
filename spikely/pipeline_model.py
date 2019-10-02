@@ -6,6 +6,7 @@ import PyQt5.QtWidgets as qw
 from . import config
 from .elements import spike_element as sp_spe
 from .elements import std_element_policy as sp_ste
+from . import run_progress as sp_rup
 import json
 
 
@@ -66,8 +67,10 @@ class PipelineModel(qc.QAbstractListModel):
 
         elem_list_str = json.dumps(elem_jdict_list)
 
-        p = mp.Process(target=config.async_run, args=[elem_list_str])
+        pqueue = mp.Queue()
+        p = mp.Process(target=config.async_run, args=[elem_list_str, pqueue])
         p.start()
+        self._run_job = sp_rup.RunProgress(pqueue)
 
     def clear(self):
         self.beginResetModel()

@@ -66,8 +66,7 @@ def _perform_load_action() -> None:
 
             for elem_dict in elem_dict_list:
                 elem = config.cvt_dict_to_elem(elem_dict)
-
-            _pipeline_model.add_element(elem)
+                _pipeline_model.add_element(elem)
 
         except (json.decoder.JSONDecodeError, ValueError) as e:
             qw.QMessageBox.warning(

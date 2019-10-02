@@ -68,7 +68,7 @@ def cvt_dict_to_elem(elem_dict: dict) -> sp_spe.SpikeElement:
     return elem
 
 
-def async_run(elem_list_str):
+def async_run(elem_list_str, pqueue):
 
     elem_jdict_list = json.loads(elem_list_str)
     elem_list = [cvt_dict_to_elem(elem_jdict)
@@ -80,3 +80,5 @@ def async_run(elem_list_str):
         next_elem = elem_list[count + 1] \
             if count < last_elem_index else None
         payload = elem.run(payload, next_elem)
+
+    pqueue.put(0)
