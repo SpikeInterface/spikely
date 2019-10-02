@@ -6,6 +6,8 @@ import PyQt5.QtWidgets as qw
 from . import config
 from .elements import spike_element as sp_spe
 from .elements import std_element_policy as sp_ste
+from . import run_progress as sp_rup
+import json
 
 
 class PipelineModel(qc.QAbstractListModel):
@@ -60,19 +62,15 @@ class PipelineModel(qc.QAbstractListModel):
         config.find_main_window().statusBar().showMessage(
             'Running pipeline', config.STATUS_MSG_TIMEOUT)
 
-        p = mp.Process(target=self.async_run)
+        elem_jdict_list = [config.cvt_elem_to_dict(element)
+                           for element in self._elements]
+
+        elem_list_str = json.dumps(elem_jdict_list)
+
+        pqueue = mp.Queue()
+        p = mp.Process(target=config.async_run, args=[elem_list_str, pqueue])
         p.start()
-
-    def async_run(self):
-        input_payload = None
-        element_count = len(self._elements)
-
-        for i in range(0, element_count):
-            next_element = self._elements[i+1] \
-                if i < (element_count - 1) else None
-            input_payload = self._elements[i].run(
-                input_payload, next_element
-            )
+        self._run_job = sp_rup.RunProgress(pqueue)
 
     def clear(self):
         self.beginResetModel()
@@ -93,7 +91,7 @@ class PipelineModel(qc.QAbstractListModel):
         rank = self._element_policy.cls_order_dict
         add_row = 0
         while add_row < len(self._elements) \
-                and rank[type(add_elem)] > rank[type(self._elements[add_row])]:
+                and rank[type(add_elem)] >= rank[type(self._elements[add_row])]:
             add_row += 1
 
         self.beginInsertRows(qc.QModelIndex(), add_row, add_row)

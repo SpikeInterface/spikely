@@ -4,6 +4,7 @@ import os
 
 import pkg_resources
 import PyQt5.QtGui as qg
+import PyQt5.QtWidgets as qw
 
 from . import exporterlist as sp_exl
 from . import spike_element as sp_spe
@@ -22,9 +23,14 @@ class Exporter(sp_spe.SpikeElement):
         super().__init__(spif_class)
 
         self._display_name = self.get_display_name_from_spif_class(spif_class)
-        self._display_icon = qg.QIcon(
-            pkg_resources.resource_filename(
-                'spikely.resources', 'exporter.png'))
+
+        if qw.QApplication.instance():
+            self._display_icon = qg.QIcon(
+                pkg_resources.resource_filename(
+                    'spikely.resources', 'exporter.png'))
+        else:
+            self._display_icon = None
+
         self.param_list = copy.deepcopy(spif_class.exporter_gui_params)
 
     @property
