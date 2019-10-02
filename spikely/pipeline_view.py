@@ -79,8 +79,8 @@ class PipelineView(qw.QGroupBox):
 
         # TODO: Need to move display name stuff into element specific code
         display_name_dict = {
-            'Extractor': 'Recording Extractor',
-            'Exporter': 'Sorting Exporter'}
+            Extractor.__name__: 'Recording Extractor',
+            Exporter.__name__: 'Sorting Exporter'}
 
         for cls in elem_classes:
             display_name = display_name_dict.get(cls.__name__)

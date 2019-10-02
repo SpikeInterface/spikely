@@ -94,6 +94,8 @@ def _perform_save_action() -> None:
             filter='JSON (*.json)', options=options)
 
         if file_name:
+            if not file_name.lower().endswith('.json'):
+                file_name = file_name + '.json'
             elem_dict_list = [config.cvt_elem_to_dict(element)
                               for element in element_list]
 
