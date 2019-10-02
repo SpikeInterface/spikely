@@ -76,8 +76,17 @@ class PipelineView(qw.QGroupBox):
         # Element (subclass) order is arbitrary, so sort by policy order
         elem_classes.sort(key=lambda e: self._element_policy.cls_order_dict[e])
         # Now that elements are sorted and filtered, set the combo box
+
+        # TODO: Need to move display name stuff into element specific code
+        display_name_dict = {
+            'Extractor': 'Recording Extractor',
+            'Exporter': 'Sorting Exporter'}
+
         for cls in elem_classes:
-            elem_cbx.addItem(cls.__name__ + 's', cls)
+            display_name = display_name_dict.get(cls.__name__)
+            if not display_name:
+                display_name = cls.__name__
+            elem_cbx.addItem(display_name + 's', cls)
         elem_cbx.setCurrentIndex(0)
 
         ui_frame.layout().addWidget(spif_cbx)
