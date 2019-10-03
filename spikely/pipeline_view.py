@@ -37,10 +37,10 @@ class PipelineView(qw.QGroupBox):
         # UI to select for and add elements to pipeline.
 
         # The UI for element selection combines a combo box for the stages
-        # (e.g., Extractor) and one for the corresponding SpikeInterface
-        # classes (e.g., MEArecRecordingExtractor) - the two pieces of
-        # information required to instantiate the SpikeElement inserted into
-        # the pipeline.
+        # (e.g., RecordingExtractor) and one for the corresponding
+        # SpikeInterface classes (e.g., MEArecRecordingExtractor) - the two
+        # pieces of information required to instantiate the SpikeElement
+        # inserted into the pipeline.
 
         ui_frame = qw.QFrame()
         ui_frame.setLayout(qw.QHBoxLayout())
@@ -77,15 +77,8 @@ class PipelineView(qw.QGroupBox):
         elem_classes.sort(key=lambda e: self._element_policy.cls_order_dict[e])
         # Now that elements are sorted and filtered, set the combo box
 
-        # TODO: Need to move display name stuff into element specific code
-        display_name_dict = {
-            'Extractor': 'Recording Extractor',
-            'Exporter': 'Sorting Exporter'}
-
         for cls in elem_classes:
-            display_name = display_name_dict.get(cls.__name__)
-            if not display_name:
-                display_name = cls.__name__
+            display_name = self._element_policy.get_cls_display_name(cls)
             elem_cbx.addItem(display_name + 's', cls)
         elem_cbx.setCurrentIndex(0)
 

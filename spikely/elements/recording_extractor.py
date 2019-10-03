@@ -10,7 +10,7 @@ from . import spike_element as sp_spe
 import spikeextractors as se
 
 
-class Extractor(sp_spe.SpikeElement):
+class RecordingExtractor(sp_spe.SpikeElement):
     @staticmethod
     def get_installed_spif_cls_list():
         return se.installed_recording_extractor_list

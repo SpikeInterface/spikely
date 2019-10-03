@@ -1,7 +1,0 @@
-#!/bin/bash
-
-pip uninstall -y spikely
-rm -r build/
-rm -r dist/
-rm -r spikely.egg-info/
-python setup.py install

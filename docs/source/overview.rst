@@ -5,9 +5,9 @@ Overview
 .. _SpikeInterface: https://github.com/SpikeInterface
 
 SpikeInterface_ is a powerful Python-based extracellular data processing
-framework supporting a broad range of features and functions.  For those well
-versed in Python programming and needing full control over the extracellular
-data processing process, working directly with SpikeInterface is the way to go.
+framework supporting a broad range of features and functions.  For those well-versed 
+in Python programming and needing full control over the extracellular data 
+processing process, working directly with SpikeInterface is the way to go.
 
 Spikely, on the other hand, is for users who want to take advantage of a subset
 SpikeInterface's processing power without having to program in Python. Instead,
@@ -22,10 +22,11 @@ spikely requires an understanding of a few key concepts specific to it:
   data processing nodes in SpikeInterface.  Specifically, spikely elements
   consist of:
 
-    * *Extractors* - Extractors read raw extracelluar data from files, and make
-      those data available to downstream elements in the pipeline. Extractor
-      names correspond to the raw extracellular data format they support.
-      Spikely requires one, and only one, Extractor per pipeline.
+    * *Recording Extractors* - Recording Extractors read raw extracelluar data 
+      from files, and make those data available to downstream elements in the 
+      pipeline. Recording Extractor names correspond to the raw extracellular 
+      data format they support. Spikely requires one, and only one, Recording 
+      Extractor per pipeline.
 
     * *Pre-Processors* - Pre-Processors transform data sourced into the
       pipeline by the Extractor before it is sent to the Sorter.
@@ -43,9 +44,9 @@ spikely requires an understanding of a few key concepts specific to it:
       Curator or to a pipeline terminating Exporter.  Curators are optional.
       Spikely supports multiple Curators per pipeline.
 
-    * *Exporters* - Exporters act as data sinks, and transform sorted datasets
-      to a formatted output file. Exporters are optional, and spikely only supports 
-      a single Exporter per pipeline.
+    * *Sorting Exporters* - Sorting Exporters act as data sinks, transforming 
+      sorted datasets into different formats. Exporters are optional, and 
+      spikely only supports a single Sorting Exporter per pipeline.
 
 * **Parameter** - Most elements have one or more parameters associated with
   them that can be edited by the user in spikely to customize the behavior of

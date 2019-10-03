@@ -29,4 +29,6 @@ All documentation for spikely can be found here: https://spikely.readthedocs.io/
 
 [Roger Hurwitz](mailto:rogerhurwitz@gmail.com?subject=Spikely) - Portland, Oregon, USA
 
-[Cole Hurwitz](https://www.inf.ed.ac.uk/people/students/Cole_Hurwitz.html) - The Institute for Adaptive and Neural Computation (ANC), University of Edinburgh, Edinburgh, Scotland 
+[Cole Hurwitz](https://colehurwitz.github.io/) - The Institute for Adaptive and Neural Computation (ANC), University of Edinburgh, Edinburgh, Scotland 
+
+[Shawn Guo](http://www.shawnguo.cn/) - The Institute for Adaptive and Neural Computation (ANC), University of Edinburgh, Edinburgh, Scotland 
