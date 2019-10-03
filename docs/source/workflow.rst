@@ -15,7 +15,7 @@ Extractor and transformed by the other elements in the pipeline flow.
 .. image:: ../images/gui_annotated.png
 
 1. **Constructing the Pipeline** - The user constructs a pipeline in spikely by
-   choosing the element category (e.g., * Recording Extractors*), choosing one
+   choosing the element category (e.g., *Recording Extractors*), choosing one
    of the installed elements within that category (e.g.,
    *MdaRecordingExtractor*) and then adding that element to the pipeline using
    the "Add Element" button. Individual elements added to the pipeline can be
