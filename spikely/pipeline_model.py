@@ -15,24 +15,22 @@ class PipelineModel(qc.QAbstractListModel):
     def __init__(self, parameter_model):
         super().__init__()
 
-        self._elements = []
+        self._element_list = []
         self._element_policy = sp_ste.StdElementPolicy()
         self._parameter_model = parameter_model
 
     def _elem_cls_count(self, target_cls):
-        elem_cls_list = [type(elem) for elem in self._elements]
+        elem_cls_list = [type(elem) for elem in self._element_list]
         return elem_cls_list.count(target_cls)
 
     def rowCount(self, parent=None):
-        # Subclassed from base: Count of elements in model
-
-        return len(self._elements)
+        # Overrides base class: provides count of elements in pipeline
+        return len(self._element_list)
 
     def data(self, mod_index, role=qc.Qt.DisplayRole):
-        # Subclassed from base: Returns role specific data from elem at index
-
-        if mod_index.isValid() and mod_index.row() < len(self._elements):
-            element = self._elements[mod_index.row()]
+        # Overrides base class: allows caller access to role specific data
+        if mod_index.isValid() and mod_index.row() < len(self._element_list):
+            element = self._element_list[mod_index.row()]
             data_dict = {
                 qc.Qt.DisplayRole:      element.display_name,
                 qc.Qt.EditRole:         element.display_name,
@@ -41,15 +39,14 @@ class PipelineModel(qc.QAbstractListModel):
 
         return None if not data_dict else data_dict.get(role)
 
-    # Methods called by app to manipulate and operate pipeline
-
     def run(self):
-        bad_param_count = self._bad_param_count()
-        if bad_param_count:
+        # Called in response to user pressing Run button in UI
+        missing_param_count = self._missing_param_count()
+        if missing_param_count:
             qw.QMessageBox.warning(
                 config.find_main_window(), 'Run Failure',
                 f'Missing mandatory element parameters.  Missing parameter '
-                f'count: {bad_param_count}')
+                f'count: {missing_param_count}')
             return
 
         for cls in self._element_policy.required_cls_list:
@@ -63,49 +60,58 @@ class PipelineModel(qc.QAbstractListModel):
             'Running pipeline', config.STATUS_MSG_TIMEOUT)
 
         elem_jdict_list = [config.cvt_elem_to_dict(element)
-                           for element in self._elements]
+                           for element in self._element_list]
 
         elem_list_str = json.dumps(elem_jdict_list)
 
-        pqueue = mp.Queue()
-        p = mp.Process(target=config.async_run, args=[elem_list_str, pqueue])
-        p.start()
-        self._run_job = sp_rup.RunProgress(pqueue, p)
+        run_queue = mp.Queue()
+        run_proc = mp.Process(target=config.async_run,
+                              args=[elem_list_str, run_queue])
+        run_proc.start()
+        self._run_job = sp_rup.RunProgress(run_queue, run_proc)
 
     def clear(self):
         self.beginResetModel()
-        self._elements.clear()
+        self._element_list.clear()
         self.endResetModel()
         # Synchronize parameter model and view
         self._parameter_model.element = None
 
-    def add_element(self, add_elem: sp_spe.SpikeElement) -> None:
-        add_cls = type(add_elem)
-        if self._element_policy.is_cls_singleton(add_cls) \
-                and self._elem_cls_count(add_cls):
+    def add_element(self, new_elem: sp_spe.SpikeElement) -> None:
+        # Inserts new element into  pipeline in proper order
+
+        new_elem_cls_count = self._elem_cls_count(new_elem.__class__)
+        new_elem_is_singleton = self._element_policy.\
+            is_cls_singleton(new_elem.__class__)
+        if new_elem_is_singleton and new_elem_cls_count:
             config.find_main_window().statusBar().showMessage(
-                'Only one element of that type allowed in pipeline',
+                'Only one element of this type allowed in pipeline',
                 config.STATUS_MSG_TIMEOUT)
             return
 
-        rank = self._element_policy.cls_order_dict
-        add_row = 0
-        while add_row < len(self._elements) \
-                and rank[type(add_elem)] >= rank[type(self._elements[add_row])]:
-            add_row += 1
+        target_positions = self._element_policy.cls_order_dict
+        new_elem_target_pos = target_positions[new_elem.__class__]
+        new_elem_insert_pos = 0
+        for pipe_elem in self._element_list:
+            pipe_elem_target_pos = target_positions[pipe_elem.__class__]
+            if new_elem_target_pos >= pipe_elem_target_pos:
+                new_elem_insert_pos += 1
+            else:
+                break
 
-        self.beginInsertRows(qc.QModelIndex(), add_row, add_row)
-        self._elements.insert(add_row, add_elem)
+        self.beginInsertRows(qc.QModelIndex(), new_elem_insert_pos,
+                             new_elem_insert_pos)
+        self._element_list.insert(new_elem_insert_pos, new_elem)
         self.endInsertRows()
 
     def move_up(self, elem: sp_spe.SpikeElement) -> None:
         rank = self._element_policy.cls_order_dict
-        row = self._elements.index(elem)
+        row = self._element_list.index(elem)
 
-        if row > 0 and rank[type(elem)] == rank[type(self._elements[row - 1])]:
+        if row > 0 and rank[type(elem)] == rank[type(self._element_list[row - 1])]:
             self.beginMoveRows(qc.QModelIndex(), row,
                 row, qc.QModelIndex(), row - 1)  # noqa: E128
-            self._swap(self._elements, row, row - 1)
+            self._swap(self._element_list, row, row - 1)
             self.endMoveRows()
         else:
             config.find_main_window().statusBar().showMessage(
@@ -113,22 +119,22 @@ class PipelineModel(qc.QAbstractListModel):
 
     def move_down(self, elem: sp_spe.SpikeElement) -> None:
         rank = self._element_policy.cls_order_dict
-        row = self._elements.index(elem)
+        row = self._element_list.index(elem)
 
-        if row < len(self._elements) - 1 and \
-                rank[type(elem)] == rank[type(self._elements[row + 1])]:
+        if row < len(self._element_list) - 1 and \
+                rank[type(elem)] == rank[type(self._element_list[row + 1])]:
             self.beginMoveRows(qc.QModelIndex(), row + 1,
                 row + 1, qc.QModelIndex(), row)   # noqa: E128
-            self._swap(self._elements, row, row + 1)
+            self._swap(self._element_list, row, row + 1)
             self.endMoveRows()
         else:
             config.find_main_window().statusBar().showMessage(
                 "Cannot move element any lower", config.STATUS_MSG_TIMEOUT)
 
     def delete(self, element: sp_spe.SpikeElement) -> None:
-        index = self._elements.index(element)
+        index = self._element_list.index(element)
         self.beginRemoveRows(qc.QModelIndex(), index, index)
-        self._elements.pop(index)
+        self._element_list.pop(index)
         self.endRemoveRows()
 
     # Helper methods
@@ -136,7 +142,7 @@ class PipelineModel(qc.QAbstractListModel):
     def _swap(self, list, pos1, pos2):
         list[pos1], list[pos2] = list[pos2], list[pos1]
 
-    def _bad_param_count(self) -> int:
-        bad_list = [param for elem in self._elements for param in
-                    elem.param_list if 'value' not in param.keys()]
-        return len(bad_list)
+    def _missing_param_count(self) -> int:
+        missing_param_list = [param for elem in self._element_list for param in
+                              elem.param_list if 'value' not in param.keys()]
+        return len(missing_param_list)

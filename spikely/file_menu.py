@@ -84,7 +84,7 @@ def _perform_load_action() -> None:
 def _perform_save_action() -> None:
     global _pipeline_model
 
-    element_list = _pipeline_model._elements
+    element_list = _pipeline_model._element_list
 
     if element_list:
         options = qw.QFileDialog.Options()
