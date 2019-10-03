@@ -28,7 +28,7 @@ class PipelineModel(qc.QAbstractListModel):
         return len(self._element_list)
 
     def data(self, mod_index, role=qc.Qt.DisplayRole):
-        # Overrides base class: allows caller access to role specific data
+        # Overrides base class: returns data for element in pipeline for role
         if mod_index.isValid() and mod_index.row() < len(self._element_list):
             element = self._element_list[mod_index.row()]
             data_dict = {
@@ -36,8 +36,7 @@ class PipelineModel(qc.QAbstractListModel):
                 qc.Qt.EditRole:         element.display_name,
                 qc.Qt.DecorationRole:   element.display_icon,
                 config.ELEMENT_ROLE:    element}
-
-        return None if not data_dict else data_dict.get(role)
+            return data_dict.get(role)
 
     def run(self):
         # Called in response to user pressing Run button in UI
