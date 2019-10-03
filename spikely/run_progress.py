@@ -1,36 +1,48 @@
 import PyQt5.QtWidgets as qw
 import PyQt5.QtCore as qc
-import queue
 
 
 class RunProgress():
-    def __init__(self, pqueue):
+    def __init__(self, run_queue, run_proc):
         super().__init__()
 
-        self.pqueue = pqueue
+        self.run_queue = run_queue
+        self.run_proc = run_proc
 
-        self.msgBox = qw.QMessageBox()
-        self.msgBox.setIcon(qw.QMessageBox.Information)
-        self.msgBox.setText("Pipeline is running")
-        self.msgBox.setWindowTitle("Pipeline Execution Status")
-        self.msgBox.setStandardButtons(qw.QMessageBox.Ok)
-        self.msgBox.setModal(False)
-        self.msgBox.buttonClicked.connect(self.cancel)
+        self.run_dlg = qw.QMessageBox()
+        self.run_dlg.setIcon(qw.QMessageBox.NoIcon)
+        self.run_dlg.setWindowTitle("Pipeline Execution Status")
+        self.run_dlg.setText("Running pipeline executing normally")
+        self.run_dlg.setModal(False)
 
-        self.msgBox.show()
+        # self.run_dlg.setStandardButtons(
+        #     qw.QMessageBox.Ok | qw.QMessageBox.Cancel)
+        self.run_dlg.setStandardButtons(qw.QMessageBox.Ok)
+        self.run_dlg.buttonClicked.connect(self.terminate)
 
-        self.t = qc.QTimer()
-        self.t.timeout.connect(self.perform)
-        self.t.start(500)
+        self.run_dlg.show()
 
-    def perform(self):
-        try:
-            self.pqueue.get(False)
-        except queue.Empty:
-            pass
-        else:
-            self.msgBox.close()
-            self.t.stop()
+        self.timer = qc.QTimer()
+        self.timer.timeout.connect(self.update)
+        self.timer.start()
 
-    def cancel(self):
-        self.msgBox.close()
+    def update(self):
+        if not self.run_queue.empty():
+            self.run_dlg.setIcon(qw.QMessageBox.Information)
+            self.run_dlg.setText(
+                'Running pipeline terminated normally')
+            self.timer.stop()
+        elif not self.run_proc.is_alive():
+            self.run_dlg.setIcon(qw.QMessageBox.Warning)
+            self.run_dlg.setText(
+                'Running pipeline exited prematurely')
+            self.timer.stop()
+
+    def terminate(self):
+        # std_btn = self.run_dlg.standardButton(
+        #     self.run_dlg.clickedButton()
+        # if std_btn == qw.QMessageBox.Cancel:
+        #     print("<<< Killing child process! >>>")
+        #     self.proc.terminate()
+        self.run_dlg.close()
+        self.timer.stop()

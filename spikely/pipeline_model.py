@@ -70,7 +70,7 @@ class PipelineModel(qc.QAbstractListModel):
         pqueue = mp.Queue()
         p = mp.Process(target=config.async_run, args=[elem_list_str, pqueue])
         p.start()
-        self._run_job = sp_rup.RunProgress(pqueue)
+        self._run_job = sp_rup.RunProgress(pqueue, p)
 
     def clear(self):
         self.beginResetModel()
