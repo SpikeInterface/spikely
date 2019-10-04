@@ -1,3 +1,13 @@
+""" Main module for spikely application
+
+This module is home to the entry point for the application, launch_spikely(),
+called when the user invokes spikely from the command line. In response,
+spikely_main instantiates the PyQt Application class (QApplication) and the
+associated widget hierarchy starting w/ SpikelyMainWindow at the top.  Once
+these tasks are performed, execution shifts to the xxx_view.py and xxx_menu.py
+modules whose methods are called in response to user interactions with the UI.
+
+"""
 import sys
 
 import pkg_resources
@@ -51,9 +61,6 @@ class SpikelyMainWindow(qw.QMainWindow):
         main_frame = qw.QFrame()
         self.setCentralWidget(main_frame)
         main_frame.setLayout(qw.QVBoxLayout())
-
-        # Push subwindows down - create negative space below menu bar
-        # main_frame.layout().addStretch(1)
 
         pipe_param_splitter = qw.QSplitter()
         pipe_param_splitter.setChildrenCollapsible(False)
