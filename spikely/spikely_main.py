@@ -63,7 +63,7 @@ class SpikelyMainWindow(QtWidgets.QMainWindow):
         pipe_param_splitter = QtWidgets.QSplitter()
         pipe_param_splitter.setChildrenCollapsible(False)
 
-        # Subwindows for element pipeline and current element parameters
+        # Subwindows for element pipeline and selected element parameters
         pipe_param_splitter.addWidget(sp_piv.PipelineView(
             self._pipeline_model, self._parameter_model))
         pipe_param_splitter.addWidget(sp_pav.ParameterView(

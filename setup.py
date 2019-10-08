@@ -14,14 +14,14 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'PyQt5',
-        'spikeextractors',
-        'spiketoolkit',
-        'spikesorters'
+        'PyQt5>=5.12.3',
+        'spikeextractors>=0.7.0',
+        'spiketoolkit>=0.5.0',
+        'spikesorters>=0.2.0'
     ],
     author='Roger Hurwitz',
     author_email='rogerhurwitz@gmail.com',
-    description='A GUI wrapper for SpikeInterface',
+    description='Spike sorting made simple',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/SpikeInterface/spikely',
