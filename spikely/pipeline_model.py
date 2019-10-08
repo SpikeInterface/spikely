@@ -63,23 +63,14 @@ class PipelineModel(qc.QAbstractListModel):
                            for element in self._element_list]
 
         elem_list_str = json.dumps(elem_jdict_list)
-
         pipeman_path = pkg_resources.resource_filename(
             'spikely.pipeman', 'pipeman.py')
 
+        # TODO: Add error handling - launching process could fail
         run_process = QtCore.QProcess()
         run_process.setProgram('python')
         run_process.setArguments([f'{pipeman_path}', elem_list_str])
         run_process.startDetached()
-
-        # run_worker = config.RunWorker(self._element_list)
-        # self._threadpool.start(run_worker)
-
-        # run_queue = mp.Queue()
-        # run_proc = mp.Process(target=config.async_run,
-        #                       args=[elem_list_str, run_queue])
-        # run_proc.start()
-        # self._run_job = sp_rup.RunProgress(run_queue, run_proc)
 
     def clear(self):
         self.beginResetModel()

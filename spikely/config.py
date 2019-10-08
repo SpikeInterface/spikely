@@ -1,10 +1,8 @@
 # Constants and helper functions used by other spikely modules
 import importlib
 import PyQt5.QtWidgets as qw
-import PyQt5.QtCore as qc
 import sys
 from .elements import spike_element as sp_spe
-import json
 
 # Duration in milliseconds of timeout for temporary status messages
 STATUS_MSG_TIMEOUT = 3500
@@ -67,34 +65,3 @@ def cvt_dict_to_elem(elem_dict: dict) -> sp_spe.SpikeElement:
     elem.param_list = elem_dict['param_list']
 
     return elem
-
-
-class RunWorker(qc.QRunnable):
-    def __init__(self, elem_list):
-        super().__init__()
-        self._elem_list = elem_list
-
-    # @qc.pyqtSlot()
-    def run(self):
-        payload = None
-        last_elem_index = len(self._elem_list) - 1
-        for count, elem in enumerate(self._elem_list):
-            next_elem = self._elem_list[count + 1] \
-                if count < last_elem_index else None
-            payload = elem.run(payload, next_elem)
-
-
-def async_run(elem_list_str, pqueue):
-
-    elem_jdict_list = json.loads(elem_list_str)
-    elem_list = [cvt_dict_to_elem(elem_jdict)
-                 for elem_jdict in elem_jdict_list]
-
-    payload = None
-    last_elem_index = len(elem_list) - 1
-    for count, elem in enumerate(elem_list):
-        next_elem = elem_list[count + 1] \
-            if count < last_elem_index else None
-        payload = elem.run(payload, next_elem)
-
-    pqueue.put(0)
