@@ -1,6 +1,5 @@
 import sys
-from ctypes import cdll
-os_encoding = 'cp' + str(cdll.kernel32.GetACP())
+import locale
 
 import pkg_resources
 from PyQt5 import QtCore, QtWidgets, QtGui
@@ -52,10 +51,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.output.append(text)
 
     def stdout_ready(self):
-        if sys.platform.startswith('win'):
-            text = bytearray(self.process.readAllStandardOutput()).decode(os_encoding)
-        else:
-            text = bytearray(self.process.readAllStandardOutput()).decode()
+        text = bytearray(self.process.readAllStandardOutput()).decode(locale.getdefaultlocale()[1])
 
         self.append(text)
 
