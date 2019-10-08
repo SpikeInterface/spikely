@@ -72,10 +72,7 @@ class PipelineModel(qc.QAbstractListModel):
         run_process = QtCore.QProcess()
         run_process.setProgram('python')
         run_process.setArguments([f'{pipeman_path}', elem_list_str])
-        if sys.platform.startswith('win'):
-            run_process.startDetached('python', [f'{pipeman_path}', elem_list_str])
-        else:
-            run_process.startDetached()
+        run_process.startDetached('python', [f'{pipeman_path}', elem_list_str])
 
         # run_worker = config.RunWorker(self._element_list)
         # self._threadpool.start(run_worker)
