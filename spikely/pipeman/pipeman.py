@@ -4,19 +4,27 @@ import locale
 import pkg_resources
 from PyQt5 import QtCore, QtWidgets, QtGui
 
-from spikely import version
+from spikely import version, config
 
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self._init_ui()
-        self._init_piperun()
+        self.process = QtCore.QProcess(self)
+        self.process.setProcessChannelMode(QtCore.QProcess.MergedChannels)
+        self.process.readyReadStandardOutput.connect(self.stdout_ready)
 
-        # self.process.started.connect(lambda: print(
-        #     'spikely pipeline running...'))
-        # # self.process.finished.connect(lambda: p('Finished!'))
+        self._init_ui()
+
+        piperun_path = pkg_resources.resource_filename(
+            'spikely.pipeman', 'piperun.py')
+        self.process.start('python', [piperun_path, sys.argv[1]])
+
+        self.process.started.connect(
+            lambda: self.cancel_btn.setDisabled(False))
+        self.process.finished.connect(
+            lambda: self.cancel_btn.setDisabled(True))
 
     def _init_ui(self):
         self.setWindowTitle("spikely pipeline manager")
@@ -35,25 +43,36 @@ class MainWindow(QtWidgets.QMainWindow):
         self.output.setStyleSheet(
             "QTextEdit { color: green; background-color: black; }")
         self.output.setWordWrapMode(QtGui.QTextOption.NoWrap)
-
         main_frame.layout().addWidget(self.output)
 
-    def _init_piperun(self):
-        piperun_path = pkg_resources.resource_filename(
-            'spikely.pipeman', 'piperun.py')
-
-        self.process = QtCore.QProcess(self)
-        self.process.setProcessChannelMode(QtCore.QProcess.MergedChannels)
-        self.process.readyReadStandardOutput.connect(self.stdout_ready)
-        self.process.start('python', [piperun_path, sys.argv[1]])
+        self.cancel_btn = QtWidgets.QPushButton('Terminate Process')
+        btn_box = QtWidgets.QHBoxLayout()
+        btn_box.addStretch(1)
+        btn_box.addWidget(self.cancel_btn)
+        btn_box.addStretch(1)
+        self.cancel_btn.setDisabled(True)
+        self.cancel_btn.clicked.connect(self.process.kill)
+        main_frame.layout().addLayout(btn_box)
+        # main_frame.layout().addWidget(self.cancel_btn)
 
     def append(self, text):
         self.output.append(text)
 
     def stdout_ready(self):
-        text = bytearray(self.process.readAllStandardOutput()).decode(locale.getdefaultlocale()[1])
+        text = bytearray(self.process.readAllStandardOutput())\
+            .decode(locale.getdefaultlocale()[1])
 
         self.append(text)
+
+    def closeEvent(self, event):
+        if self.process.state() == QtCore.QProcess.Running:
+            reply = QtWidgets.QMessageBox.question(
+                config.find_main_window(), 'Exiting', 'Exiting will terminate'
+                ' pipeline execution.  Are you sure you want to exit?',
+                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+
+            if reply == QtWidgets.QMessageBox.No:
+                event.ignore()
 
 
 def main():
@@ -61,6 +80,9 @@ def main():
     win = MainWindow()
     win.show()
     sys.exit(app.exec_())
+
+    # config.find_main_window().statusBar().showMessage(
+    #     "Error Message", config.STATUS_MSG_TIMEOUT)
 
 
 if __name__ == '__main__':

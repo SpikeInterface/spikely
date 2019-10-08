@@ -1,12 +1,11 @@
-from PyQt5 import QtWidgets
-from PyQt5 import QtCore
+import json
+
 import pkg_resources
+from PyQt5 import QtCore, QtWidgets
 
 from . import config
 from .elements import spike_element as sp_spe
 from .elements import std_element_policy as sp_ste
-# from . import run_progress as sp_rup
-import json
 
 
 class PipelineModel(QtCore.QAbstractListModel):
