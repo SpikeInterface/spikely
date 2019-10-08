@@ -1,8 +1,8 @@
 from . import spike_element as sp_spe
 import spikesorters as ss
 
-import PyQt5.QtGui as qg
-import PyQt5.QtWidgets as qw
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 import pkg_resources
 
 import copy
@@ -22,8 +22,8 @@ class Sorter(sp_spe.SpikeElement):
 
         self._display_name = self.get_display_name_from_spif_class(spif_class)
 
-        if qw.QApplication.instance():
-            self._display_icon = qg.QIcon(
+        if QtWidgets.QApplication.instance():
+            self._display_icon = QtGui.QIcon(
                 pkg_resources.resource_filename(
                     'spikely.resources', 'sorter.png'))
         else:

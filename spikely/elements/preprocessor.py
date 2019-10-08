@@ -2,8 +2,8 @@
 import copy
 import pkg_resources
 # PyQt
-import PyQt5.QtGui as qg
-import PyQt5.QtWidgets as qw
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 # spikely
 from . import spike_element as sp_spe
 import spiketoolkit as st
@@ -24,8 +24,8 @@ class Preprocessor(sp_spe.SpikeElement):
 
         self._display_name = self.get_display_name_from_spif_class(spif_class)
 
-        if qw.QApplication.instance():
-            self._display_icon = qg.QIcon(
+        if QtWidgets.QApplication.instance():
+            self._display_icon = QtGui.QIcon(
                 pkg_resources.resource_filename(
                     'spikely.resources', 'preprocessor.png'))
         else:

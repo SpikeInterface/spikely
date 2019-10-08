@@ -2,11 +2,11 @@
 
 import webbrowser
 
-import PyQt5.QtWidgets as qw
+from PyQt5 import QtWidgets
 
 
-def create_help_menu(main_window: qw.QMainWindow) -> qw.QMenu:
-    help_menu = qw.QMenu('&Help', main_window)
+def create_help_menu(main_window: QtWidgets.QMainWindow) -> QtWidgets.QMenu:
+    help_menu = QtWidgets.QMenu('&Help', main_window)
     _create_help_actions(help_menu, main_window)
     return help_menu
 
@@ -19,7 +19,7 @@ def _create_help_actions(menu, win):
         ]
 
     for name, shortcut, statustip, signal in file_actions:
-        action = qw.QAction(name, win)
+        action = QtWidgets.QAction(name, win)
         action.setShortcut(shortcut)
         action.setStatusTip(statustip)
         action.triggered.connect(signal)

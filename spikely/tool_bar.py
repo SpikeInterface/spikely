@@ -1,4 +1,4 @@
-import PyQt5.QtWidgets as qw
+from PyQt5 import QtWidgets
 from . import config
 
 # TODO: Implement instance (versus class) version of QFileDialog
@@ -6,19 +6,19 @@ from . import config
 
 # Menu and Menu Action construction methods
 def create_tool_bar(main_win):
-    tool_bar = qw.QToolBar(main_win)
+    tool_bar = QtWidgets.QToolBar(main_win)
     tool_bar.setMovable(False)
     tool_bar.setFloatable(False)
 
-    folder_act = qw.QAction(qw.QFileIconProvider().icon(
-        qw.QFileIconProvider.Folder), 'Select Folder', main_win)
+    folder_act = QtWidgets.QAction(QtWidgets.QFileIconProvider().icon(
+        QtWidgets.QFileIconProvider.Folder), 'Select Folder', main_win)
     folder_act.setStatusTip('Choose folder and copy path into clipboard '
         'to enable pasting path into an element parameter field')  # noqa: E128
     folder_act.triggered.connect(_perform_folder_action)
     tool_bar.addAction(folder_act)
 
-    file_act = qw.QAction(qw.QFileIconProvider().icon(
-        qw.QFileIconProvider.File), 'Select File', main_win)
+    file_act = QtWidgets.QAction(QtWidgets.QFileIconProvider().icon(
+        QtWidgets.QFileIconProvider.File), 'Select File', main_win)
     file_act.setStatusTip('Choose file and copy path into clipboard '
         'to enable pasting path into an element parameter field')  # noqa: E128
     file_act.triggered.connect(_perform_file_action)
@@ -29,28 +29,28 @@ def create_tool_bar(main_win):
 
 def _perform_file_action() -> None:
 
-    options = qw.QFileDialog.Options()
-    options |= qw.QFileDialog.DontUseNativeDialog
-    file_name, _filter = qw.QFileDialog.getOpenFileName(
+    options = QtWidgets.QFileDialog.Options()
+    options |= QtWidgets.QFileDialog.DontUseNativeDialog
+    file_name, _filter = QtWidgets.QFileDialog.getOpenFileName(
             config.find_main_window(), caption='Copy File Name to Clipboard',
             options=options)
 
     if file_name:
-        qw.QApplication.clipboard().setText(file_name)
+        QtWidgets.QApplication.clipboard().setText(file_name)
 
 
 def _perform_folder_action() -> None:
 
-    options = qw.QFileDialog.Options()
-    options |= qw.QFileDialog.DontUseNativeDialog
-    options |= qw.QFileDialog.ShowDirsOnly
-    options |= qw.QFileDialog.DontResolveSymlinks
-    folder_name = qw.QFileDialog.getExistingDirectory(
+    options = QtWidgets.QFileDialog.Options()
+    options |= QtWidgets.QFileDialog.DontUseNativeDialog
+    options |= QtWidgets.QFileDialog.ShowDirsOnly
+    options |= QtWidgets.QFileDialog.DontResolveSymlinks
+    folder_name = QtWidgets.QFileDialog.getExistingDirectory(
             config.find_main_window(), caption='Copy Folder Name to Clipboard',
             options=options)
 
     if folder_name:
-        qw.QApplication.clipboard().setText(folder_name)
+        QtWidgets.QApplication.clipboard().setText(folder_name)
 
 
 '''

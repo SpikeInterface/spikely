@@ -1,15 +1,15 @@
 import re
 
 import numpy as np
-import PyQt5.QtCore as qc
-import PyQt5.QtGui as qg
-import PyQt5.QtWidgets as qw
+import PyQt5.QtCore as QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 from . import config
 
 
 # An MVC model representation of an element's parameters
-class ParameterModel(qc.QAbstractTableModel):
+class ParameterModel(QtCore.QAbstractTableModel):
 
     def __init__(self):
         self._element = None
@@ -32,34 +32,34 @@ class ParameterModel(qc.QAbstractTableModel):
     #
 
     # Count of parameters associated with an element instance
-    def rowCount(self, parent=qc.QModelIndex()):
+    def rowCount(self, parent=QtCore.QModelIndex()):
         return 0 if self._element is None else len(self._element.param_list)
 
     # Number of display columns: Parameter, Type, Value
-    def columnCount(self, parent=qc.QModelIndex()):
+    def columnCount(self, parent=QtCore.QModelIndex()):
         return 3
 
     # Sets UI policy for columns in table view for element parameters
     def flags(self, mod_index):
-        column_flags = qc.QAbstractTableModel.flags(self, mod_index)
+        column_flags = QtCore.QAbstractTableModel.flags(self, mod_index)
         col = mod_index.column()
 
         # Parameter and Type column cells are read only
         if col == config.PARAM_COL or col == config.TYPE_COL:
-            column_flags ^= qc.Qt.ItemIsSelectable
+            column_flags ^= QtCore.Qt.ItemIsSelectable
         elif col == config.VALUE_COL:
-            column_flags |= qc.Qt.ItemIsEditable
+            column_flags |= QtCore.Qt.ItemIsEditable
         return column_flags
 
     # Called by Views, get element parameter data based on index and role
-    def data(self, mod_index, role=qc.Qt.DisplayRole):
+    def data(self, mod_index, role=QtCore.Qt.DisplayRole):
         col, row = mod_index.column(), mod_index.row()
         param_dict = self._element.param_list[row]
 
         # If no actual result return empty value indicator
-        result = qc.QVariant()
+        result = QtCore.QVariant()
 
-        if role == qc.Qt.DisplayRole or role == qc.Qt.EditRole:
+        if role == QtCore.Qt.DisplayRole or role == QtCore.Qt.EditRole:
             if col == config.PARAM_COL:
                 result = param_dict['name']
             elif col == config.TYPE_COL:
@@ -70,7 +70,7 @@ class ParameterModel(qc.QAbstractTableModel):
                     if not result and 'default' in param_dict.keys():
                         result = str(param_dict['default'])
 
-        elif role == qc.Qt.ToolTipRole:
+        elif role == QtCore.Qt.ToolTipRole:
             if col == config.PARAM_COL and 'title' in param_dict.keys():
                 result = param_dict['title']
             elif col == config.TYPE_COL:
@@ -98,24 +98,24 @@ class ParameterModel(qc.QAbstractTableModel):
 
         # Paints cell red if mandatory parameter value is missing.
         # Mandatory parameters are those with no default keys
-        elif role == qc.Qt.BackgroundRole:
+        elif role == QtCore.Qt.BackgroundRole:
             if col == config.VALUE_COL:
                 if ('value' not in param_dict.keys() and
                         'default' not in param_dict.keys()):
-                    result = qg.QBrush(qg.QColor(255, 192, 192))
+                    result = QtGui.QBrush(QtGui.QColor(255, 192, 192))
 
         return result
 
     def headerData(self, section, orientation, role):
-        result = qc.QVariant()
-        if (orientation == qc.Qt.Horizontal and
-                (role == qc.Qt.DisplayRole or role == qc.Qt.EditRole)):
+        result = QtCore.QVariant()
+        if (orientation == QtCore.Qt.Horizontal and
+                (role == QtCore.Qt.DisplayRole or role == QtCore.Qt.EditRole)):
             result = ['Parameter', 'Type', 'Value'][section]
 
         return result
 
     # Called after user edits parameter value to keep model in sync
-    def setData(self, mod_index, value, role=qc.Qt.EditRole):
+    def setData(self, mod_index, value, role=QtCore.Qt.EditRole):
         row = mod_index.row()
         param_dict = self._element.param_list[row]
         success = True
@@ -124,7 +124,7 @@ class ParameterModel(qc.QAbstractTableModel):
         # 'value' in the param dictionary.  If user enters nothing assign
         # 'default' to 'value' if 'default' exists, otherwise delete 'value'
         # from param dictionary.  Talk to Cole if you don't like this.
-        if role == qc.Qt.EditRole:
+        if role == QtCore.Qt.EditRole:
             if value.strip():
                 success, cvt_value = self._convert_value(
                     param_dict['type'], value)
@@ -187,7 +187,7 @@ class ParameterModel(qc.QAbstractTableModel):
                 raise TypeError(f'{type_str} is not a Spikely supported type')
 
         except (TypeError, ValueError) as err:
-            qw.QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 config.find_main_window(), 'Type Conversion Error', repr(err))
             success = False
 

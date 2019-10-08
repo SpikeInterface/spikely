@@ -1,19 +1,19 @@
 # The view-control widget set for constructing the active pipeline.
 
-import PyQt5.QtWidgets as qw
+from PyQt5 import QtWidgets
 
 from . import config
 from .elements import spike_element as sp_spe
 from .elements import std_element_policy as sp_ste
 
 
-class PipelineView(qw.QGroupBox):
+class PipelineView(QtWidgets.QGroupBox):
 
     def __init__(self, pipeline_model, parameter_model):
         super().__init__("Construct Pipeline")
 
         self._pipeline_model = pipeline_model
-        self._pipeline_view = qw.QListView(self)
+        self._pipeline_view = QtWidgets.QListView(self)
         self._parameter_model = parameter_model
         self._element_policy = sp_ste.StdElementPolicy()
 
@@ -27,7 +27,7 @@ class PipelineView(qw.QGroupBox):
         # and pipeline element commands (move up, delete, move down)
 
         # Lay out view from top to bottom of group box
-        self.setLayout(qw.QVBoxLayout())
+        self.setLayout(QtWidgets.QVBoxLayout())
 
         self.layout().addWidget(self._element_selection())
         self.layout().addWidget(self._pipeline_list())
@@ -42,15 +42,15 @@ class PipelineView(qw.QGroupBox):
         # pieces of information required to instantiate the SpikeElement
         # inserted into the pipeline.
 
-        ui_frame = qw.QFrame()
-        ui_frame.setLayout(qw.QHBoxLayout())
+        ui_frame = QtWidgets.QFrame()
+        ui_frame.setLayout(QtWidgets.QHBoxLayout())
 
         # Out of order declaration needed as forward reference
-        spif_cbx = qw.QComboBox(self)
+        spif_cbx = QtWidgets.QComboBox(self)
         spif_cbx.setStatusTip('Choose an element to be added to the '
             'pipeline - listed for current element category')  # noqa: E128
 
-        elem_cbx = qw.QComboBox()
+        elem_cbx = QtWidgets.QComboBox()
         elem_cbx.setStatusTip('Choose an element category to list the '
             'specific elements available within that category')  # noqa: E128
 
@@ -84,7 +84,7 @@ class PipelineView(qw.QGroupBox):
 
         ui_frame.layout().addWidget(spif_cbx)
 
-        add_button = qw.QPushButton("Add Element")
+        add_button = QtWidgets.QPushButton("Add Element")
         add_button.setStatusTip('Add selected element to the pipeline - '
             'element will be inserted in category order')  # noqa: E128
 
@@ -106,7 +106,7 @@ class PipelineView(qw.QGroupBox):
         self._pipeline_view.setModel(self._pipeline_model)
 
         self._pipeline_view.setSelectionMode(
-            qw.QAbstractItemView.SingleSelection)
+            QtWidgets.QAbstractItemView.SingleSelection)
 
         # Links element (parameter_view) and pipeline (pipeline_view) views
         def list_selection_changed(selected, deselected):
@@ -124,11 +124,11 @@ class PipelineView(qw.QGroupBox):
 
     def _pipeline_commands(self):
         # Operations applied to the pipeline as a whole (Run, Clear, Queue)
-        ui_frame = qw.QFrame()
-        ui_frame.setLayout(qw.QHBoxLayout())
+        ui_frame = QtWidgets.QFrame()
+        ui_frame.setLayout(QtWidgets.QHBoxLayout())
 
         # Move Up element button and associated action
-        mu_btn = qw.QPushButton("Move Up")
+        mu_btn = QtWidgets.QPushButton("Move Up")
         mu_btn.setStatusTip('Move selected element up one step in the '
             'pipeline - cross element category moves barred')  # noqa: E128
         ui_frame.layout().addWidget(mu_btn)
@@ -143,7 +143,7 @@ class PipelineView(qw.QGroupBox):
         mu_btn.clicked.connect(move_up_clicked)
 
         # Move Down element button and associated action
-        md_btn = qw.QPushButton("Move Down")
+        md_btn = QtWidgets.QPushButton("Move Down")
         md_btn.setStatusTip('Move selected element down one step in the '
             'pipeline - cross element category moves barred')  # noqa: E128
         ui_frame.layout().addWidget(md_btn)
@@ -158,7 +158,7 @@ class PipelineView(qw.QGroupBox):
         md_btn.clicked.connect(move_down_clicked)
 
         # Delete element button and associated action
-        de_btn = qw.QPushButton("Delete")
+        de_btn = QtWidgets.QPushButton("Delete")
         de_btn.setStatusTip('Delete the selected element in the pipeline')
         ui_frame.layout().addWidget(de_btn)
 

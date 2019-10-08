@@ -1,10 +1,10 @@
 # Implements MVC view associated with pipeline operations (run,clear, queue)
 
-import PyQt5.QtWidgets as qw
+from PyQt5 import QtWidgets
 from . import config
 
 
-class OperationView(qw.QGroupBox):
+class OperationView(QtWidgets.QGroupBox):
 
     def __init__(self, pipeline_model, parameter_model):
         super().__init__("Command Pipeline")  # Group box label
@@ -20,23 +20,23 @@ class OperationView(qw.QGroupBox):
         self._pipeline_model.rowsRemoved.connect(self._pipeline_changed)
         self._pipeline_model.modelReset.connect(self._pipeline_changed)
 
-        self.setLayout(qw.QHBoxLayout())
+        self.setLayout(QtWidgets.QHBoxLayout())
 
-        self._run_btn = qw.QPushButton("Run")
+        self._run_btn = QtWidgets.QPushButton("Run")
         self._run_btn.setStatusTip('Command the pipeline to run - executes '
             'from top to bottom')  # noqa: E128
         self._run_btn.setEnabled(False)
         self._run_btn.clicked.connect(self._pipeline_model.run)
         self.layout().addWidget(self._run_btn)
 
-        self._clear_btn = qw.QPushButton("Clear")
+        self._clear_btn = QtWidgets.QPushButton("Clear")
         self._clear_btn.setStatusTip('Command the pipeline to clear - '
             'removes all elements')  # noqa: E128
         self._clear_btn.setEnabled(False)
         self._clear_btn.clicked.connect(self._pipeline_model.clear)
         self.layout().addWidget(self._clear_btn)
 
-        self._queue_btn = qw.QPushButton("Queue")
+        self._queue_btn = QtWidgets.QPushButton("Queue")
         self._queue_btn.setStatusTip('Adds pipeline to queue for '
             'batch processing - not implemented')  # noqa: E128
         self._queue_btn.clicked.connect(self._queue_clicked)

@@ -14,7 +14,7 @@ as a whole.
 
 import json
 
-import PyQt5.QtWidgets as qw
+from PyQt5 import QtWidgets
 
 from . import config
 from . import pipeline_model as sp_pim
@@ -24,12 +24,12 @@ _pipeline_model = None
 
 
 # Menu and Menu Action construction methods
-def create_file_menu(main_window: qw.QMainWindow,
-                     pipeline_model: sp_pim.PipelineModel) -> qw.QMenu:
+def create_file_menu(main_window: QtWidgets.QMainWindow,
+                     pipeline_model: sp_pim.PipelineModel) -> QtWidgets.QMenu:
     global _pipeline_model
     _pipeline_model = pipeline_model
 
-    file_menu = qw.QMenu('&File', main_window)
+    file_menu = QtWidgets.QMenu('&File', main_window)
     _create_file_actions(file_menu, main_window)
     return file_menu
 
@@ -41,11 +41,11 @@ def _create_file_actions(menu, win):
          ('Save Pipeline', 'Ctrl+S', 'Save pipeline to JSON file.',
           _perform_save_action),
          ('Exit', 'Ctrl+Q', 'Terminate the application',
-          qw.QApplication.closeAllWindows)
+          QtWidgets.QApplication.closeAllWindows)
         ]
 
     for name, shortcut, statustip, signal in file_actions:
-        action = qw.QAction(name, win)
+        action = QtWidgets.QAction(name, win)
         action.setShortcut(shortcut)
         action.setStatusTip(statustip)
         action.triggered.connect(signal)
@@ -68,9 +68,9 @@ def _perform_load_action() -> None:
     """
     global _pipeline_model
 
-    options = qw.QFileDialog.Options()
-    options |= qw.QFileDialog.DontUseNativeDialog
-    file_name, _filter = qw.QFileDialog.getOpenFileName(
+    options = QtWidgets.QFileDialog.Options()
+    options |= QtWidgets.QFileDialog.DontUseNativeDialog
+    file_name, _filter = QtWidgets.QFileDialog.getOpenFileName(
             config.find_main_window(), caption='Open File',
             filter='JSON (*.json)', options=options)
 
@@ -85,13 +85,13 @@ def _perform_load_action() -> None:
                 _pipeline_model.add_element(elem)
 
         except (json.decoder.JSONDecodeError, ValueError) as e:
-            qw.QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 config.find_main_window(), 'JSON File Load Failure',
                 f'Failed to load {file_name}: {str(e)}')
             _pipeline_model.clear()
 
         except Exception as e:
-            qw.QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 config.find_main_window(), 'JSON File Load Failure',
                 f'Unspecified exception: {str(e)}')
             _pipeline_model.clear()
@@ -116,9 +116,9 @@ def _perform_save_action() -> None:
     element_list = _pipeline_model._element_list
 
     if element_list:
-        options = qw.QFileDialog.Options()
-        options |= qw.QFileDialog.DontUseNativeDialog
-        file_name, _filter = qw.QFileDialog.getSaveFileName(
+        options = QtWidgets.QFileDialog.Options()
+        options |= QtWidgets.QFileDialog.DontUseNativeDialog
+        file_name, _filter = QtWidgets.QFileDialog.getSaveFileName(
             config.find_main_window(), caption='Save File',
             filter='JSON (*.json)', options=options)
 

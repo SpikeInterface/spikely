@@ -1,6 +1,6 @@
 # Constants and helper functions used by other spikely modules
 import importlib
-import PyQt5.QtWidgets as qw
+from PyQt5 import QtWidgets
 import sys
 from .elements import spike_element as sp_spe
 
@@ -16,8 +16,8 @@ PARAM_COL, TYPE_COL, VALUE_COL = 0, 1, 2
 
 def find_main_window():
     # Avoids a global. Used to specify parent for qw.QMessageBox popups
-    for widget in qw.QApplication.instance().topLevelWidgets():
-        if isinstance(widget, qw.QMainWindow):
+    for widget in QtWidgets.QApplication.instance().topLevelWidgets():
+        if isinstance(widget, QtWidgets.QMainWindow):
             return widget
 
     # It is a dark day if we end up here

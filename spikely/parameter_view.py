@@ -1,9 +1,9 @@
-import PyQt5.QtWidgets as qw
+from PyQt5 import QtWidgets
 
 from .config import PARAM_COL, TYPE_COL, VALUE_COL
 
 
-class ParameterView(qw.QGroupBox):
+class ParameterView(QtWidgets.QGroupBox):
 
     def __init__(self, pipeline_model, parameter_model):
         super().__init__("Configure Parameters")
@@ -13,9 +13,9 @@ class ParameterView(qw.QGroupBox):
         self._init_ui()
 
     def _init_ui(self):
-        self.setLayout(qw.QHBoxLayout())
+        self.setLayout(QtWidgets.QHBoxLayout())
 
-        cfg_table = qw.QTableView(self)
+        cfg_table = QtWidgets.QTableView(self)
 
         # Magic happens here: links element model to view
         cfg_table.setModel(self._parameter_model)

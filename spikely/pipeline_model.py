@@ -1,5 +1,4 @@
-import PyQt5.QtCore as qc
-import PyQt5.QtWidgets as qw
+from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 import pkg_resources
 
@@ -10,7 +9,7 @@ from .elements import std_element_policy as sp_ste
 import json
 
 
-class PipelineModel(qc.QAbstractListModel):
+class PipelineModel(QtCore.QAbstractListModel):
 
     def __init__(self, parameter_model):
         super().__init__()
@@ -18,7 +17,7 @@ class PipelineModel(qc.QAbstractListModel):
         self._element_list = []
         self._element_policy = sp_ste.StdElementPolicy()
         self._parameter_model = parameter_model
-        self._threadpool = qc.QThreadPool()
+        self._threadpool = QtCore.QThreadPool()
 
     def _elem_cls_count(self, target_cls):
         elem_cls_list = [type(elem) for elem in self._element_list]
@@ -28,14 +27,14 @@ class PipelineModel(qc.QAbstractListModel):
         # Overrides base class: provides count of elements in pipeline
         return len(self._element_list)
 
-    def data(self, mod_index, role=qc.Qt.DisplayRole):
+    def data(self, mod_index, role=QtCore.Qt.DisplayRole):
         # Overrides base class: returns data for element in pipeline for role
         if mod_index.isValid() and mod_index.row() < len(self._element_list):
             element = self._element_list[mod_index.row()]
             data_dict = {
-                qc.Qt.DisplayRole:      element.display_name,
-                qc.Qt.EditRole:         element.display_name,
-                qc.Qt.DecorationRole:   element.display_icon,
+                QtCore.Qt.DisplayRole:      element.display_name,
+                QtCore.Qt.EditRole:         element.display_name,
+                QtCore.Qt.DecorationRole:   element.display_icon,
                 config.ELEMENT_ROLE:    element}
             return data_dict.get(role)
 
@@ -43,7 +42,7 @@ class PipelineModel(qc.QAbstractListModel):
         # Called in response to user pressing Run button in UI
         missing_param_count = self._missing_param_count()
         if missing_param_count:
-            qw.QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 config.find_main_window(), 'Run Failure',
                 f'Missing mandatory element parameters.  Missing parameter '
                 f'count: {missing_param_count}')
@@ -51,7 +50,7 @@ class PipelineModel(qc.QAbstractListModel):
 
         for cls in self._element_policy.required_cls_list:
             if not self._elem_cls_count(cls):
-                qw.QMessageBox.warning(
+                QtWidgets.QMessageBox.warning(
                     config.find_main_window(), 'Run Failure',
                     f'Missing required element: {cls.__name__}')
                 return
@@ -66,11 +65,13 @@ class PipelineModel(qc.QAbstractListModel):
         pipeman_path = pkg_resources.resource_filename(
             'spikely.pipeman', 'pipeman.py')
 
-        # TODO: Add error handling - launching process could fail
         run_process = QtCore.QProcess()
-        run_process.setProgram('python')
+        run_process.setProgram('pythonxx')
         run_process.setArguments([f'{pipeman_path}', elem_list_str])
-        run_process.startDetached()
+        if not run_process.startDetached():
+            QtWidgets.QMessageBox.warning(
+                config.find_main_window(), 'Failed to Start Python Process',
+                f'Command line: python {pipeman_path}, elem_list_str')
 
     def clear(self):
         self.beginResetModel()
@@ -101,7 +102,7 @@ class PipelineModel(qc.QAbstractListModel):
             else:
                 break
 
-        self.beginInsertRows(qc.QModelIndex(), new_elem_insert_pos,
+        self.beginInsertRows(QtCore.QModelIndex(), new_elem_insert_pos,
                              new_elem_insert_pos)
         self._element_list.insert(new_elem_insert_pos, new_elem)
         self.endInsertRows()
@@ -113,8 +114,8 @@ class PipelineModel(qc.QAbstractListModel):
 
         if row > 0 and rank[type(elem)] == \
                 rank[type(self._element_list[row - 1])]:
-            self.beginMoveRows(qc.QModelIndex(), row,
-                row, qc.QModelIndex(), row - 1)  # noqa: E128
+            self.beginMoveRows(QtCore.QModelIndex(), row,
+                row, QtCore.QModelIndex(), row - 1)  # noqa: E128
             self._swap(self._element_list, row, row - 1)
             self.endMoveRows()
         else:
@@ -128,8 +129,8 @@ class PipelineModel(qc.QAbstractListModel):
 
         if row < len(self._element_list) - 1 and \
                 rank[type(elem)] == rank[type(self._element_list[row + 1])]:
-            self.beginMoveRows(qc.QModelIndex(), row + 1,
-                row + 1, qc.QModelIndex(), row)   # noqa: E128
+            self.beginMoveRows(QtCore.QModelIndex(), row + 1,
+                row + 1, QtCore.QModelIndex(), row)   # noqa: E128
             self._swap(self._element_list, row, row + 1)
             self.endMoveRows()
         else:
@@ -138,7 +139,7 @@ class PipelineModel(qc.QAbstractListModel):
 
     def delete(self, element: sp_spe.SpikeElement) -> None:
         index = self._element_list.index(element)
-        self.beginRemoveRows(qc.QModelIndex(), index, index)
+        self.beginRemoveRows(QtCore.QModelIndex(), index, index)
         self._element_list.pop(index)
         self.endRemoveRows()
 
