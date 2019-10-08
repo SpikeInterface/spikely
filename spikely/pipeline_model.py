@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 from PyQt5 import QtWidgets
+=======
+import sys
+
+import PyQt5.QtCore as qc
+import PyQt5.QtWidgets as qw
+>>>>>>> 78701da1af580983e74d07b269f2e5d228a89293
 from PyQt5 import QtCore
 import pkg_resources
 
@@ -68,10 +75,14 @@ class PipelineModel(QtCore.QAbstractListModel):
         run_process = QtCore.QProcess()
         run_process.setProgram('pythonxx')
         run_process.setArguments([f'{pipeman_path}', elem_list_str])
+<<<<<<< HEAD
         if not run_process.startDetached():
             QtWidgets.QMessageBox.warning(
                 config.find_main_window(), 'Failed to Start Python Process',
                 f'Command line: python {pipeman_path}, elem_list_str')
+=======
+        run_process.startDetached('python', [f'{pipeman_path}', elem_list_str])
+>>>>>>> 78701da1af580983e74d07b269f2e5d228a89293
 
     def clear(self):
         self.beginResetModel()
