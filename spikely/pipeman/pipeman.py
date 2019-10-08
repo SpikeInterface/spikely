@@ -23,7 +23,8 @@ class MainWindow(QtWidgets.QMainWindow):
             'spikely.pipeman', 'piperun.py')
         self.process.start('python', [piperun_path, sys.argv[1]])
 
-        if self.process.state == QtCore.QProcess.Running:
+        if self.process.state() == QtCore.QProcess.Starting \
+                or self.process.state() == QtCore.QProcess.Running:
             self.cancel_btn.setDisabled(False)
             self.process.finished.connect(
                 lambda: self.cancel_btn.setDisabled(True))
