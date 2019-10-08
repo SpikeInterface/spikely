@@ -15,13 +15,13 @@ Extractor and transformed by the other elements in the pipeline flow.
 .. image:: ../images/gui_annotated.png
 
 1. **Constructing the Pipeline** - The user constructs a pipeline in spikely by
-   choosing the element category (e.g., *Extractors*), choosing one of the
-   installed elements within that category (e.g., *MdaRecordingExtractor*) and
-   then adding that element to the pipeline using the "Add Element" button.
-   Individual elements added to the pipeline can be moved up, moved down, or
-   deleted as part of pipeline construction process.  Note, there are pipeline
-   policies enforced by spikely related to ordering and singularity that limit
-   certain pipeline permutations.
+   choosing the element category (e.g., *Recording Extractors*), choosing one
+   of the installed elements within that category (e.g.,
+   *MdaRecordingExtractor*) and then adding that element to the pipeline using
+   the "Add Element" button. Individual elements added to the pipeline can be
+   moved up, moved down, or deleted as part of pipeline construction process.
+   Note, there are pipeline policies enforced by spikely related to ordering
+   and singularity that limit certain pipeline permutations.
 
 2. **Configuring Element Parameters** - When an element is selected in the
    *Construct Pipeline* part of the UI that element's parameters are displayed
@@ -32,17 +32,17 @@ Extractor and transformed by the other elements in the pipeline flow.
    rudimentary type checking, but for the most part it is up to the user to
    ensure that a parameter value is valid.
 
-3. **Operating the Pipeline** - While the commands available to the user in the
-   *Construct Pipeline' part of the UI operate on individual elements in the
-   pipeline, *Operate Pipeline* commands act on the pipeline as a whole.
+3. **Commanding the Pipeline** - While the commands available to the user in
+   the *Construct Pipeline' part of the UI operate on individual elements in
+   the pipeline, *Command Pipeline* commands act on the pipeline as a whole.
    Currently, two operations are supported: *Run*, and *Clear*.  *Clear*
    deletes all the elements in the pipeline enabling the user to quickly tear
    down the current pipeline before building up a new one.  *Run* is where the
-   magic happens, instantiating the pipeline and transforming the
-   extracellular data as it flows from the source element (Extractor) to the
-   sink element (Sorter or Exporter).
+   magic happens, instantiating the pipeline and transforming the extracellular
+   data as it flows from the source element (Recording Extractor) to the sink
+   element (Sorter or Sorting Exporter).
 
 .. tip::
-   The pipeline creation and parameter configuration steps can be
-   shortcut by saving and loading complete pipelines to/from files using the
-   corresponding actions from spikely's *File Menu.*
+   The pipeline creation and parameter configuration steps can be shortcut by
+   saving and loading complete pipelines to/from files using the corresponding
+   actions from spikely's *File Menu.*
