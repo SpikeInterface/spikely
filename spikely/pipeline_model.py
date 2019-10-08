@@ -64,11 +64,12 @@ class PipelineModel(qc.QAbstractListModel):
 
         elem_list_str = json.dumps(elem_jdict_list)
 
-        fn = pkg_resources.resource_filename('spikely.pipeman', 'pipeman.py')
+        pipeman_path = pkg_resources.resource_filename(
+            'spikely.pipeman', 'pipeman.py')
 
         run_process = QtCore.QProcess()
         run_process.setProgram('python')
-        run_process.setArguments([f'{fn}', elem_list_str])
+        run_process.setArguments([f'{pipeman_path}', elem_list_str])
         run_process.startDetached()
 
         # run_worker = config.RunWorker(self._element_list)

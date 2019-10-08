@@ -1,7 +1,7 @@
 import sys
 
 import pkg_resources
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtGui
 
 from spikely import version
 
@@ -18,8 +18,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # # self.process.finished.connect(lambda: p('Finished!'))
 
     def _init_ui(self):
-        self.setWindowTitle("spikely pipeman")
-        self.resize(384, 256)
+        self.setWindowTitle("spikely pipeline manager")
+        self.resize(640, 384)
 
         self.statusBar().addPermanentWidget(
             QtWidgets.QLabel("Version " + version.__version__))
@@ -33,6 +33,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.output.setAcceptRichText(False)
         self.output.setStyleSheet(
             "QTextEdit { color: green; background-color: black; }")
+        self.output.setWordWrapMode(QtGui.QTextOption.NoWrap)
 
         main_frame.layout().addWidget(self.output)
 
