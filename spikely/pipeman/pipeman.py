@@ -6,6 +6,8 @@ from PyQt5 import QtCore, QtWidgets, QtGui
 
 from spikely import version, config
 
+# TODO: Clean up code and comment
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -53,7 +55,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.cancel_btn.setDisabled(True)
         self.cancel_btn.clicked.connect(self.process.kill)
         main_frame.layout().addLayout(btn_box)
-        # main_frame.layout().addWidget(self.cancel_btn)
 
     def append(self, text):
         self.output.append(text)
