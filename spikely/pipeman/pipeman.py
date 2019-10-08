@@ -1,4 +1,5 @@
 import sys
+import locale
 
 import pkg_resources
 from PyQt5 import QtCore, QtWidgets, QtGui
@@ -50,7 +51,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.output.append(text)
 
     def stdout_ready(self):
-        text = bytearray(self.process.readAllStandardOutput()).decode()
+        text = bytearray(self.process.readAllStandardOutput()).decode(locale.getdefaultlocale()[1])
+
         self.append(text)
 
 

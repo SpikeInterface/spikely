@@ -1,3 +1,5 @@
+import sys
+
 import PyQt5.QtCore as qc
 import PyQt5.QtWidgets as qw
 from PyQt5 import QtCore
@@ -70,7 +72,7 @@ class PipelineModel(qc.QAbstractListModel):
         run_process = QtCore.QProcess()
         run_process.setProgram('python')
         run_process.setArguments([f'{pipeman_path}', elem_list_str])
-        run_process.startDetached()
+        run_process.startDetached('python', [f'{pipeman_path}', elem_list_str])
 
     def clear(self):
         self.beginResetModel()
