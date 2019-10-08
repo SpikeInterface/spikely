@@ -18,6 +18,7 @@ class PipelineModel(qc.QAbstractListModel):
         self._element_list = []
         self._element_policy = sp_ste.StdElementPolicy()
         self._parameter_model = parameter_model
+        self._threadpool = qc.QThreadPool()
 
     def _elem_cls_count(self, target_cls):
         elem_cls_list = [type(elem) for elem in self._element_list]
@@ -58,16 +59,19 @@ class PipelineModel(qc.QAbstractListModel):
         config.find_main_window().statusBar().showMessage(
             'Running pipeline', config.STATUS_MSG_TIMEOUT)
 
-        elem_jdict_list = [config.cvt_elem_to_dict(element)
-                           for element in self._element_list]
+        run_worker = config.RunWorker(self._element_list)
+        self._threadpool.start(run_worker)
 
-        elem_list_str = json.dumps(elem_jdict_list)
+        # elem_jdict_list = [config.cvt_elem_to_dict(element)
+        #                    for element in self._element_list]
 
-        run_queue = mp.Queue()
-        run_proc = mp.Process(target=config.async_run,
-                              args=[elem_list_str, run_queue])
-        run_proc.start()
-        self._run_job = sp_rup.RunProgress(run_queue, run_proc)
+        # elem_list_str = json.dumps(elem_jdict_list)
+
+        # run_queue = mp.Queue()
+        # run_proc = mp.Process(target=config.async_run,
+        #                       args=[elem_list_str, run_queue])
+        # run_proc.start()
+        # self._run_job = sp_rup.RunProgress(run_queue, run_proc)
 
     def clear(self):
         self.beginResetModel()
