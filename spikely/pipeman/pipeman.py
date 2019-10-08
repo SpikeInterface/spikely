@@ -1,7 +1,9 @@
-from PyQt5 import QtCore, QtWidgets
-from spikely import version
-import pkg_resources
 import sys
+
+import pkg_resources
+from PyQt5 import QtCore, QtWidgets
+
+from spikely import version
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -9,12 +11,11 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__()
 
         self._init_ui()
-        self._init_run()
+        self._init_piperun()
 
-        # self.process.started.connect(lambda: p('Started!'))
-        # self.process.finished.connect(lambda: p('Finished!'))
-        # print 'Starting process'
-        # self.process.start('python', ['speak.py'])
+        # self.process.started.connect(lambda: print(
+        #     'spikely pipeline running...'))
+        # # self.process.finished.connect(lambda: p('Finished!'))
 
     def _init_ui(self):
         self.setWindowTitle("spikely pipeman")
@@ -30,42 +31,30 @@ class MainWindow(QtWidgets.QMainWindow):
         self.output = QtWidgets.QTextEdit(self)
         self.output.setReadOnly(True)
         self.output.setAcceptRichText(False)
+        self.output.setStyleSheet(
+            "QTextEdit { color: green; background-color: black; }")
 
         main_frame.layout().addWidget(self.output)
 
-    def _init_run(self):
-        fn = pkg_resources.resource_filename('spikely.pipeman', 'piperun.py')
+    def _init_piperun(self):
+        piperun_path = pkg_resources.resource_filename(
+            'spikely.pipeman', 'piperun.py')
 
         self.process = QtCore.QProcess(self)
         self.process.setProcessChannelMode(QtCore.QProcess.MergedChannels)
         self.process.readyReadStandardOutput.connect(self.stdout_ready)
-        # self.process.readyReadStandardError.connect(self.stderr_ready)
-        self.process.start('python', [fn, sys.argv[1]])
+        self.process.start('python', [piperun_path, sys.argv[1]])
 
     def append(self, text):
-        # cursor = self.output.textCursor()
-        # cursor.movePosition(cursor.End)
-        # cursor.insertText(text)
-        # self.output.ensureCursorVisible()
         self.output.append(text)
 
     def stdout_ready(self):
         text = bytearray(self.process.readAllStandardOutput()).decode()
-        # text = ba.decode('utf-8')
-        self.append(text)
-
-    def stderr_ready(self):
-        text = bytearray(self.process.readAllStandardError()).decode()
-        # text = ba.decode('utf-8')
         self.append(text)
 
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
-
-    # for index, arg in enumerate(sys.argv):
-    #     print(f'index: {index}\n{arg}\n')
-
     win = MainWindow()
     win.show()
     sys.exit(app.exec_())
