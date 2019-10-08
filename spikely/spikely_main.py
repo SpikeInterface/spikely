@@ -11,10 +11,7 @@ modules whose methods are called in response to user interactions with the UI.
 import sys
 
 import pkg_resources
-import PyQt5.QtCore as qc
-import PyQt5.QtGui as qg
-import PyQt5.QtWidgets as qw
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore, QtGui
 
 from . import file_menu, help_menu
 from . import operation_view as sp_opv
@@ -43,7 +40,7 @@ class SpikelyMainWindow(QtWidgets.QMainWindow):
         try:
             spikely_png_path = pkg_resources.resource_filename(
                 'spikely.resources', 'spikely.png')
-            self.setWindowIcon(qg.QIcon(spikely_png_path))
+            self.setWindowIcon(QtGui.QIcon(spikely_png_path))
         except KeyError:
             print('<<spikely error: Failed to find spikely.png in resource '
                   'directory>>', file=sys.stderr)
@@ -57,7 +54,7 @@ class SpikelyMainWindow(QtWidgets.QMainWindow):
         menu_bar.addMenu(help_menu.create_help_menu(self))
 
         bar = tool_bar.create_tool_bar(self)
-        self.addToolBar(qc.Qt.RightToolBarArea, bar)
+        self.addToolBar(QtCore.Qt.RightToolBarArea, bar)
 
         main_frame = QtWidgets.QFrame()
         self.setCentralWidget(main_frame)

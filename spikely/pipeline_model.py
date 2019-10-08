@@ -1,12 +1,12 @@
-import multiprocessing as mp
-
 import PyQt5.QtCore as qc
 import PyQt5.QtWidgets as qw
+from PyQt5 import QtCore
+import pkg_resources
 
 from . import config
 from .elements import spike_element as sp_spe
 from .elements import std_element_policy as sp_ste
-from . import run_progress as sp_rup
+# from . import run_progress as sp_rup
 import json
 
 
@@ -59,13 +59,20 @@ class PipelineModel(qc.QAbstractListModel):
         config.find_main_window().statusBar().showMessage(
             'Running pipeline', config.STATUS_MSG_TIMEOUT)
 
-        run_worker = config.RunWorker(self._element_list)
-        self._threadpool.start(run_worker)
+        elem_jdict_list = [config.cvt_elem_to_dict(element)
+                           for element in self._element_list]
 
-        # elem_jdict_list = [config.cvt_elem_to_dict(element)
-        #                    for element in self._element_list]
+        elem_list_str = json.dumps(elem_jdict_list)
 
-        # elem_list_str = json.dumps(elem_jdict_list)
+        fn = pkg_resources.resource_filename('spikely.pipeman', 'pipeman.py')
+
+        run_process = QtCore.QProcess()
+        run_process.setProgram('python')
+        run_process.setArguments([f'{fn}', elem_list_str])
+        run_process.startDetached()
+
+        # run_worker = config.RunWorker(self._element_list)
+        # self._threadpool.start(run_worker)
 
         # run_queue = mp.Queue()
         # run_proc = mp.Process(target=config.async_run,
@@ -107,11 +114,13 @@ class PipelineModel(qc.QAbstractListModel):
         self._element_list.insert(new_elem_insert_pos, new_elem)
         self.endInsertRows()
 
+    # TODO: Clean this up in line w/ add_element method
     def move_up(self, elem: sp_spe.SpikeElement) -> None:
         rank = self._element_policy.cls_order_dict
         row = self._element_list.index(elem)
 
-        if row > 0 and rank[type(elem)] == rank[type(self._element_list[row - 1])]:
+        if row > 0 and rank[type(elem)] == \
+                rank[type(self._element_list[row - 1])]:
             self.beginMoveRows(qc.QModelIndex(), row,
                 row, qc.QModelIndex(), row - 1)  # noqa: E128
             self._swap(self._element_list, row, row - 1)
@@ -120,6 +129,7 @@ class PipelineModel(qc.QAbstractListModel):
             config.find_main_window().statusBar().showMessage(
                 "Cannot move element any higher", config.STATUS_MSG_TIMEOUT)
 
+    # TODO: Clean this up in line w/ add_element method
     def move_down(self, elem: sp_spe.SpikeElement) -> None:
         rank = self._element_policy.cls_order_dict
         row = self._element_list.index(elem)
