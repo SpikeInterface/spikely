@@ -1,6 +1,3 @@
-import os
-import sys
-
 import sys
 from ctypes import cdll
 os_encoding = 'cp' + str(cdll.kernel32.GetACP())
