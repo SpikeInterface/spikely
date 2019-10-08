@@ -58,7 +58,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if sys.platform.startswith('win'):
             text = bytearray(self.process.readAllStandardOutput()).decode(os_encoding)
         else:
-            text = bytearray(self.process.readAllStandardOutput()).decode(os_encoding)
+            text = bytearray(self.process.readAllStandardOutput()).decode()
 
         self.append(text)
 
