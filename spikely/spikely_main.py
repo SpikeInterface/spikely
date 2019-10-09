@@ -37,6 +37,10 @@ class SpikelyMainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("spikely")
         self.setGeometry(100, 100, 1280, 512)
 
+        # Disable maximize button on title bar
+        # self.setWindowFlags(self.windowFlags()
+        #                     & ~QtCore.Qt.WindowMaximizeButtonHint)
+
         try:
             spikely_png_path = pkg_resources.resource_filename(
                 'spikely.resources', 'spikely.png')
@@ -74,6 +78,9 @@ class SpikelyMainWindow(QtWidgets.QMainWindow):
         # Subwindow at bottom for pipeline operations (run, clear, queue)
         main_frame.layout().addWidget(sp_opv.OperationView(
             self._pipeline_model, self._parameter_model))
+
+        # Stretches pipeline and parameter widgets down as window grows
+        main_frame.layout().setStretch(0, 1)
 
 
 def launch_spikely():

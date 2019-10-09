@@ -1,3 +1,16 @@
+"""Standalone application launched by spikely to manage pipeline execution.
+
+To support parallelism each spikely pipeline is executed in its own process
+(QProcess).  pipeman is launched by spikely as a detached process passing in
+the pipeline in as a json encoded string in sys.argv[1].  In turn, pipeman
+creates a child process of its own, that actually executes the pipeline
+(piperun).
+
+Creating a child process of its own allows pipeman to catch and display the
+stdout/stderr of piperun, and allows the user to kill piperun without killing
+pipeman.
+
+"""
 import sys
 import locale
 
@@ -5,8 +18,6 @@ import pkg_resources
 from PyQt5 import QtCore, QtWidgets, QtGui
 
 from spikely import version, config
-
-# TODO: Clean up code and comment
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -67,9 +78,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.append(text)
 
     def closeEvent(self, event):
+        """Overrides QMainWindow method for confirmation before exiting"""
         if self.process.state() == QtCore.QProcess.Running:
             reply = QtWidgets.QMessageBox.question(
-                config.find_main_window(), 'Exiting', 'Exiting will terminate'
+                config.get_main_window(), 'Exiting', 'Exiting will terminate'
                 ' pipeline execution.  Are you sure you want to exit?',
                 QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
 
@@ -83,7 +95,7 @@ def main():
     win.show()
     sys.exit(app.exec_())
 
-    # config.find_main_window().statusBar().showMessage(
+    # config.get_main_window().statusBar().showMessage(
     #     "Error Message", config.STATUS_MSG_TIMEOUT)
 
 

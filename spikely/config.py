@@ -14,8 +14,8 @@ ELEMENT_ROLE = 0x100
 PARAM_COL, TYPE_COL, VALUE_COL = 0, 1, 2
 
 
-def find_main_window():
-    # Avoids a global. Used to specify parent for qw.QMessageBox popups
+def get_main_window() -> QtWidgets.QMainWindow:
+    """Returns the app's main window for use as message box parent."""
     for widget in QtWidgets.QApplication.instance().topLevelWidgets():
         if isinstance(widget, QtWidgets.QMainWindow):
             return widget
@@ -27,6 +27,17 @@ def find_main_window():
 
 
 def cvt_elem_to_dict(elem: sp_spe.SpikeElement) -> dict:
+    """Converts element to dictionary to enable JSON encoding.
+
+    Elements cannot be directly json encoded, so this function stores and
+    element's class and module names along its instance data in a dictionary.
+    The dictionary can be encoded, and when decoded a new instance of the
+    element can be instantiated.
+
+    json encoded elements are saved to files to allow pipeline saves and loads,
+    and also used to transfer pipelines as strings between processes.
+
+    """
     elem_dict = {
         "element_cls_name": elem.__class__.__name__,
         "element_mod_name": elem.__module__,
@@ -38,6 +49,13 @@ def cvt_elem_to_dict(elem: sp_spe.SpikeElement) -> dict:
 
 
 def cvt_dict_to_elem(elem_dict: dict) -> sp_spe.SpikeElement:
+    """ Converts an element dictionary into an element.
+
+    Used as part of the json encode/decode process, this method "reconstitutes"
+    an element from a dictionary of element instance data that had been json
+    encoded.
+
+    """
     elem_mod = importlib.import_module(elem_dict['element_mod_name'])
     elem_cls = getattr(elem_mod, elem_dict['element_cls_name'])
     spif_mod = importlib.import_module(elem_dict['spif_mod_name'])

@@ -188,7 +188,7 @@ class ParameterModel(QtCore.QAbstractTableModel):
 
         except (TypeError, ValueError) as err:
             QtWidgets.QMessageBox.warning(
-                config.find_main_window(), 'Type Conversion Error', repr(err))
+                config.get_main_window(), 'Type Conversion Error', repr(err))
             success = False
 
         return success, cvt_value

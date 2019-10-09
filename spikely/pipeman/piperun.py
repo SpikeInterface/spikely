@@ -11,10 +11,12 @@ def run(elem_list_str):
                  for elem_jdict in elem_jdict_list]
 
     payload = None
-    last_elem_index = len(elem_list) - 1
-    for count, elem in enumerate(elem_list):
-        next_elem = elem_list[count + 1] \
-            if count < last_elem_index else None
+    last_index = len(elem_list) - 1
+    for index, elem in enumerate(elem_list):
+        if index == last_index:
+            next_elem = None
+        else:
+            next_elem = elem_list[index + 1]
         payload = elem.run(payload, next_elem)
 
 

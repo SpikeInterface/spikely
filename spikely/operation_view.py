@@ -44,7 +44,7 @@ class OperationView(QtWidgets.QGroupBox):
         self._queue_btn.setEnabled(False)
 
     def _queue_clicked(self):
-        config.find_main_window().statusBar().showMessage(
+        config.get_main_window().statusBar().showMessage(
             "Queue not implemented", config.STATUS_MSG_TIMEOUT)
 
     def _pipeline_changed(self, parent=None, first=None, last=None):

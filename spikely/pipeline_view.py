@@ -136,7 +136,7 @@ class PipelineView(QtWidgets.QGroupBox):
         def move_up_clicked():
             element = self._get_selected_element()
             if element is None:
-                config.find_main_window().statusBar().showMessage(
+                config.get_main_window().statusBar().showMessage(
                     "Nothing to move up", config.STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.move_up(element)
@@ -151,7 +151,7 @@ class PipelineView(QtWidgets.QGroupBox):
         def move_down_clicked():
             element = self._get_selected_element()
             if element is None:
-                config.find_main_window().statusBar().showMessage(
+                config.get_main_window().statusBar().showMessage(
                     "Nothing to move down", config.STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.move_down(element)
@@ -165,7 +165,7 @@ class PipelineView(QtWidgets.QGroupBox):
         def delete_clicked():
             element = self._get_selected_element()
             if element is None:
-                config.find_main_window().statusBar().showMessage(
+                config.get_main_window().statusBar().showMessage(
                     "Nothing to delete", config.STATUS_MSG_TIMEOUT)
             else:
                 self._pipeline_model.delete(element)

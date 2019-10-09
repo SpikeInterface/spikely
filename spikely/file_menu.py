@@ -71,7 +71,7 @@ def _perform_load_action() -> None:
     options = QtWidgets.QFileDialog.Options()
     options |= QtWidgets.QFileDialog.DontUseNativeDialog
     file_name, _filter = QtWidgets.QFileDialog.getOpenFileName(
-            config.find_main_window(), caption='Open File',
+            config.get_main_window(), caption='Open File',
             filter='JSON (*.json)', options=options)
 
     if file_name:
@@ -86,13 +86,13 @@ def _perform_load_action() -> None:
 
         except (json.decoder.JSONDecodeError, ValueError) as e:
             QtWidgets.QMessageBox.warning(
-                config.find_main_window(), 'JSON File Load Failure',
+                config.get_main_window(), 'JSON File Load Failure',
                 f'Failed to load {file_name}: {str(e)}')
             _pipeline_model.clear()
 
         except Exception as e:
             QtWidgets.QMessageBox.warning(
-                config.find_main_window(), 'JSON File Load Failure',
+                config.get_main_window(), 'JSON File Load Failure',
                 f'Unspecified exception: {str(e)}')
             _pipeline_model.clear()
 
@@ -119,7 +119,7 @@ def _perform_save_action() -> None:
         options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
         file_name, _filter = QtWidgets.QFileDialog.getSaveFileName(
-            config.find_main_window(), caption='Save File',
+            config.get_main_window(), caption='Save File',
             filter='JSON (*.json)', options=options)
 
         if file_name:

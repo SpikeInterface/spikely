@@ -32,7 +32,7 @@ def _perform_file_action() -> None:
     options = QtWidgets.QFileDialog.Options()
     options |= QtWidgets.QFileDialog.DontUseNativeDialog
     file_name, _filter = QtWidgets.QFileDialog.getOpenFileName(
-            config.find_main_window(), caption='Copy File Name to Clipboard',
+            config.get_main_window(), caption='Copy File Name to Clipboard',
             options=options)
 
     if file_name:
@@ -46,7 +46,7 @@ def _perform_folder_action() -> None:
     options |= QtWidgets.QFileDialog.ShowDirsOnly
     options |= QtWidgets.QFileDialog.DontResolveSymlinks
     folder_name = QtWidgets.QFileDialog.getExistingDirectory(
-            config.find_main_window(), caption='Copy Folder Name to Clipboard',
+            config.get_main_window(), caption='Copy Folder Name to Clipboard',
             options=options)
 
     if folder_name:

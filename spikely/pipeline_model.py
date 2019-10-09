@@ -41,7 +41,7 @@ class PipelineModel(QtCore.QAbstractListModel):
         missing_param_count = self._missing_param_count()
         if missing_param_count:
             QtWidgets.QMessageBox.warning(
-                config.find_main_window(), 'Run Failure',
+                config.get_main_window(), 'Run Failure',
                 f'Missing mandatory element parameters.  Missing parameter '
                 f'count: {missing_param_count}')
             return
@@ -49,11 +49,11 @@ class PipelineModel(QtCore.QAbstractListModel):
         for cls in self._element_policy.required_cls_list:
             if not self._elem_cls_count(cls):
                 QtWidgets.QMessageBox.warning(
-                    config.find_main_window(), 'Run Failure',
+                    config.get_main_window(), 'Run Failure',
                     f'Missing required element: {cls.__name__}')
                 return
 
-        config.find_main_window().statusBar().showMessage(
+        config.get_main_window().statusBar().showMessage(
             'Running pipeline', config.STATUS_MSG_TIMEOUT)
 
         elem_jdict_list = [config.cvt_elem_to_dict(element)
@@ -68,7 +68,7 @@ class PipelineModel(QtCore.QAbstractListModel):
             'python', [f'{pipeman_path}', elem_list_str])
         if not success:
             QtWidgets.QMessageBox.warning(
-                config.find_main_window(), 'Failed to Start Python Process',
+                config.get_main_window(), 'Failed to Start Python Process',
                 f'Command line: python {pipeman_path}, elem_list_str')
 
     def clear(self):
@@ -85,7 +85,7 @@ class PipelineModel(QtCore.QAbstractListModel):
         new_elem_is_singleton = self._element_policy.\
             is_cls_singleton(new_elem.__class__)
         if new_elem_is_singleton and new_elem_cls_count:
-            config.find_main_window().statusBar().showMessage(
+            config.get_main_window().statusBar().showMessage(
                 'Only one element of this type allowed in pipeline',
                 config.STATUS_MSG_TIMEOUT)
             return
@@ -117,7 +117,7 @@ class PipelineModel(QtCore.QAbstractListModel):
             self._swap(self._element_list, row, row - 1)
             self.endMoveRows()
         else:
-            config.find_main_window().statusBar().showMessage(
+            config.get_main_window().statusBar().showMessage(
                 "Cannot move element any higher", config.STATUS_MSG_TIMEOUT)
 
     # TODO: Clean this up in line w/ add_element method
@@ -132,7 +132,7 @@ class PipelineModel(QtCore.QAbstractListModel):
             self._swap(self._element_list, row, row + 1)
             self.endMoveRows()
         else:
-            config.find_main_window().statusBar().showMessage(
+            config.get_main_window().statusBar().showMessage(
                 "Cannot move element any lower", config.STATUS_MSG_TIMEOUT)
 
     def delete(self, element: sp_spe.SpikeElement) -> None:
