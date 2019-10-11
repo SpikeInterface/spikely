@@ -7,11 +7,21 @@ with open('spikely/version.py') as fp:
 with open('README.md', 'r') as fp:
     long_description = fp.read()
 
+with open('LICENSE') as fp:
+    spikely_license = fp.read()
+
 
 setup(
     name='spikely',
     version=version['__version__'],
-    packages=find_packages(),
+    description='Spike sorting made simple',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    author='Roger Hurwitz',
+    author_email='rogerhurwitz@gmail.com',
+    url='https://github.com/SpikeInterface/spikely',
+    license=spikely_license,
+    packages=find_packages(exclude=('tests', 'docs')),
     include_package_data=True,
     install_requires=[
         'PyQt5>=5.12.3',
@@ -19,12 +29,6 @@ setup(
         'spiketoolkit>=0.5.0',
         'spikesorters>=0.2.0'
     ],
-    author='Roger Hurwitz',
-    author_email='rogerhurwitz@gmail.com',
-    description='Spike sorting made simple',
-    long_description=long_description,
-    long_description_content_type='text/markdown',
-    url='https://github.com/SpikeInterface/spikely',
     entry_points={
         'console_scripts': [
             'spikely=spikely.spikely_main:launch_spikely'
