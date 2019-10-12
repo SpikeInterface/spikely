@@ -7,10 +7,6 @@ with open('spikely/version.py') as fp:
 with open('README.md', 'r') as fp:
     long_description = fp.read()
 
-with open('LICENSE') as fp:
-    spikely_license = fp.read()
-
-
 setup(
     name='spikely',
     version=version['__version__'],
@@ -20,7 +16,6 @@ setup(
     author='Roger Hurwitz',
     author_email='rogerhurwitz@gmail.com',
     url='https://github.com/SpikeInterface/spikely',
-    license=spikely_license,
     packages=find_packages(exclude=('tests', 'docs')),
     include_package_data=True,
     install_requires=[
@@ -35,7 +30,7 @@ setup(
     },
     classifiers=[
         'Programming Language :: Python :: 3',
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Operating System :: OS Independent',
     ],
 )
