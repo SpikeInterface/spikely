@@ -14,15 +14,4 @@ If you want to install from the source so that you are up-to-date with the lates
 
     git clone https://github.com/SpikeInterface/spikely
     cd spikely
-    python setup.py install (or develop)
-
-Requirements
-------------
-
-The following Python packages are required for running spikely.
-They are installed when using the pip installer for :code:`spikeinterface`.
-
-- PyQt5
-- spikeextractors
-- spiketoolkit
-- spikesorters
+    pip install -r requirements.txt

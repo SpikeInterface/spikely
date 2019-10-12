@@ -24,9 +24,8 @@ setup(
     packages=find_packages(exclude=('tests', 'docs')),
     include_package_data=True,
     install_requires=[
-        'PyQt5>=5.12.3',
+        'pyqt5>=5.13.1',
         'spikeextractors>=0.7.0',
-        'spiketoolkit>=0.5.0',
         'spikesorters>=0.2.0'
     ],
     entry_points={
