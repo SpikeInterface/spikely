@@ -20,7 +20,7 @@ class StdElementPolicy(sp_elp.ElementPolicy):
             sp_ree.RecordingExtractor: 'Recording Extractor',
             sp_pre.Preprocessor: 'Preprocessor',
             sp_sor.Sorter: 'Sorter', sp_cur.Curator: 'Curator',
-            sp_soe.SortingExporter: 'Sorting Extractor'}
+            sp_soe.SortingExporter: 'Sorting Exporter'}
 
         super().__init__(required_cls_list, cls_order_dict,
                          cls_display_name_dict)
