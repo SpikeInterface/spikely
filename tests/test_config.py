@@ -1,16 +1,22 @@
 """Test functionality associated with config.py"""
 
-import sys
 import random
+import sys
 
+import pytest
 from PyQt5 import QtWidgets
-
 from spikely import config
 from spikely.elements.recording_extractor import RecordingExtractor
 from spikely.spikely_main import SpikelyMainWindow
 
 
-def test_element_conversion():
+def test_cvt_raises():
+    """cvt_elem_to_dict() shoule raise exception on invalid parameter"""
+    with pytest.raises(TypeError):
+        config.cvt_elem_to_dict('not a SpikeElement')
+
+
+def test_cvt_methods():
     """Test the methods used to enable JSON coding/decoding.
 
     Before JSON encoding, a SpikeElement is converted into a data-based
