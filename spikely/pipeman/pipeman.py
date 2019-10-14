@@ -32,13 +32,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         piperun_path = pkg_resources.resource_filename(
             'spikely.pipeman', 'piperun.py')
-        self.process.start('python', [piperun_path, sys.argv[1]])
+        self.process.start('python', ['-u', piperun_path, sys.argv[1]])
 
         if self.process.state() == QtCore.QProcess.Starting \
                 or self.process.state() == QtCore.QProcess.Running:
             self.cancel_btn.setDisabled(False)
-            self.process.finished.connect(
-                lambda: self.cancel_btn.setDisabled(True))
+            self.process.finished.connect(self._process_finished)
+
+    def _process_finished(self, exit_status):
+        self.cancel_btn.setDisabled(True)
 
     def _init_ui(self):
         self.setWindowTitle("spikely pipeline manager")

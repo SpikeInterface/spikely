@@ -16,6 +16,16 @@ class PipelineModel(QtCore.QAbstractListModel):
         self._element_list = []
         self._element_policy = sp_ste.StdElementPolicy()
         self._parameter_model = parameter_model
+        self._share_output = False
+
+    # TODO: Put back in when ready to support terminal output
+    @property
+    def share_output(self):
+        return self._share_output
+
+    @share_output.setter
+    def share_output(self, state):
+        self._share_output = state
 
     def _elem_cls_count(self, target_cls):
         elem_cls_list = [type(elem) for elem in self._element_list]
@@ -60,16 +70,22 @@ class PipelineModel(QtCore.QAbstractListModel):
                            for element in self._element_list]
 
         elem_list_str = json.dumps(elem_jdict_list)
-        pipeman_path = pkg_resources.resource_filename(
-            'spikely.pipeman', 'pipeman.py')
 
-        run_process = QtCore.QProcess()
+        # TODO: Add plumbing for shared output support
+        if self.share_output:
+            run_path = pkg_resources.resource_filename(
+                'spikely.pipeman', 'piperun.py')
+        else:
+            run_path = pkg_resources.resource_filename(
+                'spikely.pipeman', 'pipeman.py')
+
+        run_process = QtCore.QProcess(self)
         success = run_process.startDetached(
-            'python', [f'{pipeman_path}', elem_list_str])
+            'python', [f'{run_path}', elem_list_str])
         if not success:
             QtWidgets.QMessageBox.warning(
                 config.get_main_window(), 'Failed to Start Python Process',
-                f'Command line: python {pipeman_path}, elem_list_str')
+                f'Command line: python {run_path}, elem_list_str')
 
     def clear(self):
         self.beginResetModel()

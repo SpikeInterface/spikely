@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 
 from spikely import config as cfg
@@ -22,7 +23,9 @@ def run(elem_list_str):
 
 def main():
     run(sys.argv[1])
-    sys.exit()
+
+    # Turns out that this is a very important call
+    os._exit(1)
 
 
 if __name__ == '__main__':

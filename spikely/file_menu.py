@@ -30,29 +30,41 @@ def create_file_menu(main_window: QtWidgets.QMainWindow,
     _pipeline_model = pipeline_model
 
     file_menu = QtWidgets.QMenu('&File', main_window)
-    _create_file_actions(file_menu, main_window)
+
+    file_menu.addAction(_action(
+        'Load Pipeline', 'Load pipeline from JSON file', _perform_load_action))
+    file_menu.addAction(_action(
+        'Save Pipeline', 'Save pipeline to JSON file', _perform_save_action))
+    file_menu.addSeparator()
+    file_menu.addAction(_action(
+        'Share Output', 'Use terminal for all pipeline output',
+        _toggle_share_state, checkable=True, checked=False))
+    file_menu.addSeparator()
+    file_menu.addAction(_action(
+        'Exit', 'Terminate the application.',
+        QtWidgets.QApplication.closeAllWindows))
+
     return file_menu
 
 
-def _create_file_actions(menu, win):
-    file_actions = [
-         ('Load Pipeline', 'Ctrl+L', 'Load pipeline from JSON file',
-          _perform_load_action),
-         ('Save Pipeline', 'Ctrl+S', 'Save pipeline to JSON file.',
-          _perform_save_action),
-         ('Exit', 'Ctrl+Q', 'Terminate the application',
-          QtWidgets.QApplication.closeAllWindows)
-        ]
-
-    for name, shortcut, statustip, signal in file_actions:
-        action = QtWidgets.QAction(name, win)
+def _action(name, tip, slot, shortcut=None, checkable=False, checked=None):
+    action = QtWidgets.QAction(name, config.get_main_window(),
+                               checkable=checkable)
+    action.setStatusTip(tip)
+    action.triggered.connect(slot)
+    if shortcut is not None:
         action.setShortcut(shortcut)
-        action.setStatusTip(statustip)
-        action.triggered.connect(signal)
-        menu.addAction(action)
+    if checkable and checked is not None:
+        action.setChecked(checked)
+
+    return action
 
 
 # Menu Action execution methods
+
+def _toggle_share_state(checked):
+    _pipeline_model.share_output = checked
+
 
 def _perform_load_action() -> None:
     """Loads current pipeline with elements from a previously saved JSON file

@@ -7,3 +7,6 @@ spikely/__pycache__/
 tests/__pycache__/
 venv/
 *.json
+tmp_klusta/
+tmp_mountainsort4
+tmp_herdingspikes
