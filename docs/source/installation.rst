@@ -15,4 +15,5 @@ latest development, you can install with:
 
     git clone https://github.com/SpikeInterface/spikely
     cd spikely
-    pip install -r requirements.txt
+    python setup.py install
+    pip install -r requirements.txt --force
