@@ -31,12 +31,10 @@ def test_element_conversion():
 
     print(f'SpikeElement tested: {elem.display_name}')
 
-    assert (
-        elem.__class__.__name__ == new_elem.__class__.__name__
-        and elem.__module__ == new_elem.__module__
-        and elem.spif_class.__name__ == new_elem.spif_class.__name__
-        and elem.param_list == new_elem.param_list
-        )
+    assert elem.__class__.__name__ == new_elem.__class__.__name__
+    assert elem.__module__ == new_elem.__module__
+    assert elem.spif_class.__name__ == new_elem.spif_class.__name__
+    assert elem.param_list == new_elem.param_list
 
 
 def test_get_main_window():
