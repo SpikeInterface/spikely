@@ -60,6 +60,10 @@ def cvt_dict_to_elem(elem_dict: dict) -> sp_spe.SpikeElement:
     encoded.
 
     """
+
+    if not isinstance(elem_dict, dict):
+        raise TypeError('elem_dict must be a dict object')
+
     elem_mod = importlib.import_module(elem_dict['element_mod_name'])
     elem_cls = getattr(elem_mod, elem_dict['element_cls_name'])
     spif_mod = importlib.import_module(elem_dict['spif_mod_name'])

@@ -149,7 +149,7 @@ class ParameterModel(QtCore.QAbstractTableModel):
                 cvt_value = None
 
             elif type_str in ['str', 'file', 'folder', 'file_or_folder']:
-                cvt_value = value
+                cvt_value = str(value)
 
             elif type_str == 'int':
                 if value == 'inf':

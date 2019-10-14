@@ -7,6 +7,10 @@ from spikely.parameter_model import ParameterModel
     [('', 'None', None),
      ('str', 'Test', 'Test'),
      ('int_list_list', '[[0,1],[2,3]]', [[0, 1], [2, 3]]),
+     ('int', '25', 25),
+     ('int', 'inf', float('inf')),
+     ('float', '25.5', 25.5),
+     ('int_list', '[0, 1, 2, 3]', [0, 1, 2, 3]),
      ])
 def test_convert_value(type_str, value, expected_cvt_value):
     pm = ParameterModel()
