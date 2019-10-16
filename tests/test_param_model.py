@@ -1,4 +1,5 @@
 import pytest
+
 from spikely.parameter_model import ParameterModel
 
 
