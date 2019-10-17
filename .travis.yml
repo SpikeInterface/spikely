@@ -2,5 +2,5 @@
   script:
     - pytest
   install:
-    - pip install pytest
-    - pip install .
+    - pip install -r requirements.txt
+    - pip install -e .
