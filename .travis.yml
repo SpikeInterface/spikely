@@ -2,4 +2,5 @@
   script:
     - pytest
   install:
+    - pip install pytest
     - pip install .
