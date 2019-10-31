@@ -19,7 +19,7 @@ from . import parameter_model as sp_pam
 from . import parameter_view as sp_pav
 from . import pipeline_model as sp_pim
 from . import pipeline_view as sp_piv
-from . import tool_bar, version
+from . import tool_bar, __version__
 
 
 class SpikelyMainWindow(QtWidgets.QMainWindow):
@@ -44,13 +44,14 @@ class SpikelyMainWindow(QtWidgets.QMainWindow):
         try:
             spikely_png_path = pkg_resources.resource_filename(
                 'spikely.resources', 'spikely.png')
-            self.setWindowIcon(QtGui.QIcon(spikely_png_path))
         except KeyError:
             print('<<spikely error: Failed to find spikely.png in resource '
                   'directory>>', file=sys.stderr)
+        else:
+            self.setWindowIcon(QtGui.QIcon(spikely_png_path))
 
         self.statusBar().addPermanentWidget(
-            QtWidgets.QLabel("Version " + version.__version__))
+            QtWidgets.QLabel("Version " + __version__))
 
         menu_bar = self.menuBar()
         menu_bar.addMenu(file_menu.create_file_menu(self,
