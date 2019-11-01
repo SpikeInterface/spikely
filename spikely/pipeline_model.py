@@ -3,9 +3,7 @@ import json
 import pkg_resources
 from PyQt5 import QtCore, QtWidgets
 
-from . import config
-from .elements import spike_element as sp_spe
-from .elements import std_element_policy as sp_ste
+from spikely import SpikeElement, StdElementPolicy, config
 
 
 class PipelineModel(QtCore.QAbstractListModel):
@@ -14,7 +12,7 @@ class PipelineModel(QtCore.QAbstractListModel):
         super().__init__()
 
         self._element_list = []
-        self._element_policy = sp_ste.StdElementPolicy()
+        self._element_policy = StdElementPolicy()
         self._parameter_model = parameter_model
         self._share_output = False
 
@@ -94,7 +92,7 @@ class PipelineModel(QtCore.QAbstractListModel):
         # Synchronize parameter model and view
         self._parameter_model.element = None
 
-    def add_element(self, new_elem: sp_spe.SpikeElement) -> None:
+    def add_element(self, new_elem: SpikeElement) -> None:
         # Inserts new element into  pipeline in proper order
 
         new_elem_cls_count = self._elem_cls_count(new_elem.__class__)
@@ -122,7 +120,7 @@ class PipelineModel(QtCore.QAbstractListModel):
         self.endInsertRows()
 
     # TODO: Clean this up in line w/ add_element method
-    def move_up(self, elem: sp_spe.SpikeElement) -> None:
+    def move_up(self, elem: SpikeElement) -> None:
         rank = self._element_policy.cls_order_dict
         row = self._element_list.index(elem)
 
@@ -137,7 +135,7 @@ class PipelineModel(QtCore.QAbstractListModel):
                 "Cannot move element any higher", config.STATUS_MSG_TIMEOUT)
 
     # TODO: Clean this up in line w/ add_element method
-    def move_down(self, elem: sp_spe.SpikeElement) -> None:
+    def move_down(self, elem: SpikeElement) -> None:
         rank = self._element_policy.cls_order_dict
         row = self._element_list.index(elem)
 
@@ -151,7 +149,7 @@ class PipelineModel(QtCore.QAbstractListModel):
             config.get_main_window().statusBar().showMessage(
                 "Cannot move element any lower", config.STATUS_MSG_TIMEOUT)
 
-    def delete(self, element: sp_spe.SpikeElement) -> None:
+    def delete(self, element: SpikeElement) -> None:
         index = self._element_list.index(element)
         self.beginRemoveRows(QtCore.QModelIndex(), index, index)
         self._element_list.pop(index)

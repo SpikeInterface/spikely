@@ -2,9 +2,7 @@
 
 from PyQt5 import QtWidgets
 
-from . import config
-from .elements import spike_element as sp_spe
-from .elements import std_element_policy as sp_ste
+from spikely import StdElementPolicy, SpikeElement, config
 
 
 class PipelineView(QtWidgets.QGroupBox):
@@ -15,7 +13,7 @@ class PipelineView(QtWidgets.QGroupBox):
         self._pipeline_model = pipeline_model
         self._pipeline_view = QtWidgets.QListView(self)
         self._parameter_model = parameter_model
-        self._element_policy = sp_ste.StdElementPolicy()
+        self._element_policy = StdElementPolicy()
 
         self._init_ui()
 
@@ -71,7 +69,7 @@ class PipelineView(QtWidgets.QGroupBox):
 
         # All elements are subclasses of SpikeElement, but element policy
         # determines which ones are available to the user
-        elem_classes = [cls for cls in sp_spe.SpikeElement.__subclasses__()
+        elem_classes = [cls for cls in SpikeElement.__subclasses__()
                         if self._element_policy.is_cls_available(cls)]
         # Element (subclass) order is arbitrary, so sort by policy order
         elem_classes.sort(key=lambda e: self._element_policy.cls_order_dict[e])

@@ -1,7 +1,8 @@
 # Implements MVC view associated with pipeline operations (run,clear, queue)
 
 from PyQt5 import QtWidgets
-from . import config
+
+from spikely import config
 
 
 class OperationView(QtWidgets.QGroupBox):

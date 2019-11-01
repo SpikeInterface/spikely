@@ -16,8 +16,7 @@ import json
 
 from PyQt5 import QtWidgets
 
-from . import config
-from . import pipeline_model as sp_pim
+from spikely import PipelineModel, config
 
 # Enables access to element list for both input and output
 _pipeline_model = None
@@ -25,7 +24,7 @@ _pipeline_model = None
 
 # Menu and Menu Action construction methods
 def create_file_menu(main_window: QtWidgets.QMainWindow,
-                     pipeline_model: sp_pim.PipelineModel) -> QtWidgets.QMenu:
+                     pipeline_model: PipelineModel) -> QtWidgets.QMenu:
     global _pipeline_model
     _pipeline_model = pipeline_model
 

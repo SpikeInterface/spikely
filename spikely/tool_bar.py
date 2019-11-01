@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets
-from . import config
+
+from spikely import config
 
 # TODO: Implement instance (versus class) version of QFileDialog
 

@@ -5,7 +5,7 @@ import PyQt5.QtCore as QtCore
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 
-from . import config
+from spikely import config
 
 
 # An MVC model representation of an element's parameters

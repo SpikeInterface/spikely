@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets
 
-from .config import PARAM_COL, TYPE_COL, VALUE_COL
+from spikely.config import PARAM_COL, TYPE_COL, VALUE_COL
 
 
 class ParameterView(QtWidgets.QGroupBox):
