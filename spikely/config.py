@@ -38,6 +38,10 @@ def cvt_elem_to_dict(elem: sp_spe.SpikeElement) -> dict:
     and also used to transfer pipelines as strings between processes.
 
     """
+
+    if not isinstance(elem, sp_spe.SpikeElement):
+        raise TypeError('elem must be a SpikeElement object')
+
     elem_dict = {
         "element_cls_name": elem.__class__.__name__,
         "element_mod_name": elem.__module__,
@@ -56,6 +60,10 @@ def cvt_dict_to_elem(elem_dict: dict) -> sp_spe.SpikeElement:
     encoded.
 
     """
+
+    if not isinstance(elem_dict, dict):
+        raise TypeError('elem_dict must be a dict object')
+
     elem_mod = importlib.import_module(elem_dict['element_mod_name'])
     elem_cls = getattr(elem_mod, elem_dict['element_cls_name'])
     spif_mod = importlib.import_module(elem_dict['spif_mod_name'])

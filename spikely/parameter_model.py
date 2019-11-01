@@ -142,46 +142,46 @@ class ParameterModel(QtCore.QAbstractTableModel):
     # Helper Methods
     #
 
-    def _convert_value(self, type_str, value):
+    def _convert_value(self, type_str, value_str):
         success, cvt_value = True, None
         try:
-            if value == 'None':
+            if value_str == 'None':
                 cvt_value = None
 
             elif type_str in ['str', 'file', 'folder', 'file_or_folder']:
-                cvt_value = value
+                cvt_value = value_str
 
             elif type_str == 'int':
-                if value == 'inf':
-                    cvt_value = float(value)
+                if value_str == 'inf':
+                    cvt_value = float(value_str)
                 else:
-                    cvt_value = int(value)
+                    cvt_value = int(value_str)
 
             elif type_str == 'float':
-                cvt_value = float(value)
+                cvt_value = float(value_str)
 
             elif type_str == 'int_list':
-                cvt_value = self._str_list_to_int_list(value)
+                cvt_value = self._str_list_to_int_list(value_str)
 
             elif type_str == 'int_list_list':
                 # Strip outer sq brackets: '[[1,2],[3,4]]' -> '[1,2],[3,4]'
-                value = re.sub(r'^\[|\]$', '', value)
+                value_str = re.sub(r'^\[|\]$', '', value_str)
                 # Disambiguate list separator: '[1,2],[3,4]' -> [1,2]:[3,4]'
-                value = re.sub(r'\] *, *\[', ':', value)
+                value_str = re.sub(r'\] *, *\[', ':', value_str)
                 # Split into int_list strings and convert into int_lists
                 cvt_value = list(map(
-                    self._str_list_to_int_list, value.split(':')))
+                    self._str_list_to_int_list, value_str.split(':')))
 
             elif type_str == 'bool':
-                if value.lower() in ['true', 'yes']:
+                if value_str.lower() in ['true', 'yes']:
                     cvt_value = True
-                elif value.lower() in ['false', 'no']:
+                elif value_str.lower() in ['false', 'no']:
                     cvt_value = False
                 else:
-                    raise TypeError(f'{value} is not a valid bool type')
+                    raise TypeError(f'{value_str} is not a valid bool type')
 
             elif type_str == 'dtype':
-                cvt_value = np.dtype(value)
+                cvt_value = np.dtype(value_str)
 
             else:
                 raise TypeError(f'{type_str} is not a Spikely supported type')
