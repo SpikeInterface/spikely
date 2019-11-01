@@ -1,18 +1,18 @@
 Installation
 ============
 
-:code:`spikely` is a Python package. It can be installed using pip:
+:code:`spikely` is a Python package. The latest production version can be
+installed this way:
 
 .. code-block:: python
 
     pip install spikely
 
 
-If you want to install from the source so that you are up-to-date with the
-latest development, you can install with:
+If you want to work directly off the master branch of the repository, the
+latest pre-production version can be installed this way:
 
 .. code-block:: bash
 
     git clone https://github.com/SpikeInterface/spikely
-    cd spikely
-    pip install -r requirements.txt
+    pip install -e spikely
