@@ -181,8 +181,9 @@ class ParameterModel(QtCore.QAbstractTableModel):
                     raise TypeError(f'{value_str} is not a valid bool type')
 
             elif type_str == 'np.dtype':
-                # Conversion test
+                # Conversion test will trigger exception if not well-formed
                 np.dtype(value_str)
+                # Save np.dtype as string for consumption by SpikeInterface
                 cvt_value = value_str
 
             else:
