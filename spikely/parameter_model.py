@@ -181,7 +181,7 @@ class ParameterModel(QtCore.QAbstractTableModel):
                     raise TypeError(f'{value_str} is not a valid bool type')
 
             elif type_str == 'np.dtype':
-                cvt_value = np.dtype(value_str)
+                cvt_value = value_str#np.dtype(value_str)
 
             else:
                 raise TypeError(f'{type_str} is not a Spikely supported type')
