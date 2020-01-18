@@ -6,7 +6,8 @@ Workflow
 With a grounding in SpikeInterface_, and a grasp of spikely's element,
 parameter, and pipeline abstractions, the last piece of the puzzle to unlocking
 spikely's potential is understanding its workflow and associated user
-interface.
+interface.  Spikely was designed for specific use cases, and its workflow is
+optimized with those use cases in mind.
 
 At a high level spikely's workflow consists of creating a pipeline of elements,
 configuring the parameters associated with those elements, and finally, running

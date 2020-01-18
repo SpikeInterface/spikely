@@ -1,7 +1,7 @@
 spikely
 =======
 
-Spike sorting made simple
+Spike Sorting Made Simple
 -------------------------
 
 .. _SpikeInterface: https://github.com/SpikeInterface
