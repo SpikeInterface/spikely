@@ -43,8 +43,8 @@ spikely requires an understanding of a few key concepts specific to it:
       Pre-processors are optional. Spikely supports multiple Pre-Preprocessors
       per pipeline betwween the Extractor and the Sorter.
 
-    * *Sorters* - Spike sorting is a big part of SpikeInterface_, and spikely's
-      Sorters correspond closely to spike sorters in SpikeInterface_. Spikely
+    * *Sorters* - Spike sorting is a big part of SpikeInterface, and spikely's
+      Sorters correspond closely to spike sorters in SpikeInterface. Spikely
       requires the presence of one, and only one, Sorter in the pipeline.
       Sorters write their results out to a file (unless specified not to)
       allowing a Sorter to act as a terminating sink in a spikely pipeline.
@@ -61,7 +61,7 @@ spikely requires an understanding of a few key concepts specific to it:
 * **Parameter** - Most elements have one or more parameters associated with
   them that can be edited by the user in spikely to customize the behavior of
   that element during the execution of a pipeline. Parameters are element
-  specific, and some familiarity with the proxied node in SpikeInterface_ is
+  specific, and some familiarity with the proxied node in SpikeInterface is
   required to correctly configure an element.
 
 * **Pipeline** - The user organizes elements in spikely in a series where
