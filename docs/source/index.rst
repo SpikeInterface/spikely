@@ -20,8 +20,8 @@ Contents
    :maxdepth: 1
 
    overview
-   installation
    workflow
+   installation
    contact
 
 .. Indices and tables

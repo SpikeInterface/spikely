@@ -28,12 +28,9 @@ therefore complements, rather than replaces, SpikeInterface.
 
 Because of the close relationship between spikely and SpikeInterface, it is
 important for the spikely user to have a grounding in the concepts behind
-SpikeInterface.
-
-.. tip::
-   If you are not already familiar with SpikeInterface, a good place to get
-   started is its `online documentation
-   <https://spikeinterface.readthedocs.io/en/latest/overview.html>`_
+SpikeInterface.  If you are not already familiar with SpikeInterface, a good
+place to get started is its `online documentation
+<https://spikeinterface.readthedocs.io/en/latest/overview.html>`_
 
 In addition to being familiar with SpikeInterface, taking full advantage of
 spikely requires an understanding of a few key concepts specific to it:
@@ -41,11 +38,9 @@ spikely requires an understanding of a few key concepts specific to it:
 * **Element** - An element in Spikely corresponds to entities exposed by
   the data processing nodes in SpikeInterface.  To be used in spikely, the
   underlying SpikeInterface entity must already be installed on the user's
-  system.
-
-  .. tip::
-     For information on installing SpikeInterface entities like Spike Sorters, check out `this
-     document <https://spikeinterface.readthedocs.io/en/latest/sortersinfo.html>`_.
+  system. For information on installing SpikeInterface entities like Spike
+  Sorters, check out `this document
+  <https://spikeinterface.readthedocs.io/en/latest/sortersinfo.html>`_.
 
   Elements in spikely consist of:
 
