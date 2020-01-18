@@ -6,7 +6,7 @@ Spike sorting made simple
 
 .. _SpikeInterface: https://github.com/SpikeInterface
 
-Spikely is an application built on top of SpikeInterface_ designed to simplify
+Spikely is a Python application built on top of SpikeInterface_ designed to simplify
 the process of creating and running spike sorting pipelines.
 Spikely supports loading, preprocessing, sorting, curating, and exporting
 of extracellular datasets that are stored in `SpikeInterface compatible file
