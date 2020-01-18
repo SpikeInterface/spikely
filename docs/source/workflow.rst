@@ -45,6 +45,6 @@ flows through to the end.
    element (Sorter or Sorting Exporter).
 
 .. tip::
-   The pipeline creation and parameter configuration steps can be shortcut by
+   The pipeline creation and parameter configuration steps can be shortened by
    saving and loading complete pipelines to/from files using the corresponding
    actions from spikely's *File Menu.*
