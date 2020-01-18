@@ -16,21 +16,38 @@ SpikeInterface without having to program in Python. Spikely provides a GUI on
 top of SpikeInterface optimized for a specific use case: pipelining
 extracelluar data from a source to a sink while enabling one or more data
 transformations along the way.  In exchange for its ease of use and efficiency,
-spikely sacrifices some of SpikeInterface's power and breadth. Spikely therefor
-complements, rather than replaces, SpikeInterface.
+spikely sacrifices some of SpikeInterface's power and breadth. Spikely
+therefore complements, rather than replaces, SpikeInterface.
+
+.. tip::
+   One of scenarios we had in mind when making spikely was enabling bulk
+   extracelluar data processing in the lab.  After data collection, running a
+   standard series of transformations may be the next step prior to a deeper
+   dive on the data.  In that case using spikely may improve overall
+   throughput.
 
 Because of the close relationship between spikely and SpikeInterface, it is
 important for the spikely user to have a grounding in the concepts behind
-SpikeInterface.  If you are not already familiar with SpikeInterface, a good
-place to get started is its `online documentation
-<https://spikeinterface.readthedocs.io/en/latest/overview.html>`_
+SpikeInterface.
+
+.. tip::
+   If you are not already familiar with SpikeInterface, a good place to get
+   started is its `online documentation
+   <https://spikeinterface.readthedocs.io/en/latest/overview.html>`_
 
 In addition to being familiar with SpikeInterface, taking full advantage of
 spikely requires an understanding of a few key concepts specific to it:
 
-* **Element** - An element in Spikely corresponds to capabilites exposed by the
-  data processing nodes in SpikeInterface.  Specifically, spikely elements
-  consist of:
+* **Element** - An element in Spikely corresponds to entities exposed by
+  the data processing nodes in SpikeInterface.  To be used in spikely, the
+  underlying SpikeInterface entity must already be installed on the user's
+  system.
+
+  .. tip::
+     For information on installing SpikeInterface entities like Spike Sorters, check out `this
+     document <https://spikeinterface.readthedocs.io/en/latest/sortersinfo.html>`_.
+
+  Elements in spikely consist of:
 
     * *Recording Extractors* - Recording Extractors read raw extracelluar data
       from files, and make those data available to downstream elements in the
@@ -41,7 +58,7 @@ spikely requires an understanding of a few key concepts specific to it:
     * *Pre-Processors* - Pre-Processors transform data sourced into the
       pipeline by the Extractor before it is sent to the Sorter.
       Pre-processors are optional. Spikely supports multiple Pre-Preprocessors
-      per pipeline betwween the Extractor and the Sorter.
+      per pipeline between the Extractor and the Sorter.
 
     * *Sorters* - Spike sorting is a big part of SpikeInterface, and spikely's
       Sorters correspond closely to spike sorters in SpikeInterface. Spikely
@@ -67,5 +84,5 @@ spikely requires an understanding of a few key concepts specific to it:
 * **Pipeline** - The user organizes elements in spikely in a series where
   extracelluar data "flows" from the first element in the Pipeline to the last
   when the pipeline is run.  Pipelines, and their associated parameterized
-  elements, can be saved for future use therby enabling greater efficiency and
+  elements, can be saved for future use thereby enabling greater efficiency and
   repeatability.

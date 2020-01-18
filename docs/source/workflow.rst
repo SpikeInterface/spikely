@@ -3,14 +3,15 @@ Workflow
 
 .. _SpikeInterface: https://github.com/SpikeInterface
 
-With a solid grounding in SpikeInterface_, and a grasp of spikely's element,
+With a grounding in SpikeInterface_, and a grasp of spikely's element,
 parameter, and pipeline abstractions, the last piece of the puzzle to unlocking
-spikely's potential is understanding its workflow and associated UI layout.
+spikely's potential is understanding its workflow and associated user
+interface.
 
 At a high level spikely's workflow consists of creating a pipeline of elements,
 configuring the parameters associated with those elements, and finally, running
-the pipeline to cause extracellular data to be brought into the pipeline by the
-Extractor and transformed by the other elements in the pipeline flow.
+the pipeline to pull extracellular data into the pipeline transforming it as it
+flows through to the end.
 
 .. image:: ../images/gui_annotated.png
 
@@ -27,7 +28,7 @@ Extractor and transformed by the other elements in the pipeline flow.
    *Construct Pipeline* part of the UI that element's parameters are displayed
    in the *Configure Elements* part of the UI. Element parameters are specific
    to it, so a detailed explanation of an element's parameters will need to be
-   gleaned from the corresponding SpikeInterface_ documentation.  Clicking on
+   gleaned from the corresponding SpikeInterface documentation.  Clicking on
    the *Value* field for a parameter enables the user to edit it.  Spikely does
    rudimentary type checking, but for the most part it is up to the user to
    ensure that a parameter value is valid.
