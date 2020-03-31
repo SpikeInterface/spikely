@@ -20,8 +20,9 @@ setup(
     include_package_data=True,
     install_requires=[
         'pyqt5>=5.13.1',
-        'spikeextractors>=0.7.0',
-        'spikesorters>=0.2.0'
+        'spikeextractors==0.7.0',
+        'spikesorters==0.2.0',
+        'spiketoolkit==0.5.2'
     ],
     entry_points={
         'console_scripts': [
