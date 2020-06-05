@@ -1,13 +1,14 @@
 from . import element_policy as sp_elp
 from . import recording_extractor as sp_ree
-# from . import sorter as sp_sor
+
+from . import sorter as sp_sor
 from . import preprocessor as sp_pre
+
 # from . import curator as sp_cur
 # from . import sorting_exporter as sp_soe
 
 
 class StdElementPolicy(sp_elp.ElementPolicy):
-
     def __init__(self):
         # TODO: Restore required class list once other classes are added
         # required_cls_list = [
@@ -23,24 +24,33 @@ class StdElementPolicy(sp_elp.ElementPolicy):
         #     sp_sor.Sorter: 'Sorter', sp_cur.Curator: 'Curator',
         #     sp_soe.SortingExporter: 'Sorting Exporter'}
 
-        required_cls_list = [sp_ree.RecordingExtractor, sp_pre.Preprocessor]
+        required_cls_list = [
+            sp_ree.RecordingExtractor,
+            sp_pre.Preprocessor,
+            sp_sor.Sorter,
+        ]
 
-        cls_order_dict = {sp_ree.RecordingExtractor: 0, sp_pre.Preprocessor: 1}
+        cls_order_dict = {
+            sp_ree.RecordingExtractor: 0,
+            sp_pre.Preprocessor: 1,
+            sp_sor.Sorter: 2,
+        }
 
         cls_display_name_dict = {
             sp_ree.RecordingExtractor: "Recording Extractor",
-            sp_pre.Preprocessor: "Preprocessor"}
+            sp_pre.Preprocessor: "Preprocessor",
+            sp_sor.Sorter: "Sorter",
+        }
 
-        super().__init__(required_cls_list, cls_order_dict,
-                         cls_display_name_dict)
+        super().__init__(required_cls_list, cls_order_dict, cls_display_name_dict)
 
     def is_cls_available(self, cls):
         # return cls in [
         #     sp_ree.RecordingExtractor, sp_pre.Preprocessor, sp_sor.Sorter,
         #     sp_cur.Curator, sp_soe.SortingExporter]
-        return cls in [sp_ree.RecordingExtractor, sp_pre.Preprocessor]
+        return cls in [sp_ree.RecordingExtractor, sp_pre.Preprocessor, sp_sor.Sorter]
 
     def is_cls_singleton(self, cls):
-        # return cls in [
+        return cls in [sp_ree.RecordingExtractor, sp_sor.Sorter]
         #     sp_ree.RecordingExtractor, sp_sor.Sorter, sp_soe.SortingExporter]
         return False
