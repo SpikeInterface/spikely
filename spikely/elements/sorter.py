@@ -27,7 +27,7 @@ class Sorter(sp_spe.SpikeElement):
         else:
             self._display_icon = None
 
-        self._param_list = guiparams.get_gui_params(self._display_name, "curator")
+        self._param_list = guiparams.get_gui_params(self._display_name, "sorter")
 
     @property
     def display_name(self):
