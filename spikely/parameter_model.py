@@ -83,6 +83,8 @@ class ParameterModel(QtCore.QAbstractTableModel):
                     result = 'boolean'
                 elif type_str == 'int_list':
                     result = 'list of integers'
+                elif type_str == 'int_or_int_list':
+                    result = 'int or list of integers'
                 elif type_str == 'str':
                     result = 'text string'
                 elif type_str == 'file':
@@ -162,6 +164,12 @@ class ParameterModel(QtCore.QAbstractTableModel):
 
             elif type_str == 'int_list':
                 cvt_value = self._str_list_to_int_list(value_str)
+
+            elif type_str == "int_or_int_list":
+                try:
+                    cvt_value = int(value_str)
+                except ValueError:
+                    cvt_value = self._str_list_to_int_list(value_str)
 
             elif type_str == 'int_list_list':
                 # Strip outer sq brackets: '[[1,2],[3,4]]' -> '[1,2],[3,4]'

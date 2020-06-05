@@ -1,13 +1,10 @@
-# Python
 import numpy as np
-import copy
-# PyQt
-from PyQt5 import QtGui
 import pkg_resources
-from PyQt5 import QtWidgets
-# spikely
-from . import spike_element as sp_spe
 import spikeextractors as se
+from PyQt5 import QtGui, QtWidgets
+
+from . import guiparams
+from . import spike_element as sp_spe
 
 
 class RecordingExtractor(sp_spe.SpikeElement):
@@ -26,29 +23,43 @@ class RecordingExtractor(sp_spe.SpikeElement):
 
         if QtWidgets.QApplication.instance():
             self._display_icon = QtGui.QIcon(
-                pkg_resources.resource_filename(
-                    'spikely.resources', 'extractor.png'))
+                pkg_resources.resource_filename("spikely.resources", "extractor.png")
+            )
         else:
             self._display_icon = None
 
-        self._param_list = copy.deepcopy(spif_class.extractor_gui_params)
+        self._param_list = guiparams.get_gui_params(self._display_name, "extractor")
 
         probe_path_dict = {
-            'name': 'probe_path', 'type': 'file',
-            'value': None, 'default': None,
-            'title': 'Path to probe file (.csv or .prb)'
+            "name": "probe_path",
+            "type": "file",
+            "value": None,
+            "default": None,
+            "title": "Path to probe file (.csv or .prb)",
         }
         self._param_list.append(probe_path_dict)
 
-        self._param_list.append({
-            'name': 'channel_map', 'type': 'int_list', 'value': None,
-            'default': None, 'title': "List of channel ids for underlying \
-            channels to be be mapped. If None, then uses default ordering."})
+        self._param_list.append(
+            {
+                "name": "channel_map",
+                "type": "int_list",
+                "value": None,
+                "default": None,
+                "title": "List of channel ids for underlying channels to be be mapped. "
+                "If None, then uses default ordering.",
+            }
+        )
 
-        self._param_list.append({
-            'name': 'channel_groups', 'type': 'int_list', 'value': None,
-            'default': None, 'title': "List of channel groups of the \
-            underlying channels. If None, then no groups given."})
+        self._param_list.append(
+            {
+                "name": "channel_groups",
+                "type": "int_list",
+                "value": None,
+                "default": None,
+                "title": "List of channel groups of the underlying channels. "
+                "If None, then no groups given.",
+            }
+        )
 
     @property
     def display_name(self):
@@ -62,30 +73,33 @@ class RecordingExtractor(sp_spe.SpikeElement):
         spif_params_dict = {}
         probe_file = None
         for param in self.param_list:
-            if param['name'] == 'probe_path':
-                probe_file = param['value']
-            elif param['name'] == 'channel_map':
-                channel_map = param['value']
-            elif param['name'] == 'channel_groups':
-                channel_groups = param['value']
+            if param["name"] == "probe_path":
+                probe_file = param["value"]
+            elif param["name"] == "channel_map":
+                channel_map = param["value"]
+            elif param["name"] == "channel_groups":
+                channel_groups = param["value"]
             else:
-                spif_params_dict[param['name']] = param['value']
+                spif_params_dict[param["name"]] = param["value"]
 
         recording = self._spif_class(**spif_params_dict)
 
         if probe_file:
             recording = recording.load_probe_file(
-                probe_file, channel_map, channel_groups)
+                probe_file, channel_map, channel_groups
+            )
         else:
             if channel_map:
-                assert np.all([
-                    chan in channel_map for chan in
-                    recording.get_channel_ids()]), "all channel_ids in " \
-                        "'channel_map' must be in recording channel ids"
-                recording = se.SubRecordingExtractor(
-                    recording, channel_ids=channel_map)
+                assert np.all(
+                    [chan in channel_map for chan in recording.get_channel_ids()]
+                ), (
+                    "all channel_ids in "
+                    "'channel_map' must be in recording channel ids"
+                )
+                recording = se.SubRecordingExtractor(recording, channel_ids=channel_map)
             if channel_groups:
                 recording.set_channel_groups(
-                    recording.get_channel_ids(), channel_groups)
+                    recording.get_channel_ids(), channel_groups
+                )
 
         return recording

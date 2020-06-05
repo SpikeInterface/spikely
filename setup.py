@@ -19,10 +19,10 @@ setup(
     packages=find_packages(exclude=('tests', 'docs')),
     include_package_data=True,
     install_requires=[
-        'pyqt5>=5.13.1',
-        'spikeextractors==0.7.0',
-        'spikesorters==0.2.0',
-        'spiketoolkit==0.5.2'
+        'pyqt5>=5.14.2',
+        'spikeextractors>=0.8.4',
+        'spikesorters>=0.3.3',
+        'spiketoolkit>=0.6.3'
     ],
     entry_points={
         'console_scripts': [
