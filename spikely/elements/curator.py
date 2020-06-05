@@ -1,7 +1,6 @@
 # Python
 import inspect
 import shutil
-import copy
 from pathlib import Path
 # PyQt
 from PyQt5 import QtGui
@@ -11,12 +10,13 @@ import pkg_resources
 from . import spike_element as sp_spe
 import spikeextractors as se
 import spiketoolkit as st
+from . import guiparams
 
 
 class Curator(sp_spe.SpikeElement):
     @staticmethod
     def get_installed_spif_cls_list():
-        return st.curation.installed_curation_list
+        return st.validation.curation_list.installed_curation_list
 
     @staticmethod
     def get_display_name_from_spif_class(spif_class):
@@ -34,7 +34,7 @@ class Curator(sp_spe.SpikeElement):
         else:
             self._display_icon = None
 
-        self.param_list = copy.deepcopy(spif_class.curator_gui_params)
+        self._param_list = guiparams.get_gui_params(self._display_name, "curator")
 
     @property
     def display_name(self):

@@ -4,7 +4,8 @@ from . import recording_extractor as sp_ree
 from . import sorter as sp_sor
 from . import preprocessor as sp_pre
 
-# from . import curator as sp_cur
+from . import curator as sp_cur
+
 # from . import sorting_exporter as sp_soe
 
 
@@ -28,18 +29,21 @@ class StdElementPolicy(sp_elp.ElementPolicy):
             sp_ree.RecordingExtractor,
             sp_pre.Preprocessor,
             sp_sor.Sorter,
+            sp_cur.Curator,
         ]
 
         cls_order_dict = {
             sp_ree.RecordingExtractor: 0,
             sp_pre.Preprocessor: 1,
             sp_sor.Sorter: 2,
+            sp_cur.Curator: 3,
         }
 
         cls_display_name_dict = {
             sp_ree.RecordingExtractor: "Recording Extractor",
             sp_pre.Preprocessor: "Preprocessor",
             sp_sor.Sorter: "Sorter",
+            sp_cur.Curator: "Curator",
         }
 
         super().__init__(required_cls_list, cls_order_dict, cls_display_name_dict)
@@ -48,7 +52,12 @@ class StdElementPolicy(sp_elp.ElementPolicy):
         # return cls in [
         #     sp_ree.RecordingExtractor, sp_pre.Preprocessor, sp_sor.Sorter,
         #     sp_cur.Curator, sp_soe.SortingExporter]
-        return cls in [sp_ree.RecordingExtractor, sp_pre.Preprocessor, sp_sor.Sorter]
+        return cls in [
+            sp_ree.RecordingExtractor,
+            sp_pre.Preprocessor,
+            sp_sor.Sorter,
+            sp_cur.Curator,
+        ]
 
     def is_cls_singleton(self, cls):
         return cls in [sp_ree.RecordingExtractor, sp_sor.Sorter]
