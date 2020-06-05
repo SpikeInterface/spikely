@@ -1,19 +1,18 @@
-import copy
 import inspect
 import os
 
 import pkg_resources
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from PyQt5 import QtGui, QtWidgets
 
-from . import exporterlist as sp_exl
+from . import guiparams
 from . import spike_element as sp_spe
 
 
 class SortingExporter(sp_spe.SpikeElement):
     @staticmethod
     def get_installed_spif_cls_list():
-        return sp_exl.exporters_list
+        # return sp_exl.exporters_list
+        return []
 
     @staticmethod
     def get_display_name_from_spif_class(spif_class):
@@ -31,7 +30,7 @@ class SortingExporter(sp_spe.SpikeElement):
         else:
             self._display_icon = None
 
-        self.param_list = copy.deepcopy(spif_class.exporter_gui_params)
+        self._param_list = guiparams.get_gui_params(self._display_name, "exporter")
 
     @property
     def display_name(self):
