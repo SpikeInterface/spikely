@@ -8,3 +8,5 @@ tmp_*
 venv/
 spikely.egg-info/
 .vscode/
+klusta_output/
+mtnsort_data/

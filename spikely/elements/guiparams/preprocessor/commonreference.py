@@ -1,4 +1,3 @@
-
 gui_params = [
     {
         "name": "reference",
