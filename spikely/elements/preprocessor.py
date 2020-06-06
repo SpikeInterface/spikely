@@ -8,7 +8,7 @@ from PyQt5 import QtWidgets
 # spikely
 from . import spike_element as sp_spe
 import spiketoolkit as st
-from . import guiparams
+from spikely.config import get_gui_params
 
 
 class Preprocessor(sp_spe.SpikeElement):
@@ -32,7 +32,7 @@ class Preprocessor(sp_spe.SpikeElement):
         else:
             self._display_icon = None
 
-        self._param_list = guiparams.get_gui_params(self._display_name, "preprocessor")
+        self._param_list = get_gui_params(self._display_name, "preprocessor")
 
     @property
     def display_name(self):

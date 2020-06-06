@@ -95,3 +95,20 @@ def cvt_dict_to_elem(elem_dict: dict) -> SpikeElement:
     elem.param_list = elem_dict["param_list"]
 
     return elem
+
+
+def get_gui_params(display_name, element_class):
+    """Construct a gui params structure from a config file
+
+    Args:
+        display_name: SpikeElement display_name mapped into .ini file name
+
+    Returns:
+        gui_param_list: List of gui_param dicts needed to populate the UI
+
+    """
+    module_path = "." + element_class + "." + display_name.lower()
+    m = importlib.import_module(module_path, "spikely.elements.guiparams")
+    gui_params = getattr(m, "gui_params")
+
+    return gui_params

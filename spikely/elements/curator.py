@@ -10,7 +10,7 @@ import pkg_resources
 from . import spike_element as sp_spe
 import spikeextractors as se
 import spiketoolkit as st
-from . import guiparams
+from spikely.config import get_gui_params
 
 
 class Curator(sp_spe.SpikeElement):
@@ -34,7 +34,7 @@ class Curator(sp_spe.SpikeElement):
         else:
             self._display_icon = None
 
-        self._param_list = guiparams.get_gui_params(self._display_name, "curator")
+        self._param_list = get_gui_params(self._display_name, "curator")
 
     @property
     def display_name(self):

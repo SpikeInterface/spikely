@@ -4,7 +4,7 @@ import os
 import pkg_resources
 from PyQt5 import QtGui, QtWidgets
 
-from . import guiparams
+from spikely.config import get_gui_params
 from . import spike_element as sp_spe
 
 
@@ -30,7 +30,7 @@ class SortingExporter(sp_spe.SpikeElement):
         else:
             self._display_icon = None
 
-        self._param_list = guiparams.get_gui_params(self._display_name, "exporter")
+        self._param_list = get_gui_params(self._display_name, "exporter")
 
     @property
     def display_name(self):

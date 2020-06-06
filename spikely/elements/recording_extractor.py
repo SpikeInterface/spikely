@@ -3,7 +3,7 @@ import pkg_resources
 import spikeextractors as se
 from PyQt5 import QtGui, QtWidgets
 
-from . import guiparams
+from spikely.config import get_gui_params
 from . import spike_element as sp_spe
 
 
@@ -28,7 +28,7 @@ class RecordingExtractor(sp_spe.SpikeElement):
         else:
             self._display_icon = None
 
-        self._param_list = guiparams.get_gui_params(self._display_name, "extractor")
+        self._param_list = get_gui_params(self._display_name, "extractor")
 
         probe_path_dict = {
             "name": "probe_path",

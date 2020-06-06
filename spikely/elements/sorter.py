@@ -2,7 +2,7 @@ import pkg_resources
 import spikesorters as ss
 from PyQt5 import QtGui, QtWidgets
 
-from . import guiparams
+from spikely.config import get_gui_params
 from . import spike_element as sp_spe
 
 
@@ -27,7 +27,7 @@ class Sorter(sp_spe.SpikeElement):
         else:
             self._display_icon = None
 
-        self._param_list = guiparams.get_gui_params(self._display_name, "sorter")
+        self._param_list = get_gui_params(self._display_name, "sorter")
 
     @property
     def display_name(self):
@@ -39,19 +39,19 @@ class Sorter(sp_spe.SpikeElement):
 
     def run(self, payload, next_elem):
 
-        spif_param_list = {
-            param["name"]: param["value"]
-            for param in self._param_list
-            if param.get("base_param")
+        print("self._param_list", self._param_list)
+
+        base_param_list = {
+            param["name"]: param["value"] for param in self._param_list if param.get("base_param") and bool(param.get("base_param"))
         }
-        spif_param_list["recording"] = payload
-        sorter = self._spif_class(**spif_param_list)
+        print(base_param_list)
+        base_param_list["recording"] = payload
+        sorter = self._spif_class(**base_param_list)
 
         sub_param_list = {
-            param["name"]: param["value"]
-            for param in self._param_list
-            if not param.get("base_param")
+            param["name"]: param["value"] for param in self._param_list if not param.get("base_param")
         }
+        print(sub_param_list)
         sorter.set_params(**sub_param_list)
 
         sorter.run()

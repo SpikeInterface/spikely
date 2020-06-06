@@ -128,7 +128,7 @@ class ParameterModel(QtCore.QAbstractTableModel):
         # from param dictionary.  Talk to Cole if you don't like this.
         if role == QtCore.Qt.EditRole:
             if value.strip():
-                success, cvt_value = self._convert_value(
+                success, cvt_value = self.convert_value(
                     param_dict['type'], value)
                 if success:
                     param_dict['value'] = cvt_value
@@ -144,7 +144,7 @@ class ParameterModel(QtCore.QAbstractTableModel):
     # Helper Methods
     #
 
-    def _convert_value(self, type_str, value_str):
+    def convert_value(self, type_str, value_str):
         success, cvt_value = True, None
         try:
             if value_str == 'None':
