@@ -39,8 +39,6 @@ class Sorter(sp_spe.SpikeElement):
 
     def run(self, payload, next_elem):
 
-        print("self._param_list", self._param_list)
-
         base_param_list = {
             param["name"]: param["value"] for param in self._param_list if param.get("base_param") and bool(param.get("base_param"))
         }
