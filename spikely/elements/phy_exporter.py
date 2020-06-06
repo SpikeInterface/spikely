@@ -13,7 +13,7 @@ class PhyExporter:
             "Property to group channels. E.g. if the recording extractor has the 'group' property and 'grouping_property' is 'group', then waveforms are computed group-wise."},
         {'name': 'ms_before', 'type': 'float', 'value': 1., 'default': 1., 'title': "Time period in ms to cut waveforms before the spike events."},
         {'name': 'ms_after', 'type': 'float', 'value': 2., 'default': 2., 'title': "Time period in ms to cut waveforms after the spike events."},
-        {'name': 'dtype', 'type': 'np.dtype', 'value': None, 'default': None, 'title': "The dtype of underlying data (int16, float32, etc.)"},
+        {'name': 'dtype', 'type': 'dtype', 'value': None, 'default': None, 'title': "The dtype of underlying data (int16, float32, etc.)"},
         {'name': 'amp_method', 'type': 'str', 'value': 'absolute', 'default': 'absolute', 'title': "If 'absolute' (default), amplitudes are absolute amplitudes in uV are returned. If 'relative', amplitudes are returned as ratios between waveform amplitudes and template amplitudes."},
         {'name': 'amp_peak', 'type': 'str', 'value': 'both', 'default': 'both', 'title': "If maximum channel has to be found among negative peaks ('neg'), positive ('pos') or both ('both' - default)."},
         {'name': 'amp_frames_before', 'type': 'int', 'value': 3, 'default': 3, 'title': "Frames before peak to compute amplitude."},

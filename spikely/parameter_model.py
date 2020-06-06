@@ -95,7 +95,7 @@ class ParameterModel(QtCore.QAbstractTableModel):
                     result = 'pathname of file or folder'
                 elif type_str == 'int_list_list':
                     result = 'list of a int_lists'
-                elif type_str == 'np.dtype':
+                elif type_str == 'dtype':
                     result = 'numpy dtype object (e.g., int32)'
 
         # Paints cell red if mandatory parameter value is missing.
@@ -188,10 +188,10 @@ class ParameterModel(QtCore.QAbstractTableModel):
                 else:
                     raise TypeError(f'{value_str} is not a valid bool type')
 
-            elif type_str == 'np.dtype':
+            elif type_str == 'dtype':
                 # Conversion test will trigger exception if not well-formed
                 np.dtype(value_str)
-                # Save np.dtype as string for consumption by SpikeInterface
+                # Save dtype as string for consumption by SpikeInterface
                 cvt_value = value_str
 
             else:
