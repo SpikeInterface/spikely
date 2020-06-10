@@ -21,7 +21,7 @@ gui_params = [
         "title": "Width of the filter (when type is 'fft')",
     },
     {
-        "name": "type",
+        "name": "filter_type",
         "type": "str",
         "value": "fft",
         "default": "fft",
@@ -54,12 +54,5 @@ gui_params = [
         "value": False,
         "default": False,
         "title": "If True then each chunk is cached in memory (in a dict).",
-    },
-    {
-        "name": "verbose",
-        "type": "bool",
-        "value": False,
-        "default": False,
-        "title": "If True, output from SpikeInterface element is verbose when run.",
     },
 ]

@@ -34,6 +34,19 @@ class Preprocessor(sp_spe.SpikeElement):
 
         self._param_list = get_gui_params(self._display_name, "preprocessor")
 
+        function_list = [func for func in dir(st.preprocessing) \
+                         if callable(getattr(st.preprocessing, func)) \
+                         and not func[0].isupper()]
+        self._preprocessing_func = None
+        for func in function_list:
+            func_stripped = func.replace("_","")
+            if spif_class.preprocessor_name.lower() == func_stripped:
+                self._preprocessing_func = 'st.preprocessing.' + func
+        if self._preprocessing_func == None:
+            raise ValueError('This is not a valid Preprocessor')
+
+
+
     @property
     def display_name(self):
         return self._display_name
@@ -45,5 +58,5 @@ class Preprocessor(sp_spe.SpikeElement):
     def run(self, payload, next_elem):
         spif_param_dict = {param["name"]: param["value"] for param in self.param_list}
         spif_param_dict["recording"] = payload
-        pp = self._spif_class(**spif_param_dict)
+        pp = eval(self._preprocessing_func)(**spif_param_dict)
         return pp

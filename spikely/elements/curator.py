@@ -36,6 +36,17 @@ class Curator(sp_spe.SpikeElement):
 
         self._param_list = get_gui_params(self._display_name, "curator")
 
+        function_list = [func for func in dir(st.curation.threshold_metrics) \
+                       if callable(getattr(st.curation.threshold_metrics, func)) \
+                       and func.split('_')[0] == 'threshold']
+        self._curation_func = None
+        for func in function_list:
+            func_stripped = func.replace("_","")
+            if spif_class.curator_name.lower() == func_stripped:
+                self._curation_func = 'st.curation.threshold_metrics.' + func
+        if self._curation_func == None:
+            raise ValueError('This is not a valid Curator')
+
     @property
     def display_name(self):
         return self._display_name
@@ -63,10 +74,10 @@ class Curator(sp_spe.SpikeElement):
             params_dict['sorting'] = sorting
 
             if 'recording' in \
-                    inspect.signature(self.spif_class).parameters:
+                    inspect.signature(eval(self._curation_func)).parameters:
                 params_dict['recording'] = recording
             elif 'sampling_frequency' in \
-                    inspect.signature(self.spif_class).parameters:
+                    inspect.signature(eval(self._curation_func)).parameters:
                 params_dict['sampling_frequency'] = \
                     recording.get_sampling_frequency()
 
@@ -75,8 +86,7 @@ class Curator(sp_spe.SpikeElement):
                 param_value = param['value']
                 params_dict[param_name] = param_value
 
-            curated_sorting = self.spif_class(**params_dict)
-            curated_sorting_list.append(curated_sorting)
+            curated_sorting = eval(self._curation_func)(**params_dict)
 
             if not next_element:
                 print("No Sorting Exporter chosen. Defaulting to "
