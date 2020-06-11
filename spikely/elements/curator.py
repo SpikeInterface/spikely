@@ -1,12 +1,13 @@
-# Python
+
 import inspect
+from inspect import getmembers, isfunction
 import shutil
 from pathlib import Path
-# PyQt
+
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 import pkg_resources
-# spikely
+
 from . import spike_element as sp_spe
 import spikeextractors as se
 import spiketoolkit as st
@@ -20,7 +21,12 @@ class Curator(sp_spe.SpikeElement):
 
     @staticmethod
     def get_display_name_from_spif_class(spif_class):
-        return spif_class.curator_name
+
+        display_name = spif_class.curator_name
+        if not display_name.endswith("s"):
+            display_name += "s"
+
+        return display_name
 
     def __init__(self, spif_class):
         super().__init__(spif_class)
@@ -36,16 +42,13 @@ class Curator(sp_spe.SpikeElement):
 
         self._param_list = get_gui_params(self._display_name, "curator")
 
-        function_list = [func for func in dir(st.curation.threshold_metrics) \
-                       if callable(getattr(st.curation.threshold_metrics, func)) \
-                       and func.split('_')[0] == 'threshold']
-        self._curation_func = None
-        for func in function_list:
-            func_stripped = func.replace("_","")
-            if spif_class.curator_name.lower() == func_stripped:
-                self._curation_func = 'st.curation.threshold_metrics.' + func
-        if self._curation_func == None:
-            raise ValueError('This is not a valid Curator')
+        # Function dictionary should only be created once, so move to class
+        func_dict = {
+            obj[0].replace("_", ""): obj[1]
+            for obj in getmembers(st.curation.threshold_metrics)
+            if isfunction(obj[1]) and obj[0].startswith("threshold")
+        }
+        self._curation_func = func_dict[self._display_name.lower()]
 
     @property
     def display_name(self):
@@ -74,10 +77,10 @@ class Curator(sp_spe.SpikeElement):
             params_dict['sorting'] = sorting
 
             if 'recording' in \
-                    inspect.signature(eval(self._curation_func)).parameters:
+                    inspect.signature(self._curation_func).parameters:
                 params_dict['recording'] = recording
             elif 'sampling_frequency' in \
-                    inspect.signature(eval(self._curation_func)).parameters:
+                    inspect.signature(self._curation_func).parameters:
                 params_dict['sampling_frequency'] = \
                     recording.get_sampling_frequency()
 
@@ -86,7 +89,7 @@ class Curator(sp_spe.SpikeElement):
                 param_value = param['value']
                 params_dict[param_name] = param_value
 
-            curated_sorting = eval(self._curation_func)(**params_dict)
+            curated_sorting = self._curation_func(**params_dict)
 
             if not next_element:
                 print("No Sorting Exporter chosen. Defaulting to "
