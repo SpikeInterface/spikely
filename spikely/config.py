@@ -98,10 +98,11 @@ def cvt_dict_to_elem(elem_dict: dict) -> SpikeElement:
 
 
 def get_gui_params(display_name, element_class_name):
-    """Construct a gui params structure from a config file
+    """Load the gui_params list of param dictionaries for caller.
 
     Args:
-        display_name: SpikeElement display_name mapped into .ini file name
+        display_name: gui_params filename maps to spif class display name
+        element_class_name: "curator", "exporter", "preprocessor", or "sorter"
 
     Returns:
         gui_param_list: List of gui_param dicts needed to populate the UI
@@ -112,8 +113,31 @@ def get_gui_params(display_name, element_class_name):
     try:
         m = importlib.import_module(module_path, "spikely.elements.guiparams")
     except ModuleNotFoundError:
-        gui_params = {}
+        gui_params = []
     else:
         gui_params = getattr(m, "gui_params")
 
     return gui_params
+
+
+def get_spif_init_func(display_name, element_class_name):
+    """Load the gui_params list of param dictionaries for caller.
+
+    Args:
+        display_name: gui_params filename maps to spif class display name
+        element_class_name: "curator", "exporter", "preprocessor", or "sorter"
+
+    Returns:
+       spif_init_func: Underlying spif function needed to instantiate spif class.
+
+    """
+    module_path = "." + element_class_name + "." + display_name.lower()
+
+    try:
+        m = importlib.import_module(module_path, "spikely.elements.guiparams")
+    except ModuleNotFoundError:
+        spif_init_func = None
+    else:
+        spif_init_func = getattr(m, "spif_init_func")
+
+    return spif_init_func

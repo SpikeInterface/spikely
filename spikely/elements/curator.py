@@ -1,6 +1,5 @@
 
 import inspect
-from inspect import getmembers, isfunction
 import shutil
 from pathlib import Path
 
@@ -11,7 +10,7 @@ import pkg_resources
 from . import spike_element as sp_spe
 import spikeextractors as se
 import spiketoolkit as st
-from spikely.config import get_gui_params
+from spikely.config import get_gui_params, get_spif_init_func
 
 
 class Curator(sp_spe.SpikeElement):
@@ -41,14 +40,7 @@ class Curator(sp_spe.SpikeElement):
             self._display_icon = None
 
         self._param_list = get_gui_params(self._display_name, "curator")
-
-        # Function dictionary should only be created once, so move to class
-        func_dict = {
-            obj[0].replace("_", ""): obj[1]
-            for obj in getmembers(st.curation.threshold_metrics)
-            if isfunction(obj[1]) and obj[0].startswith("threshold")
-        }
-        self._curation_func = func_dict[self._display_name.lower()]
+        self._curation_func = get_spif_init_func(self._display_name, "curator")
 
     @property
     def display_name(self):

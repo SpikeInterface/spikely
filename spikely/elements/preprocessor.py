@@ -1,6 +1,5 @@
 # Python
 import pkg_resources
-from inspect import getmembers, isfunction
 
 # PyQt
 from PyQt5 import QtGui
@@ -9,7 +8,7 @@ from PyQt5 import QtWidgets
 # spikely
 from . import spike_element as sp_spe
 import spiketoolkit as st
-from spikely.config import get_gui_params
+from spikely.config import get_gui_params, get_spif_init_func
 
 
 class Preprocessor(sp_spe.SpikeElement):
@@ -34,14 +33,7 @@ class Preprocessor(sp_spe.SpikeElement):
             self._display_icon = None
 
         self._param_list = get_gui_params(self._display_name, "preprocessor")
-
-        # Function dictionary should only be created once, so move to class
-        func_dict = {
-            obj[0].replace("_", ""): obj[1]
-            for obj in getmembers(st.preprocessing)
-            if isfunction(obj[1])
-        }
-        self._preprocessor_func = func_dict[self._display_name.lower()]
+        self._preprocessor_func = get_spif_init_func(self._display_name, "preprocessor")
 
     @property
     def display_name(self):

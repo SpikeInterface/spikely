@@ -59,10 +59,15 @@ class PipelineView(QtWidgets.QGroupBox):
             spif_cbx.clear()
             element_cls = elem_cbx.itemData(index)
             # SpikeElement subclasses tasked w/ generating spif class lists
+
             for spif_cls in element_cls.get_installed_spif_cls_list():
-                spif_cbx.addItem(
-                    element_cls.get_display_name_from_spif_class(
-                        spif_cls), spif_cls)
+
+                if element_cls(spif_cls)._param_list:
+
+                    spif_cbx.addItem(
+                        element_cls.get_display_name_from_spif_class(
+                            spif_cls), spif_cls)
+
         elem_cbx.currentIndexChanged.connect(_elem_cbx_changed)
 
         # Note: cbx instantiation order matters for initial m/v signalling
