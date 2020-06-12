@@ -1,3 +1,7 @@
+from spiketoolkit.curation import threshold_presence_ratios 
+
+spif_init_func = threshold_presence_ratios
+
 gui_params = [
     {
         "name": "threshold",

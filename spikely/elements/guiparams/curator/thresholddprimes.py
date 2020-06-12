@@ -1,3 +1,7 @@
+from spiketoolkit.curation import threshold_d_primes 
+
+spif_init_func = threshold_d_primes
+
 gui_params = [
     {
         "name": "threshold",

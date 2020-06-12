@@ -1,3 +1,7 @@
+from spiketoolkit.curation import threshold_l_ratios 
+
+spif_init_func = threshold_l_ratios
+
 gui_params = [
     {
         "name": "threshold",

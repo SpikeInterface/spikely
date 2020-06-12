@@ -1,3 +1,7 @@
+from spiketoolkit.curation import threshold_silhouette_scores 
+
+spif_init_func = threshold_silhouette_scores
+
 gui_params = [
     {
         "name": "threshold",

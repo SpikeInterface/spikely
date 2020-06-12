@@ -1,3 +1,7 @@
+from spiketoolkit.curation import threshold_num_spikes 
+
+spif_init_func = threshold_num_spikes
+
 gui_params = [
     {
         "name": "threshold",

@@ -1,3 +1,7 @@
+from spiketoolkit.curation import threshold_snrs 
+
+spif_init_func = threshold_snrs
+
 gui_params = [
     {
         "name": "threshold",

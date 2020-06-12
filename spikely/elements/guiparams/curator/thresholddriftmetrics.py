@@ -1,3 +1,7 @@
+from spiketoolkit.curation import threshold_drift_metrics
+
+spif_init_func = threshold_drift_metrics
+
 gui_params = [
     {
         "name": "threshold",

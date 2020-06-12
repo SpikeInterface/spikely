@@ -1,3 +1,7 @@
+from spiketoolkit.curation import threshold_isi_violations 
+
+spif_init_func = threshold_isi_violations
+
 gui_params = [
     {
         "name": "threshold",

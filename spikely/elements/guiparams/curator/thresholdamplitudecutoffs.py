@@ -1,3 +1,7 @@
+from spiketoolkit.curation import threshold_amplitude_cutoffs 
+
+spif_init_func = threshold_amplitude_cutoffs
+
 gui_params = [
     {
         "name": "threshold",

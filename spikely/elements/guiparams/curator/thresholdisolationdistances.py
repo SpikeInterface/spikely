@@ -1,3 +1,8 @@
+from spiketoolkit.curation import threshold_isolation_distances 
+
+spif_init_func = threshold_isolation_distances
+
+
 gui_params = [
     {
         "name": "threshold",
