@@ -109,8 +109,11 @@ def get_gui_params(display_name, element_class_name):
     """
     module_path = "." + element_class_name + "." + display_name.lower()
 
-    m = importlib.import_module(module_path, "spikely.elements.guiparams")
-
-    gui_params = getattr(m, "gui_params")
+    try:
+        m = importlib.import_module(module_path, "spikely.elements.guiparams")
+    except ModuleNotFoundError:
+        gui_params = {}
+    else:
+        gui_params = getattr(m, "gui_params")
 
     return gui_params

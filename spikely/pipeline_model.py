@@ -14,7 +14,7 @@ class PipelineModel(QtCore.QAbstractListModel):
         self._element_list = []
         self._element_policy = StdElementPolicy()
         self._parameter_model = parameter_model
-        self._share_output = False
+        self._share_output = True
 
     # TODO: Put back in when ready to support terminal output
     @property

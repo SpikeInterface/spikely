@@ -37,7 +37,7 @@ def create_file_menu(main_window: QtWidgets.QMainWindow,
     file_menu.addSeparator()
     file_menu.addAction(_action(
         'Share Output', 'Use terminal for all pipeline output',
-        _toggle_share_state, checkable=True, checked=False))
+        _toggle_share_state, checkable=True, checked=True))
     file_menu.addSeparator()
     file_menu.addAction(_action(
         'Exit', 'Terminate the application.',

@@ -1,5 +1,6 @@
 # Python
 import pkg_resources
+from inspect import getmembers, isfunction
 
 # PyQt
 from PyQt5 import QtGui
@@ -34,18 +35,13 @@ class Preprocessor(sp_spe.SpikeElement):
 
         self._param_list = get_gui_params(self._display_name, "preprocessor")
 
-        function_list = [func for func in dir(st.preprocessing) \
-                         if callable(getattr(st.preprocessing, func)) \
-                         and not func[0].isupper()]
-        self._preprocessing_func = None
-        for func in function_list:
-            func_stripped = func.replace("_","")
-            if spif_class.preprocessor_name.lower() == func_stripped:
-                self._preprocessing_func = 'st.preprocessing.' + func
-        if self._preprocessing_func == None:
-            raise ValueError('This is not a valid Preprocessor')
-
-
+        # Function dictionary should only be created once, so move to class
+        func_dict = {
+            obj[0].replace("_", ""): obj[1]
+            for obj in getmembers(st.preprocessing)
+            if isfunction(obj[1])
+        }
+        self._preprocessor_func = func_dict[self._display_name.lower()]
 
     @property
     def display_name(self):
@@ -58,5 +54,5 @@ class Preprocessor(sp_spe.SpikeElement):
     def run(self, payload, next_elem):
         spif_param_dict = {param["name"]: param["value"] for param in self.param_list}
         spif_param_dict["recording"] = payload
-        pp = eval(self._preprocessing_func)(**spif_param_dict)
+        pp = self._preprocessor_func(**spif_param_dict)
         return pp
