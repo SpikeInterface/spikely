@@ -1,7 +1,7 @@
 gui_params = [
     {
         "name": "threshold",
-        "type": "float",
+        "type": "int",
         "title": "The threshold for the given metric.",
     },
     {
