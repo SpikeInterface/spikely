@@ -1,3 +1,7 @@
+from spiketoolkit.preprocessing import notch_filter
+
+spif_init_func = notch_filter
+
 gui_params = [
     {
         "name": "freq",

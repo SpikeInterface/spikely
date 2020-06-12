@@ -1,3 +1,7 @@
+from spiketoolkit.preprocessing import center
+
+spif_init_func = center
+
 gui_params = [
     {
         "name": "mode",

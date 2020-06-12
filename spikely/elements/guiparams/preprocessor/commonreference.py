@@ -1,3 +1,7 @@
+from spiketoolkit.preprocessing import common_reference
+
+spif_init_func = common_reference
+
 gui_params = [
     {
         "name": "reference",

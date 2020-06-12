@@ -1,3 +1,7 @@
+from spiketoolkit.preprocessing import clip
+
+spif_init_func = clip
+
 gui_params = [
     {
         "name": "a_min",

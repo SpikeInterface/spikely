@@ -1,3 +1,7 @@
+from spiketoolkit.preprocessing import blank_saturation
+
+spif_init_func = blank_saturation
+
 gui_params = [
     {
         "name": "threshold",

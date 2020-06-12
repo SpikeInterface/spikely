@@ -1,3 +1,7 @@
+from spiketoolkit.preprocessing import normalize_by_quantile
+
+spif_init_func = normalize_by_quantile
+
 gui_params = [
     {
         "name": "scale",
