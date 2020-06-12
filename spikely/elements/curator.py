@@ -91,8 +91,6 @@ class Curator(sp_spe.SpikeElement):
 
             curated_sorting = self._curation_func(**params_dict)
 
-            print(self._curation_func)
-
             if not next_element:
                 print("No Sorting Exporter chosen. Defaulting to "
                       "the .npz format.")
