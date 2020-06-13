@@ -82,8 +82,7 @@ class Curator(sp_spe.SpikeElement):
                 params_dict[param_name] = param_value
 
             curated_sorting = self._curation_func(**params_dict)
-
-            print(self._curation_func)
+            curated_sorting_list.append(curated_sorting)
 
             if not next_element:
                 print("No Sorting Exporter chosen. Defaulting to "
