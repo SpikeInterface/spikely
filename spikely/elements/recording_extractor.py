@@ -3,19 +3,23 @@ import pkg_resources
 import spikeextractors as se
 from PyQt5 import QtGui, QtWidgets
 
-from spikely.config import get_gui_params, has_gui_params_file
+from spikely.guiparams import get_gui_params, gui_params_file_exists
 from . import spike_element as sp_spe
 
 
 class RecordingExtractor(sp_spe.SpikeElement):
     @staticmethod
     def get_installed_spif_cls_list():
+        """Returns sorted list of installed spif classes having gui_params files."""
         raw_list = se.installed_recording_extractor_list
 
         # To be installed for Spikely purposes spif_class must have gui_params file
         cooked_list = [
             spif_class for spif_class in raw_list
-            if has_gui_params_file(spif_class.extractor_name, "extractor")
+            if gui_params_file_exists(
+                RecordingExtractor.get_display_name_from_spif_class(spif_class),
+                "extractor",
+            )
         ]
         return sorted(cooked_list, key=lambda spif_class: spif_class.extractor_name)
 

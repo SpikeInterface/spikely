@@ -4,20 +4,25 @@ import os
 import pkg_resources
 from PyQt5 import QtGui, QtWidgets
 
-from spikely.config import get_gui_params, has_gui_params_file
+from spikely.guiparams import get_gui_params, gui_params_file_exists
 from . import spike_element as sp_spe
 
 
 class SortingExporter(sp_spe.SpikeElement):
     @staticmethod
     def get_installed_spif_cls_list():
+        """Returns sorted list of installed spif classes having gui_params files."""
         raw_list = []
 
         # To be installed for Spikely purposes spif_class must have gui_params file
         cooked_list = [
             spif_class for spif_class in raw_list
-            if has_gui_params_file(spif_class.exporter_name, "exporter")
+            if gui_params_file_exists(
+                SortingExporter.get_display_name_from_spif_class(spif_class),
+                "exporter",
+            )
         ]
+
         return sorted(cooked_list, key=lambda spif_class: spif_class.exporter_name)
 
     @staticmethod
