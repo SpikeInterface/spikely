@@ -10,13 +10,23 @@ import pkg_resources
 from . import spike_element as sp_spe
 import spikeextractors as se
 import spiketoolkit as st
-from spikely.config import get_gui_params, get_spif_init_func
+from spikely.config import get_gui_params, get_spif_init_func, has_gui_params_file
 
 
 class Curator(sp_spe.SpikeElement):
     @staticmethod
     def get_installed_spif_cls_list():
-        return st.validation.curation_list.installed_curation_list
+        raw_list = st.validation.curation_list.installed_curation_list
+
+        # To be installed for Spikely purposes spif_class must also have gui_params file
+        cooked_list = [
+            spif_class for spif_class in raw_list
+            if has_gui_params_file(
+                Curator.get_display_name_from_spif_class(spif_class), "curator"
+            )
+        ]
+
+        return sorted(cooked_list, key=lambda spif_class: spif_class.curator_name)
 
     @staticmethod
     def get_display_name_from_spif_class(spif_class):

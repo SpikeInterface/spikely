@@ -113,9 +113,9 @@ def get_gui_params(display_name, element_class_name):
     try:
         m = importlib.import_module(module_path, "spikely.elements.guiparams")
     except ModuleNotFoundError:
-        gui_params = []
+        gui_params = None
     else:
-        gui_params = getattr(m, "gui_params")
+        gui_params = getattr(m, "gui_params", [])
 
     return gui_params
 
@@ -138,6 +138,18 @@ def get_spif_init_func(display_name, element_class_name):
     except ModuleNotFoundError:
         spif_init_func = None
     else:
-        spif_init_func = getattr(m, "spif_init_func")
+        spif_init_func = getattr(m, "spif_init_func", None)
 
     return spif_init_func
+
+
+def has_gui_params_file(display_name, element_class_name):
+
+    module_path = "." + element_class_name + "." + display_name.lower()
+
+    try:
+        importlib.import_module(module_path, "spikely.elements.guiparams")
+    except ModuleNotFoundError:
+        return False
+    else:
+        return True

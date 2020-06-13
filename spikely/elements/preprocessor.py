@@ -8,13 +8,21 @@ from PyQt5 import QtWidgets
 # spikely
 from . import spike_element as sp_spe
 import spiketoolkit as st
-from spikely.config import get_gui_params, get_spif_init_func
+from spikely.config import get_gui_params, get_spif_init_func, has_gui_params_file
 
 
 class Preprocessor(sp_spe.SpikeElement):
     @staticmethod
     def get_installed_spif_cls_list():
-        return st.preprocessing.preprocessinglist.installed_preprocessers_list
+        raw_list = st.preprocessing.preprocessinglist.installed_preprocessers_list
+
+        # To be installed for Spikely purposes spif_class must have gui_params file
+        cooked_list = [
+            spif_class for spif_class in raw_list
+            if has_gui_params_file(spif_class.preprocessor_name, "preprocessor")
+        ]
+
+        return sorted(cooked_list, key=lambda spif_class: spif_class.preprocessor_name)
 
     @staticmethod
     def get_display_name_from_spif_class(spif_class):
