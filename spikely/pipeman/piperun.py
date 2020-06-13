@@ -27,6 +27,5 @@ def main():
     # Turns out that this is a very important call
     os._exit(1)
 
-
 if __name__ == '__main__':
     main()
