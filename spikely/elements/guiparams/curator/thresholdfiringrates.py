@@ -1,5 +1,7 @@
 from spiketoolkit.curation import threshold_firing_rates
 
+spif_init_func = threshold_firing_rates
+
 gui_params = [
     {
         "name": "threshold",
@@ -42,5 +44,3 @@ gui_params = [
         "title": "If True, output from SpikeInterface element is verbose when run.",
     },
 ]
-
-spif_init_func = threshold_firing_rates
