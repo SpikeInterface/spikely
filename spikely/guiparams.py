@@ -1,4 +1,5 @@
 import importlib
+from copy import deepcopy
 
 
 def get_gui_params(filename, subpathname):
@@ -16,7 +17,7 @@ def get_gui_params(filename, subpathname):
 
     gui_params = None if not module else getattr(module, "gui_params", None)
 
-    return gui_params
+    return deepcopy(gui_params)
 
 
 def get_spif_init_func(filename, subpathname):
