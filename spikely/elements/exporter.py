@@ -32,8 +32,6 @@ class SortingExporter(sp_spe.SpikeElement):
     def __init__(self, spif_class):
         super().__init__(spif_class)
 
-        self._display_name = self.get_display_name_from_spif_class(spif_class)
-
         if QtWidgets.QApplication.instance():
             self._display_icon = QtGui.QIcon(
                 pkg_resources.resource_filename(
@@ -41,11 +39,11 @@ class SortingExporter(sp_spe.SpikeElement):
         else:
             self._display_icon = None
 
-        self._param_list = get_gui_params(self._display_name, "exporter")
+        self._param_list = get_gui_params(self.display_name, "exporter")
 
     @property
     def display_name(self):
-        return self._display_name
+        return self.get_display_name_from_spif_class(self.spif_class)
 
     @property
     def display_icon(self):

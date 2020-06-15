@@ -7,7 +7,7 @@ from spikely.guiparams import get_gui_params, gui_params_file_exists
 from . import spike_element as sp_spe
 
 
-class RecordingExtractor(sp_spe.SpikeElement):
+class Extractor(sp_spe.SpikeElement):
     @staticmethod
     def get_installed_spif_cls_list():
         """Returns sorted list of installed spif classes having gui_params files."""
@@ -18,7 +18,7 @@ class RecordingExtractor(sp_spe.SpikeElement):
             spif_class
             for spif_class in raw_list
             if gui_params_file_exists(
-                RecordingExtractor.get_display_name_from_spif_class(spif_class),
+                Extractor.get_display_name_from_spif_class(spif_class),
                 "extractor",
             )
         ]

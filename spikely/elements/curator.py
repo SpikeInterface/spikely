@@ -96,7 +96,7 @@ class Curator(sp_spe.SpikeElement):
             curated_sorting_list.append(curated_sorting)
 
             if not next_element:
-                print("No Sorting Exporter chosen. Defaulting to "
+                print("No Exporter chosen. Defaulting to "
                       "the .npz format.")
                 if len(sorting_list) == 1:
                     file_name = 'curated_output.npz'

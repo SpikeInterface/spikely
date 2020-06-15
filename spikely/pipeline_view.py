@@ -35,7 +35,7 @@ class PipelineView(QtWidgets.QGroupBox):
         # UI to select for and add elements to pipeline.
 
         # The UI for element selection combines a combo box for the stages
-        # (e.g., RecordingExtractor) and one for the corresponding
+        # (e.g., Extractor) and one for the corresponding
         # SpikeInterface classes (e.g., MEArecRecordingExtractor) - the two
         # pieces of information required to instantiate the SpikeElement
         # inserted into the pipeline.
