@@ -53,9 +53,6 @@ class SortingExporter(sp_spe.SpikeElement):
         sorting_list = payload[0]
         recording = payload[2]
 
-        if self.display_name == 'NwbSortingExporter':
-            nwbfile_kwargs = {}
-
         for i, sorting in enumerate(sorting_list):
             params_dict = {}
             params_dict['sorting'] = sorting
@@ -78,16 +75,7 @@ class SortingExporter(sp_spe.SpikeElement):
                     else:
                         path, file_name = os.path.split(param_value)
                         param_value = path + str(i) + '_' + file_name
-
-                if param_name == 'identifier':
-                    nwbfile_kwargs[param_name] = param_value
-
-                if param_name == 'session_description':
-                    nwbfile_kwargs[param_name] = param_value
                 params_dict[param_name] = param_value
-
-            if self.display_name == 'NwbSortingExporter':
-                params_dict['nwbfile_kwargs'] = nwbfile_kwargs
 
             print("Exporting to " + params_dict['save_path'])
             self.spif_class.write_sorting(**params_dict)
