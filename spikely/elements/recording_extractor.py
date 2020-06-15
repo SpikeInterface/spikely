@@ -15,7 +15,8 @@ class RecordingExtractor(sp_spe.SpikeElement):
 
         # To be installed for Spikely purposes spif_class must have gui_params file
         cooked_list = [
-            spif_class for spif_class in raw_list
+            spif_class
+            for spif_class in raw_list
             if gui_params_file_exists(
                 RecordingExtractor.get_display_name_from_spif_class(spif_class),
                 "extractor",
