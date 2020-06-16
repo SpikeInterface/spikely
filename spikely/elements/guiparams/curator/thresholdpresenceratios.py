@@ -1,4 +1,8 @@
 from spiketoolkit.curation import threshold_presence_ratios 
+from spiketoolkit.validation.quality_metric_classes.parameter_dictionaries import (
+    get_validation_params,
+)
+class_default = get_validation_params()
 
 spif_init_func = threshold_presence_ratios
 
@@ -32,15 +36,15 @@ gui_params = [
     {
         "name": "save_property_or_features",
         "type": "bool",
-        "value": True,
-        "default": True,
+        "value": class_default["save_property_or_features"],
+        "default": class_default["save_property_or_features"],
         "title": "If True, it will save features in the sorting extractor.",
     },
     {
         "name": "verbose",
         "type": "bool",
-        "value": False,
-        "default": False,
+        "value": class_default["verbose"],
+        "default": class_default["verbose"],
         "title": "If True, output from SpikeInterface element is verbose when run.",
     },
 ]
