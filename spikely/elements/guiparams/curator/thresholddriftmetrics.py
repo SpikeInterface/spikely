@@ -1,14 +1,11 @@
-import inspect
-
-import spiketoolkit as st
 from spiketoolkit.curation import threshold_drift_metrics
+from spiketoolkit.validation.quality_metric_classes.parameter_dictionaries import (
+    get_validation_params,
+)
 
 spif_init_func = threshold_drift_metrics
 
-class_default = {}
-for member in inspect.getmembers(st.postprocessing):
-    if inspect.isfunction(member[1]) and member[0].endswith("params"):
-        class_default.update(member[1]())
+class_default = get_validation_params()
 
 gui_params = [
     {

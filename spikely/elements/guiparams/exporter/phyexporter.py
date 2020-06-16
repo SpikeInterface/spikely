@@ -1,18 +1,12 @@
-import spiketoolkit as st
-import inspect
+from spiketoolkit.validation.quality_metric_classes.parameter_dictionaries import (
+    get_validation_params,
+)
 
-class_default = {}
-for member in inspect.getmembers(st.postprocessing):
-    if inspect.isfunction(member[1]) and member[0].endswith("params"):
-        class_default.update(member[1]())
+class_default = get_validation_params()
 
 
 gui_params = [
-    {
-        "name": "save_path",
-        "type": "folder",
-        "title": "Save path"
-    },
+    {"name": "save_path", "type": "folder", "title": "Save path"},
     {
         "name": "compute_pc_features",
         "type": "bool",
@@ -33,7 +27,7 @@ gui_params = [
         "value": 3,
         "default": 3,
         "title": "Maximum channels per unit to return."
-                 " If None, all channels are returned.",
+        " If None, all channels are returned.",
     },
     {
         "name": "n_comp",
@@ -55,8 +49,8 @@ gui_params = [
         "value": class_default["grouping_property"],
         "default": class_default["grouping_property"],
         "title": "Property to group channels. E.g. if the recording extractor has the"
-                 " 'group' property and 'grouping_property' is 'group', then waveforms"
-                 " are computed group-wise.",
+        " 'group' property and 'grouping_property' is 'group', then waveforms"
+        " are computed group-wise.",
     },
     {
         "name": "ms_before",
@@ -92,8 +86,8 @@ gui_params = [
         "value": class_default["compute_property_from_recording"],
         "default": class_default["compute_property_from_recording"],
         "title": "If True and 'grouping_property' is given, the property of each unit"
-                 " is assigned as the corresponding property of the recording extractor"
-                 " channel on which the average waveform is the largest",
+        " is assigned as the corresponding property of the recording extractor"
+        " channel on which the average waveform is the largest",
     },
     {
         "name": "n_jobs",
@@ -108,8 +102,8 @@ gui_params = [
         "value": class_default["method"],
         "default": class_default["method"],
         "title": "If 'absolute' (default), amplitudes are absolute amplitudes"
-                 " in uV are returned. If 'relative', amplitudes are returned"
-                 " as ratios between waveform amplitudes and template amplitudes.",
+        " in uV are returned. If 'relative', amplitudes are returned"
+        " as ratios between waveform amplitudes and template amplitudes.",
     },
     {
         "name": "peak",
@@ -117,7 +111,7 @@ gui_params = [
         "value": class_default["peak"],
         "default": class_default["peak"],
         "title": "If maximum channel has to be found among negative peaks ('neg'),"
-                 " positive ('pos') or both ('both' - default)",
+        " positive ('pos') or both ('both' - default)",
     },
     {
         "name": "frames_before",
@@ -160,7 +154,7 @@ gui_params = [
         "value": class_default["memmap"],
         "default": class_default["memmap"],
         "title": "If True, waveforms are saved as memmap object (recommended"
-                 " for long recordings with many channels.",
+        " for long recordings with many channels.",
     },
     {
         "name": "joblib_backend",
