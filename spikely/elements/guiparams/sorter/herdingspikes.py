@@ -1,0 +1,263 @@
+from spikesorters.herdingspikes import HerdingspikesSorter
+class_default = HerdingspikesSorter._default_params
+
+gui_params = [
+    {
+        "name": "output_folder",
+        "type": "folder",
+        "value": None,
+        "default": None,
+        "title": "Sorting output folder path.",
+        "base_param": True,
+    },
+    {
+        "name": "verbose",
+        "type": "bool",
+        "value": False,
+        "default": False,
+        "title": "If True, output from SpikeInterface element is verbose when run.",
+        "base_param": True,
+    },
+    {
+        "name": "grouping_property",
+        "type": "str",
+        "value": None,
+        "default": None,
+        "title": "Property name to be used for sorter output grouping.",
+        "base_param": True,
+    },
+    {
+        "name": "parallel",
+        "type": "bool",
+        "value": False,
+        "default": False,
+        "title": "If grouping property specifed, sort property groups in parallel if True.",
+        "base_param": True,
+    },
+    {
+        "name": "delete_output_folder",
+        "type": "bool",
+        "value": False,
+        "default": False,
+        "title": "Delete specified or default output folder on completion if True.",
+        "base_param": True,
+    },
+    # herdingspikes specific parameters
+    # core params
+    {
+        "name": "clustering_bandwidth",
+        "type": "float",
+        "value": class_default["clustering_bandwidth"],
+        "default": class_default["clustering_bandwidth"],
+        "title": "Meanshift bandwidth.",
+    },
+    {
+        "name": "clustering_alpha",
+        "type": "float",
+        "value": class_default["clustering_alpha"],
+        "default": class_default["clustering_alpha"],
+        "title": "Scalar for the PC components when clustering.",
+    },
+    {
+        "name": "clustering_n_jobs",
+        "type": "int",
+        "value": class_default["clustering_n_jobs"],
+        "default": class_default["clustering_n_jobs"],
+        "title": "Number of cores. Default uses all cores.",
+    },
+    {
+        "name": "clustering_bin_seeding",
+        "type": "bool",
+        "value": class_default["clustering_bin_seeding"],
+        "default": class_default["clustering_bin_seeding"],
+        "title": "Clustering bin seeding.",
+    },
+    {
+        "name": "clustering_min_bin_freq",
+        "type": "int",
+        "value": class_default["clustering_min_bin_freq"],
+        "default": class_default["clustering_min_bin_freq"],
+        "title": "Minimum spikes per bin for bin seeding.",
+    },
+    {
+        "name": "clustering_subset",
+        "type": "int",
+        "value": class_default["clustering_subset"],
+        "default": class_default["clustering_subset"],
+        "title": "Number of spikes used to build clusters. All by default.",
+    },
+    {
+        "name": "left_cutout_time",
+        "type": "float",
+        "value": class_default["left_cutout_time"],
+        "default": class_default["left_cutout_time"],
+        "title": "Cutout size before peak (ms).",
+    },
+    {
+        "name": "right_cutout_time",
+        "type": "float",
+        "value": class_default["right_cutout_time"],
+        "default": class_default["right_cutout_time"],
+        "title": "Cutout size after peak (ms).",
+    },
+    {
+        "name": "detection_threshold",
+        "type": "int",
+        "value": class_default["detection_threshold"],
+        "default": class_default["detection_threshold"],
+        "title": "Detection threshold",
+    },
+    # extra probe params
+    {
+        "name": "probe_masked_channels",
+        "type": "list",
+        "value": class_default["probe_masked_channels"],
+        "default": class_default["probe_masked_channels"],
+        "title": "Masked channels",
+    },
+    {
+        "name": "probe_inner_radius",
+        "type": "float",
+        "value": class_default["probe_inner_radius"],
+        "default": class_default["probe_inner_radius"],
+        "title": "Defines area around probe channel for localization",
+    },
+    {
+        "name": "probe_neighbor_radius",
+        "type": "float",
+        "value": class_default["probe_neighbor_radius"],
+        "default": class_default["probe_neighbor_radius"],
+        "title": "Defines area around probe channel for neighbor classification.",
+    },
+    {
+        "name": "probe_event_length",
+        "type": "float",
+        "value": class_default["probe_event_length"],
+        "default": class_default["probe_event_length"],
+        "title": "Probe event length (seconds).",
+    },
+    {
+        "name": "probe_peak_jitter",
+        "type": "float",
+        "value": class_default["probe_peak_jitter"],
+        "default": class_default["probe_peak_jitter"],
+        "title": "Maxmimum peak misalignment (seconds).",
+    },
+    # extra detection params
+    {
+        "name": "num_com_centers",
+        "type": "int",
+        "value": class_default["num_com_centers"],
+        "default": class_default["num_com_centers"],
+        "title": "Number of centroids to average when localizing.",
+    },
+    {
+        "name": "maa",
+        "type": "int",
+        "value": class_default["maa"],
+        "default": class_default["maa"],
+        "title": "maa."
+    },
+    {
+        "name": "ahpthr",
+        "type": "int",
+        "value": class_default["ahpthr"],
+        "default": class_default["ahpthr"],
+        "title": "ahpthr.",
+    },
+    {
+        "name": "out_file_name",
+        "type": "str",
+        "value": class_default["out_file_name"],
+        "default": class_default["out_file_name"],
+        "title": "File name for storage of unclustered detected spikes.",
+    },
+    {
+        "name": "decay_filtering",
+        "type": "bool",
+        "value": class_default["decay_filtering"],
+        "default": class_default["decay_filtering"],
+        "title": "Experimental: Set to True at your risk. ;^)"
+    },
+    {
+        "name": "save_all",
+        "type": "bool",
+        "value": class_default["save_all"],
+        "default": class_default["save_all"],
+        "title": "Save all working files after sorting."
+    },
+    {
+        "name": "amp_evaluation_time",
+        "type": "float",
+        "value": class_default["amp_evaluation_time"],
+        "default": class_default["amp_evaluation_time"],
+        "title": "Amplitude evaluation time (seconds).",
+    },
+    {
+        "name": "spk_evaluation_time",
+        "type": "float",
+        "value": class_default["spk_evaluation_time"],
+        "default": class_default["spk_evaluation_time"],
+        "title": "Spike evaluation time (seconds).",
+    },
+    # extra pca params
+    {
+        "name": "pca_ncomponents",
+        "type": "int",
+        "value": class_default["pca_ncomponents"],
+        "default": class_default["pca_ncomponents"],
+        "title": "Number of principal components to use when clustering.",
+    },
+    {
+        "name": "pca_whiten",
+        "type": "bool",
+        "value": class_default["pca_ncomponents"],
+        "default": class_default["pca_ncomponents"],
+        "title": "if true, whiten data after pca.",
+    },
+    # bandpass filter
+    {
+        "name": "freq_min",
+        "type": "float",
+        "value": class_default["freq_min"],
+        "default": class_default["freq_min"],
+        "title": "Low-pass frequency",
+    },
+    {
+        "name": "freq_max",
+        "type": "float",
+        "value": class_default["freq_max"],
+        "default": class_default["freq_max"],
+        "title": "High-pass frequency",
+    },
+    {
+        "name": "filter",
+        "type": "bool",
+        "value": class_default["filter"],
+        "default": class_default["filter"],
+        "title": "Bandpass filters the recording if True",
+    },
+    # rescale traces
+    {
+        "name": "pre_scale",
+        "type": "bool",
+        "value": class_default["pre_scale"],
+        "default": class_default["pre_scale"],
+        "title": "Scales recording traces to optimize HerdingSpikes performance",
+    },
+    {
+        "name": "pre_scale_value",
+        "type": "float",
+        "value": class_default["pre_scale_value"],
+        "default": class_default["pre_scale_value"],
+        "title": "Scale to apply in case of pre-scaling of traces",
+    },
+    # other
+    {
+        "name": "filter_duplicates",
+        "type": "bool",
+        "value": class_default["filter_duplicates"],
+        "default": class_default["filter_duplicates"],
+        "title": "Rremove duplicates (based on spk_evaluation_time).",
+    },
+]

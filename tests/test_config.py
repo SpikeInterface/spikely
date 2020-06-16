@@ -6,7 +6,7 @@ import sys
 import pytest
 from PyQt5 import QtWidgets
 from spikely import config
-from spikely.elements.recording_extractor import RecordingExtractor
+from spikely.elements.extractor import Extractor
 from spikely.spikely_main import SpikelyMainWindow
 
 
@@ -37,8 +37,8 @@ class TestCvt():
         identity.
 
         """
-        cls_list = RecordingExtractor.get_installed_spif_cls_list()
-        elem = RecordingExtractor(
+        cls_list = Extractor.get_installed_spif_cls_list()
+        elem = Extractor(
             cls_list[random.randint(0, len(cls_list) - 1)]
         )
         elem_dict = config.cvt_elem_to_dict(elem)

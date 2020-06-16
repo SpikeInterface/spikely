@@ -83,6 +83,8 @@ class ParameterModel(QtCore.QAbstractTableModel):
                     result = 'boolean'
                 elif type_str == 'int_list':
                     result = 'list of integers'
+                elif type_str == 'int_or_int_list':
+                    result = 'int or list of integers'
                 elif type_str == 'str':
                     result = 'text string'
                 elif type_str == 'file':
@@ -93,7 +95,7 @@ class ParameterModel(QtCore.QAbstractTableModel):
                     result = 'pathname of file or folder'
                 elif type_str == 'int_list_list':
                     result = 'list of a int_lists'
-                elif type_str == 'np.dtype':
+                elif type_str == 'dtype':
                     result = 'numpy dtype object (e.g., int32)'
 
         # Paints cell red if mandatory parameter value is missing.
@@ -126,7 +128,7 @@ class ParameterModel(QtCore.QAbstractTableModel):
         # from param dictionary.  Talk to Cole if you don't like this.
         if role == QtCore.Qt.EditRole:
             if value.strip():
-                success, cvt_value = self._convert_value(
+                success, cvt_value = self.convert_value(
                     param_dict['type'], value)
                 if success:
                     param_dict['value'] = cvt_value
@@ -142,7 +144,7 @@ class ParameterModel(QtCore.QAbstractTableModel):
     # Helper Methods
     #
 
-    def _convert_value(self, type_str, value_str):
+    def convert_value(self, type_str, value_str):
         success, cvt_value = True, None
         try:
             if value_str == 'None':
@@ -163,6 +165,12 @@ class ParameterModel(QtCore.QAbstractTableModel):
             elif type_str == 'int_list':
                 cvt_value = self._str_list_to_int_list(value_str)
 
+            elif type_str == "int_or_int_list":
+                try:
+                    cvt_value = int(value_str)
+                except ValueError:
+                    cvt_value = self._str_list_to_int_list(value_str)
+
             elif type_str == 'int_list_list':
                 # Strip outer sq brackets: '[[1,2],[3,4]]' -> '[1,2],[3,4]'
                 value_str = re.sub(r'^\[|\]$', '', value_str)
@@ -180,10 +188,10 @@ class ParameterModel(QtCore.QAbstractTableModel):
                 else:
                     raise TypeError(f'{value_str} is not a valid bool type')
 
-            elif type_str == 'np.dtype':
+            elif type_str == 'dtype':
                 # Conversion test will trigger exception if not well-formed
                 np.dtype(value_str)
-                # Save np.dtype as string for consumption by SpikeInterface
+                # Save dtype as string for consumption by SpikeInterface
                 cvt_value = value_str
 
             else:

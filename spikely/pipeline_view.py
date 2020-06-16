@@ -35,7 +35,7 @@ class PipelineView(QtWidgets.QGroupBox):
         # UI to select for and add elements to pipeline.
 
         # The UI for element selection combines a combo box for the stages
-        # (e.g., RecordingExtractor) and one for the corresponding
+        # (e.g., Extractor) and one for the corresponding
         # SpikeInterface classes (e.g., MEArecRecordingExtractor) - the two
         # pieces of information required to instantiate the SpikeElement
         # inserted into the pipeline.
@@ -59,10 +59,12 @@ class PipelineView(QtWidgets.QGroupBox):
             spif_cbx.clear()
             element_cls = elem_cbx.itemData(index)
             # SpikeElement subclasses tasked w/ generating spif class lists
+
             for spif_cls in element_cls.get_installed_spif_cls_list():
                 spif_cbx.addItem(
                     element_cls.get_display_name_from_spif_class(
                         spif_cls), spif_cls)
+
         elem_cbx.currentIndexChanged.connect(_elem_cbx_changed)
 
         # Note: cbx instantiation order matters for initial m/v signalling
