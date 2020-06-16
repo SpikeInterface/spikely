@@ -2,7 +2,8 @@ from spiketoolkit.curation import threshold_isolation_distances
 from spiketoolkit.validation.quality_metric_classes.parameter_dictionaries import (
     get_validation_params,
 )
-
+from spiketoolkit.validation.quality_metric_classes.isolation_distance import IsolationDistance
+metric_default = IsolationDistance.params
 class_default = get_validation_params()
 spif_init_func = threshold_isolation_distances
 
@@ -24,15 +25,15 @@ gui_params = [
     {
         "name": "num_channels_to_compare",
         "type": "int",
-        "value": 13,
-        "default": 13,
+        "value": metric_default["num_channels_to_compare"],
+        "default": metric_default["num_channels_to_compare"],
         "title": "The number of channels to be used for the PC extraction and comparison.",
     },
     {
         "name": "max_spikes_per_cluster",
         "type": "int",
-        "value": 500,
-        "default": 500,
+        "value": metric_default["max_spikes_per_cluster"],
+        "default": metric_default["max_spikes_per_cluster"],
         "title": "Max spikes to be used from each unit.",
     },
     #kwargs

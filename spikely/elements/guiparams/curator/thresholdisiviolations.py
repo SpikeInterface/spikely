@@ -2,9 +2,9 @@ from spiketoolkit.validation.quality_metric_classes.parameter_dictionaries impor
     get_validation_params,
 )
 from spiketoolkit.curation import threshold_isi_violations
-
+from spiketoolkit.validation.quality_metric_classes.isi_violation import ISIViolation
+metric_default = ISIViolation.params
 spif_init_func = threshold_isi_violations
-
 class_default = get_validation_params()
 
 gui_params = [
@@ -29,15 +29,15 @@ gui_params = [
     {
         "name": "isi_threshold",
         "type": "float",
-        "value": 0.0015,
-        "default": 0.0015,
+        "value": metric_default["isi_threshold"],
+        "default": metric_default["isi_threshold"],
         "title": "The isi threshold for calculating isi violations.",
     },
     {
         "name": "min_isi",
         "type": "float",
-        "value": None,
-        "default": None,
+        "value": metric_default["min_isi"],
+        "default": metric_default["min_isi"],
         "title": "The minimum expected isi value.",
     },
     {

@@ -2,9 +2,7 @@ from spiketoolkit.validation.quality_metric_classes.parameter_dictionaries impor
     get_validation_params,
 )
 from spiketoolkit.curation import threshold_num_spikes
-
 spif_init_func = threshold_num_spikes
-
 class_default = get_validation_params()
 
 gui_params = [

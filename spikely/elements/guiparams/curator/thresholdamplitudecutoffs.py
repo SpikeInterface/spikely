@@ -2,9 +2,7 @@ from spiketoolkit.validation.quality_metric_classes.parameter_dictionaries impor
     get_validation_params,
 )
 from spiketoolkit.curation import threshold_amplitude_cutoffs 
-
 class_default = get_validation_params()
-
 spif_init_func = threshold_amplitude_cutoffs
 
 gui_params = [

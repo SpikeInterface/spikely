@@ -2,8 +2,9 @@ from spiketoolkit.curation import threshold_nn_metrics
 from spiketoolkit.validation.quality_metric_classes.parameter_dictionaries import (
     get_validation_params,
 )
+from spiketoolkit.validation.quality_metric_classes.nearest_neighbor import NearestNeighbor
+metric_default = NearestNeighbor.params
 class_default = get_validation_params()
-
 spif_init_func = threshold_nn_metrics
 
 gui_params = [
@@ -30,29 +31,29 @@ gui_params = [
     {
         "name": "num_channels_to_compare",
         "type": "int",
-        "value": 13,
-        "default": 13,
+        "value": metric_default["num_channels_to_compare"],
+        "default": metric_default["num_channels_to_compare"],
         "title": "The number of channels to be used for the PC extraction and comparison.",
     },
     {
         "name": "max_spikes_per_cluster",
         "type": "int",
-        "value": 500,
-        "default": 500,
+        "value": metric_default["max_spikes_per_cluster"],
+        "default": metric_default["max_spikes_per_cluster"],
         "title": "Max spikes to be used from each unit.",
     },
     {
         "name": "max_spikes_for_nn",
         "type": "int",
-        "value": 10000,
-        "default": 10000,
+        "value": metric_default["max_spikes_for_nn"],
+        "default": metric_default["max_spikes_for_nn"],
         "title": "Max spikes to be used for nearest-neighbors calculation.",
     },
     {
         "name": "n_neighbors",
         "type": "int",
-        "value": 4,
-        "default": 4,
+        "value": metric_default["n_neighbors"],
+        "default": metric_default["n_neighbors"],
         "title": "Number of neighbors to compare.",
     },
     #kwargs

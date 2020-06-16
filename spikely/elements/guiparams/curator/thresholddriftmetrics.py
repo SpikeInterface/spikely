@@ -2,9 +2,9 @@ from spiketoolkit.curation import threshold_drift_metrics
 from spiketoolkit.validation.quality_metric_classes.parameter_dictionaries import (
     get_validation_params,
 )
-
+from spiketoolkit.validation.quality_metric_classes.drift_metric import DriftMetric
+metric_default = DriftMetric.params
 spif_init_func = threshold_drift_metrics
-
 class_default = get_validation_params()
 
 gui_params = [
@@ -31,15 +31,15 @@ gui_params = [
     {
         "name": "drift_metrics_interval_s",
         "type": "float",
-        "value": 51.0,
-        "default": 51.0,
+        "value": metric_default["drift_metrics_interval_s"],
+        "default": metric_default["drift_metrics_interval_s"],
         "title": "Time period for evaluating drift.",
     },
     {
         "name": "drift_metrics_min_spikes_per_interval",
         "type": "int",
-        "value": 10,
-        "default": 10,
+        "value": metric_default["drift_metrics_min_spikes_per_interval"],
+        "default": metric_default["drift_metrics_min_spikes_per_interval"],
         "title": "Minimum number of spikes for evaluating drift metrics per interval.",
     },
     # kwargs

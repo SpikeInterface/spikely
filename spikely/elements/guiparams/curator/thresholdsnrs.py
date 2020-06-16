@@ -2,9 +2,9 @@ from spiketoolkit.validation.quality_metric_classes.parameter_dictionaries impor
     get_validation_params,
 )
 from spiketoolkit.curation import threshold_snrs
-
+from spiketoolkit.validation.quality_metric_classes.snr import SNR
+metric_default = SNR.params
 spif_init_func = threshold_snrs
-
 class_default = get_validation_params()
 
 gui_params = [
@@ -24,36 +24,36 @@ gui_params = [
     {
         "name": "snr_mode",
         "type": "str",
-        "value": "mad",
-        "default": "mad",
+        "value": metric_default["snr_mode"],
+        "default": metric_default["snr_mode"],
         "title": "Mode to compute noise SNR ('mad' | 'std' - default 'mad').",
     },
     {
         "name": "snr_noise_duration",
         "type": "float",
-        "value": 10.0,
-        "default": 10.0,
+        "value": metric_default["snr_noise_duration"],
+        "default": metric_default["snr_noise_duration"],
         "title": "Number of seconds to compute noise level from (default 10.0).",
     },
     {
         "name": "max_spikes_per_unit_for_snr",
         "type": "int",
-        "value": 1000,
-        "default": 1000,
+        "value": metric_default["max_spikes_per_unit_for_snr"],
+        "default": metric_default["max_spikes_per_unit_for_snr"],
         "title": "Maximum number of spikes to compute templates from (default 1000).",
     },
     {
         "name": "template_mode",
         "type": "str",
-        "value": "median",
-        "default": "median",
+        "value": metric_default["template_mode"],
+        "default": metric_default["template_mode"],
         "title": "Use 'mean' or 'median' to compute templates.",
     },
     {
         "name": "max_channel_peak",
         "type": "float",
-        "value": "both",
-        "default": "both",
+        "value": metric_default["max_channel_peak"],
+        "default": metric_default["max_channel_peak"],
         "title": " If maximum channel has to be found among negative peaks ('neg'), positive ('pos') or both ('both' - default).",
     },
     # kwargs
