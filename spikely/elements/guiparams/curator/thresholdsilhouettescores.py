@@ -2,8 +2,10 @@ from spiketoolkit.curation import threshold_silhouette_scores
 from spiketoolkit.validation.quality_metric_classes.parameter_dictionaries import (
     get_validation_params,
 )
+from spiketoolkit.validation.quality_metric_classes.silhouette_score import SilhouetteScore
 class_default = get_validation_params()
 spif_init_func = threshold_silhouette_scores
+metric_default = SilhouetteScore.params
 
 gui_params = [
     {
@@ -22,8 +24,8 @@ gui_params = [
     {
         "name": "max_spikes_for_silhouette",
         "type": "int",
-        "value": 10000,
-        "default": 10000,
+        "value": metric_default["max_spikes_for_silhouette"],
+        "default": metric_default["max_spikes_for_silhouette"],
         "title": "Max spikes to be used for silhouette metric.",
     },
     #kwargs

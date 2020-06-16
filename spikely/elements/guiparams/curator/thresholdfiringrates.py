@@ -2,9 +2,7 @@ from spiketoolkit.curation import threshold_firing_rates
 from spiketoolkit.validation.quality_metric_classes.parameter_dictionaries import (
     get_validation_params,
 )
-
 class_default = get_validation_params()
-
 spif_init_func = threshold_firing_rates
 
 gui_params = [

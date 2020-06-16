@@ -3,7 +3,6 @@ from spiketoolkit.validation.quality_metric_classes.parameter_dictionaries impor
     get_validation_params,
 )
 class_default = get_validation_params()
-
 spif_init_func = threshold_presence_ratios
 
 gui_params = [
