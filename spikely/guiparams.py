@@ -13,7 +13,7 @@ def get_gui_params(filename, subpathname):
         gui_param_list: List of gui_param dicts needed to populate the UI
 
     """
-    module = _get_gui_params_module(filename, subpathname)
+    module = get_gui_params_module(filename, subpathname)
 
     gui_params = None if not module else getattr(module, "gui_params", None)
 
@@ -31,7 +31,7 @@ def get_spif_init_func(filename, subpathname):
        spif_init_func: Underlying spif function needed to instantiate spif class.
 
     """
-    module = _get_gui_params_module(filename, subpathname)
+    module = get_gui_params_module(filename, subpathname)
 
     spif_init_func = None if not module else getattr(module, "spif_init_func", None)
 
@@ -40,10 +40,10 @@ def get_spif_init_func(filename, subpathname):
 
 def gui_params_file_exists(filename, subpathname):
 
-    return _get_gui_params_module(filename, subpathname) is not None
+    return get_gui_params_module(filename, subpathname) is not None
 
 
-def _get_gui_params_module(filename, subpathname):
+def get_gui_params_module(filename, subpathname):
 
     module_pathname = "." + subpathname + "." + filename.lower()
 

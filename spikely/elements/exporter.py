@@ -27,7 +27,7 @@ class SortingExporter(sp_spe.SpikeElement):
 
     @staticmethod
     def get_display_name_from_spif_class(spif_class):
-        return spif_class.exporter_name
+        return spif_class.__name__
 
     def __init__(self, spif_class):
         super().__init__(spif_class)
@@ -39,7 +39,7 @@ class SortingExporter(sp_spe.SpikeElement):
         else:
             self._display_icon = None
 
-        self._param_list = get_gui_params(self.display_name, "exporter")
+        self._param_list = get_gui_params(self.spif_class, "exporter")
 
     @property
     def display_name(self):
