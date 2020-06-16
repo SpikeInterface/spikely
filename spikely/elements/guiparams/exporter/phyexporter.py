@@ -1,16 +1,11 @@
 import spiketoolkit as st
 import inspect
 
-display_name = "PhyExporter"
-
-param_member_list = [
-    member for member
-    in inspect.getmembers(st.postprocessing)
-    if inspect.isfunction(member[1]) and member[0].endswith("params")
-]
 class_default = {}
-for param_member in param_member_list:
-    class_default.update(param_member[1]())
+for member in inspect.getmembers(st.postprocessing):
+    if inspect.isfunction(member[1]) and member[0].endswith("params"):
+        class_default.update(member[1]())
+
 
 gui_params = [
     {
