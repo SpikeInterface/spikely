@@ -6,13 +6,14 @@ from PyQt5 import QtGui, QtWidgets
 
 from spikely.guiparams import get_gui_params, gui_params_file_exists
 from . import spike_element as sp_spe
+from spikely.elements.phy_exporter import PhyExporter
 
 
 class SortingExporter(sp_spe.SpikeElement):
     @staticmethod
     def get_installed_spif_cls_list():
         """Returns sorted list of installed spif classes having gui_params files."""
-        raw_list = []
+        raw_list = [PhyExporter]
 
         # To be installed for Spikely purposes spif_class must have gui_params file
         cooked_list = [
@@ -22,8 +23,7 @@ class SortingExporter(sp_spe.SpikeElement):
                 "exporter",
             )
         ]
-
-        return sorted(cooked_list, key=lambda spif_class: spif_class.exporter_name)
+        return sorted(cooked_list, key=lambda spif_class: spif_class.__name__)
 
     @staticmethod
     def get_display_name_from_spif_class(spif_class):
@@ -39,7 +39,7 @@ class SortingExporter(sp_spe.SpikeElement):
         else:
             self._display_icon = None
 
-        self._param_list = get_gui_params(self.spif_class, "exporter")
+        self._param_list = get_gui_params(self.spif_class.__name__, "exporter")
 
     @property
     def display_name(self):
