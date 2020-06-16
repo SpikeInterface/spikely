@@ -54,7 +54,6 @@ class Sorter(sp_spe.SpikeElement):
             for param in self._param_list
             if param.get("base_param") and bool(param.get("base_param"))
         }
-        print(base_param_list)
         base_param_list["recording"] = payload
         sorter = self._spif_class(**base_param_list)
 
@@ -63,7 +62,6 @@ class Sorter(sp_spe.SpikeElement):
             for param in self._param_list
             if not param.get("base_param")
         }
-        print(sub_param_list)
         sorter.set_params(**sub_param_list)
 
         sorter.run()
